@@ -1,0 +1,256 @@
+\documentclass[frenchb]{report}
+%\usepackage{natbib}
+\usepackage[dvipsnames]{xcolor}
+\usepackage[french]{babel}
+\usepackage{url}
+\usepackage[utf8x]{inputenc}
+\usepackage{graphicx}
+\graphicspath{{images/}}
+\usepackage{parskip}
+\usepackage{fancyhdr}
+\usepackage{fancyvrb}
+\usepackage{vmargin}
+\usepackage{xcolor}
+\usepackage{bbm}
+\usepackage{amsmath,amssymb}
+\usepackage{amsthm}
+\usepackage{dsfont}
+\usepackage{stmaryrd}
+\usepackage{systeme}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{pifont}
+\usepackage{textcomp}
+\usepackage{calrsfs}
+\usepackage[T1]{fontenc}
+\usepackage[toc,page]{appendix}
+\usepackage{lipsum}
+\usepackage{verbatim}
+\usepackage{listings}
+\usepackage{adforn}
+\usepackage{float}
+\setlength{\hoffset}{-18pt}        
+\setlength{\oddsidemargin}{0pt} % Marge gauche sur pages impaires
+\setlength{\evensidemargin}{9pt} % Marge gauche sur pages paires
+\setlength{\marginparwidth}{54pt} % Largeur de note dans la marge
+\setlength{\textwidth}{481pt} % Largeur de la zone de texte (17cm)
+\setlength{\voffset}{-18pt} % Bon pour DOS
+\setlength{\marginparsep}{7pt} % Séparation de la marge
+\setlength{\topmargin}{0pt} % Pas de marge en haut
+\setlength{\headheight}{13pt} % Haut de page
+\setlength{\headsep}{10pt} % Entre le haut de page et le texte
+\setlength{\footskip}{27pt} % Bas de page + séparation
+\setlength{\textheight}{708pt} % Hauteur de la zone de texte (25cm)
+\usepackage{hyperref}
+\lstset{%
+            inputencoding=utf8,
+                extendedchars=true,
+                literate=%
+                {é}{{\'e}}{1}%
+                {è}{{\`e}}{1}%
+                {à}{{\`a}}{1}%
+                {ç}{{\c{c}}}{1}%
+                {œ}{{\oe}}{1}%
+                {ù}{{\`u}}{1}%
+                {É}{{\'E}}{1}%
+                {È}{{\`E}}{1}%
+                {À}{{\`A}}{1}%
+                {Ç}{{\c{C}}}{1}%
+                {Œ}{{\OE}}{1}%
+                {Ê}{{\^E}}{1}%
+                {ê}{{\^e}}{1}%
+                {î}{{\^i}}{1}%
+                {ô}{{\^o}}{1}%
+                {û}{{\^u}}{1}%
+                {ë}{{\¨{e}}}1
+                {û}{{\^{u}}}1
+                {â}{{\^{a}}}1
+                {Â}{{\^{A}}}1
+                {Î}{{\^{I}}}1
+        }
+    
+    
+\lstset{ language=R,
+  backgroundcolor=\color{MidnightBlue},   % choose the background color; you must add \usepackage{color} or \usepackage{xcolor}; should come as last argument
+   basicstyle=\small\ttfamily\color{white},        % the size of the fonts that are used for the code
+  breakatwhitespace=false,         % sets if automatic breaks should only happen at whitespace
+  breaklines=true,                 % sets automatic line breaking
+  captionpos=b,                    % sets the caption-position to bottom
+  commentstyle=\color{SpringGreen},    % comment style
+  deletekeywords={data,frame,length,as,character},           % if you want to delete keywords from the given language
+  extendedchars=true,              % lets you use non-ASCII characters; for 8-bits encodings only, does not work with UTF-8
+  frame=single,	                   % adds a frame around the code
+  keepspaces=true,                 % keeps spaces in text, useful for keeping indentation of code (possibly needs columns=flexible)
+   keywordstyle=\color{Peach},       % keyword style
+  morekeywords={kable,*,...},            % if you want to add more keywords to the set
+  numbers=left,                    % where to put the line-numbers; possible values are (none, left, right)
+  numbersep=5pt,                   % how far the line-numbers are from the code
+  %numberstyle=\tiny\color{gray}, % the style that is used for the line-numbers
+  rulecolor=\color{white},         % if not set, the frame-color may be changed on line-breaks within not-black text (e.g. comments (green here))
+  showspaces=false,                % show spaces everywhere adding particular underscores; it overrides 'showstringspaces'
+  showstringspaces=false,          % underline spaces within strings only
+  showtabs=false,                  % show tabs within strings adding particular underscores
+  stepnumber=2,                    % the step between two line-numbers. If it's 1, each line will be numbered
+      % string literal style
+  tabsize=2,	                   % sets default tabsize to 2 spaces
+  title=\lstname,                  % show the filename of files included with \lstinputlisting; also try caption instead of title
+  mathescape=true,
+  escapechar=|
+  }
+        
+        
+\makeatletter
+\let\thetitle\@title
+\let\theauthor\@author
+\let\thedate\@date
+\makeatother
+
+
+\newcommand{\ld}{\log_{2}}
+\newcommand{\R}{\mathbbm{R}}
+\newcommand{\N}{\mathbbm{N}}
+\newcommand{\1}{\mathbbm{1}}
+\newcommand{\E}{\mathbbm{E}}
+\newcommand{\V}{\mathbbm{V}}
+\newcommand{\prob}{\mathbbm{P}}
+\newcommand{\Nc}{\mathcal{N}}
+\newcommand{\Cc}{\mathcal{C}}
+\newcommand{\Xti}{\widetilde{X_i}}
+\newcommand{\Xtj}{\widetilde{X_j}}
+\newcommand{\Xn}{\overline{X_n}}
+\newcommand{\gn}{\hat{g_n}}
+\newcommand{\n}{\mathcal{N}}
+
+\newcommand{\console}[1]{\colorbox{black}{\begin{minipage}[c]{1\linewidth}\textcolor{white}{\texttt{#1}}\end{minipage}}}
+
+\newtheorem{prop}{Proposition}
+\newtheorem{thm}{Théorème}
+\newtheorem{cor}{Corollaire}
+\newtheorem{lem}{Lemme}
+\newtheorem{hyp}{Hypothèse}
+\theoremstyle{definition}\newtheorem{defn}{Définition}
+\theoremstyle{definition}\newtheorem{exm}{Exemple}
+\theoremstyle{definition}\newtheorem{rem}{Remarque}
+
+
+
+
+\begin{document}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{titlepage}
+
+\begin{center}
+\includegraphics[scale=0.5]{logo.png}\\[1cm]
+{\LARGE Université de Montpellier}\\[1.5cm]
+\linespread{1.2}\huge {\bfseries Projet M1 SSD }\\[0.5cm]
+\linespread{1.2}\LARGE {\bfseries Modèle pour les nids de mouettes}\\[1.5cm]
+\linespread{1}
+
+{\large Rédigé par\\}
+{\Large \textsc{carvaillo} Thomas}\\
+{\Large \textsc{côme} Olivier}\\
+{\Large \textsc{pralon} Nicolas}\\[1cm]
+{\large \emph{Encadrante :} Elodie \textsc{Brunel-Piccinini}}\\[1cm] % if applicable
+%\textit{dans le}\\[0.3cm]
+%Départment d'Informatique, UFR Sciences et Techniques\\[2cm]
+\today
+\end{center}
+
+\end{titlepage}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\tableofcontents
+\newpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\chapter*{Introduction}
+\addcontentsline{toc}{part}{Introduction}
+\lipsum
+
+
+\pagebreak
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\chapter{Test}
+
+\begin{thm}[Nicolas = bg]
+Nicolas est un bg
+\end{thm}
+\begin{proof}
+Trivial, la preuve est laissée au lecteur.
+\end{proof}
+
+\begin{defn}[KULLBLACK LEIBLER]
+kullblack leibler est une maladie présente chez Olivier
+\end{defn}
+
+
+\pagebreak
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\chapter{Un peu de théorie}
+
+\section{Modélisation du problème}
+Afin de modéliser commodément le problème, nous introduisons les variables aléatoires suivantes :
+
+\begin{itemize}[label=\adfflowerleft]
+	\item La variable aléatoire $X$, modélisant la taille des nids
+	\item La variable aléatoire $Y$, décrivant la taille du nid d'une espèce donnée
+	\item Et $Z$, la variable aléatoire représentant l'espèce de mouette qui a construit le nid
+\end{itemize}
+
+\begin{hyp}
+Nous supposerons que la taille des nids d'une espèce $j$ suit une loi normale $\n(\mu_j,v_j)$. 
+\end{hyp}
+
+\begin{prop}
+La variable $Z$ est discrète et à valeur dans un sous-ensemble fini de $\N$, elle suit donc une loi 
+\begin{center} $\displaystyle \sum_{j=1}^J \alpha(j)\delta_j$ \end{center}
+\underline{où} $J$ représente le nombre d'espèce de mouettes considéré et les $\alpha(j)$ sont des réels, positifs stricts, représentant la proportion de nids de l'espèce $j$, tels que $\displaystyle\sum_{i=1}^J \alpha(j) = 1$. \newline
+Il s'ensuit qu'elle admet pour densité, au point $z$, et par rapport à la mesure de comptage sur $\N$, la fonction $g$ définie comme 
+\begin{center} $g(z) = \alpha(z)$ \end{center}
+\end{prop}
+
+\begin{prop}
+On obtient donc le fait que $Y$, ( \underline{i.e.} $X$ conditionnelement à $(Z=j))$, suit une loi normale $\n(\mu_j,v_j)$. Nous dénoterons par 
+\begin{center} $f_\theta(x | Z=j) := \gamma_{\mu_j, v_j}(x)$ \end{center}
+sa densité.
+\end{prop}
+
+Il s'ensuit la proposition suivante, qui sera la racine du présent projet.
+\begin{prop}
+La distribution de la taille des nids de mouettes, \underline{i.e.} $X$, admet pour densité ,au point $x$ et par rapport à la mesure de Lebesgue sur $\R$, la fonction $f_ \theta$ définie comme suit
+\begin{center} $f_\theta(x) = \displaystyle\sum_{j=1}^J \alpha(j) \gamma_{\mu_j, v_j}(x) $ \end{center}
+\end{prop}
+
+Le but de ce projet sera d'étudier des méthodes permettant l'estimation de ces divers paramètres. Nous détonerons par $\theta := (\alpha_j, \mu_j, v_j)_{1\leq j\leq J}$ les vecteurs des paramètres à estimer. \newline
+Pour cela, nous nous placerons sous l'hypothèse suivante
+
+\begin{hyp}
+Soit $\Theta := \{ \theta = (\alpha_j,\mu_j, v_j)_{1 \leq j \leq J} \text{ tels que } \alpha_j > 0 \forall j\in \llbracket 1,J\rrbracket \text{ et } \displaystyle\sum_{j=1}^J\alpha_j=1\}$. On supposera qu'il existe un $\theta \in \Theta$ tel que 
+\end{hyp}
+
+\begin{rem}
+Notons, de surcroît, que le couple aléatoire $(X,Z)$ admet pour densité par la fonction $h_\theta(x,z) := \alpha(z) \gamma_{\mu_j, v_j}(x)$
+\end{rem}
+
+\section{Le cas simple}
+
+\section{Le cas réel}
+
+\pagebreak
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\chapter*{Bibliographie}
+\addcontentsline{toc}{part}{Bibliographie}
+
+
+
+\pagebreak
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{appendix}
+\chapter{Annexe}
+
+\end{appendix}
+
+\end{document}

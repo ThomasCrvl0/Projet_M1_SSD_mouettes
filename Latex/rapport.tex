@@ -130,9 +130,12 @@
 \newtheorem{hyp}{Hypothèse}
 \theoremstyle{definition}\newtheorem{defn}{Définition}
 \theoremstyle{definition}\newtheorem{exm}{Exemple}
+\theoremstyle{definition}\newtheorem{nota}{Notation}
 \theoremstyle{definition}\newtheorem{rem}{Remarque}
 
 
+
+\renewcommand{\qedsymbol}{\adfhangingflatleafright}
 
 
 \begin{document}
@@ -143,7 +146,7 @@
 \includegraphics[scale=0.5]{logo.png}\\[1cm]
 {\LARGE Université de Montpellier}\\[1.5cm]
 \linespread{1.2}\huge {\bfseries Projet M1 SSD }\\[0.5cm]
-\linespread{1.2}\LARGE {\bfseries Modèle pour les nids de mouettes}\\[1.5cm]
+\linespread{1.2}\LARGE {\bfseries Un modèle pour les nids de mouettes}\\[1.5cm]
 \linespread{1}
 
 {\large Rédigé par\\}
@@ -170,24 +173,6 @@
 \pagebreak
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\chapter{Test}
-
-\begin{thm}[Nicolas = bg]
-Nicolas est un bg
-\end{thm}
-\begin{proof}
-Trivial, la preuve est laissée au lecteur.
-\end{proof}
-
-\begin{defn}[KULLBLACK LEIBLER]
-kullblack leibler est une maladie présente chez Olivier
-\end{defn}
-
-
-\pagebreak
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
 \chapter{Un peu de théorie}
 
 \section{Modélisation du problème}
@@ -200,21 +185,13 @@ Afin de modéliser commodément le problème, nous introduisons les variables al
 \end{itemize}
 
 \begin{hyp}
-Nous supposerons que la taille des nids d'une espèce $j$ suit une loi normale $\n(\mu_j,v_j)$. 
+Nous supposerons que la taille des nids d'une espèce $j$ ( \underline{i.e.} $X$ conditionnelement à $(Z=j)$ ) suit une loi normale $\n(\mu_j,v_j)$. 
 \end{hyp}
 
 \begin{prop}
 La variable $Z$ est discrète et à valeur dans un sous-ensemble fini de $\N$, elle suit donc une loi 
 \begin{center} $\displaystyle \sum_{j=1}^J \alpha(j)\delta_j$ \end{center}
-\underline{où} $J$ représente le nombre d'espèce de mouettes considéré et les $\alpha(j)$ sont des réels, positifs stricts, représentant la proportion de nids de l'espèce $j$, tels que $\displaystyle\sum_{i=1}^J \alpha(j) = 1$. \newline
-Il s'ensuit qu'elle admet pour densité, au point $z$, et par rapport à la mesure de comptage sur $\N$, la fonction $g$ définie comme 
-\begin{center} $g(z) = \alpha(z)$ \end{center}
-\end{prop}
-
-\begin{prop}
-On obtient donc le fait que $Y$, ( \underline{i.e.} $X$ conditionnelement à $(Z=j))$, suit une loi normale $\n(\mu_j,v_j)$. Nous dénoterons par 
-\begin{center} $f_\theta(x | Z=j) := \gamma_{\mu_j, v_j}(x)$ \end{center}
-sa densité.
+\underline{où} $J$ représente le nombre d'espèce de mouettes considéré et les $\alpha(j)$ sont des réels, positifs stricts, représentant la proportion de nids de l'espèce $j$, tels que $\displaystyle\sum_{i=1}^J \alpha(j) = 1$.
 \end{prop}
 
 Il s'ensuit la proposition suivante, qui sera la racine du présent projet.
@@ -223,16 +200,47 @@ La distribution de la taille des nids de mouettes, \underline{i.e.} $X$, admet p
 \begin{center} $f_\theta(x) = \displaystyle\sum_{j=1}^J \alpha(j) \gamma_{\mu_j, v_j}(x) $ \end{center}
 \end{prop}
 
-Le but de ce projet sera d'étudier des méthodes permettant l'estimation de ces divers paramètres. Nous détonerons par $\theta := (\alpha_j, \mu_j, v_j)_{1\leq j\leq J}$ les vecteurs des paramètres à estimer. \newline
+Le but de ce projet sera d'étudier des méthodes permettant l'estimation des divers paramètres de cette densité. Nous détonerons par $\theta := (\alpha_j, \mu_j, v_j)_{1\leq j\leq J}$ les vecteurs des ces dits paramètres. \newline
 Pour cela, nous nous placerons sous l'hypothèse suivante
 
 \begin{hyp}
-Soit $\Theta := \{ \theta = (\alpha_j,\mu_j, v_j)_{1 \leq j \leq J} \text{ tels que } \alpha_j > 0 \forall j\in \llbracket 1,J\rrbracket \text{ et } \displaystyle\sum_{j=1}^J\alpha_j=1\}$. On supposera qu'il existe un $\theta \in \Theta$ tel que 
+Soit $\Theta := \{ \theta = (\alpha_j,\mu_j, v_j)_{1 \leq j \leq J} \text{ tels que } \alpha_j > 0 \forall j\in \llbracket 1,J\rrbracket \text{ et } \displaystyle\sum_{j=1}^J\alpha_j=1\}$. Soient $X_1, \cdots, X_n$ un échantillon iid de même loi que $X$. On supposera qu'il existe un $\theta \in \Theta$ tel que les données récoltées, ici les tailles des nids, soient la réalisation du précédent échantillon.
 \end{hyp}
 
-\begin{rem}
-Notons, de surcroît, que le couple aléatoire $(X,Z)$ admet pour densité par la fonction $h_\theta(x,z) := \alpha(z) \gamma_{\mu_j, v_j}(x)$
-\end{rem}
+\begin{nota}[Densités]
+Le vecteur $\theta$ ayant été dûment introduit, nous noterons
+\begin{enumerate}
+	\item $g_\theta(z) = \alpha(z)$ la densité de la variable aléatoire $Z$
+	\item $f_\theta(x | Z=j) := \gamma_{\mu_j, v_j}(x)$  la densité de la loi de $X$ sachant $Z$, \underline{i.e.} de la variable aléatoire $Y$
+\end{enumerate}
+qui sont, respectivement, contre la mesure de comptage sur $\N$, et par rapport à la mesure de $\mathcal{L}$ebesgue sur $\R$,
+\end{nota}
+
+Introduisons deux dernières densités, qui nous seront fort utile quant à l'expression des Log-vraisemblances conditionnelles :
+
+\begin{prop}[Densité de $Z$ sachant $X$]
+$g_\theta(z | X=x ) = \frac{\displaystyle\alpha(z)\gamma_{\mu_j, v_j}(x)}{\displaystyle\sum_{j=1}^J\alpha(j)\gamma_{\mu_j, v_j}(x)}$, pour $z\in \{1,\cdots,J\}$
+\end{prop}
+
+\begin{proof}
+En effet, BLABLABLA Nicolas le fera
+\end{proof}
+
+\begin{prop}[Densité du vecteur (X,Z)]
+Soit le vecteur aléatoire $(X, Z)$; sa densité nous est donnée par
+\begin{center} $h_\theta(x,z) := \alpha(z)\gamma_{\mu_j, v_j}(x)$ \end{center}
+\end{prop}
+
+\begin{proof}
+En effet, si on note par $F$ la fonction de répartition de ce vecteur aléatoire, on obtient
+\begin{align*}
+F(x, z) &= \prob(X \leq x, Z = z)\\
+&= \prob(X\leq x | Z = z)\times\prob(Z=z)\\
+&= \int_{-\infty}^x \gamma_{\mu_z,v_z}(t)dt \times \alpha(z)\\
+&= \int_{-\infty}^x \int_\N\alpha(z)\gamma_{\mu_z,v_z}(t)dt\delta_z
+\end{align*}
+La densité de $(X,Z)$ s'ensuit.
+\end{proof}
 
 \section{Le cas simple}
 

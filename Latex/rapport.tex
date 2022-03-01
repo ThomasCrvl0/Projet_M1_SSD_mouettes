@@ -1,3 +1,5 @@
+%%% packages %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  
 \documentclass[frenchb]{report}
 %\usepackage{natbib}
 \usepackage[dvipsnames]{xcolor}
@@ -97,7 +99,9 @@
   mathescape=true,
   escapechar=|
   }
-        
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%        
+
+
         
 \makeatletter
 \let\thetitle\@title
@@ -105,7 +109,8 @@
 \let\thedate\@date
 \makeatother
 
-
+%%% commandes mise en page %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%        
 \newcommand{\ld}{\log_{2}}
 \newcommand{\R}{\mathbbm{R}}
 \newcommand{\N}{\mathbbm{N}}
@@ -133,15 +138,14 @@
 \theoremstyle{definition}\newtheorem{nota}{Notation}
 \theoremstyle{definition}\newtheorem{rem}{Remarque}
 
-
-
 \renewcommand{\qedsymbol}{\adfhangingflatleafright}
 
 
 \begin{document}
+
+%%% Page de garde %%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{titlepage}
-
 \begin{center}
 \includegraphics[scale=0.5]{logo.png}\\[1cm]
 {\LARGE Université de Montpellier}\\[1.5cm]
@@ -158,7 +162,6 @@
 %Départment d'Informatique, UFR Sciences et Techniques\\[2cm]
 \today
 \end{center}
-
 \end{titlepage}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \tableofcontents
@@ -167,16 +170,28 @@
 
 \chapter*{Introduction}
 \addcontentsline{toc}{part}{Introduction}
-\lipsum
+Nos amis les ornithologues aiment bien se balader en slibard et compter les nids de mouettes, il faut bien s'occuper pendant le chômage. Hélas, ce sont des flemmards, ils mesurent la taille des nids mais n'attendent pas que le piaf reviennent pour savoir à quel espèce il appartient. Heureusement, nous sommes là pour combler l'incompétence de ces gueux, grâce à nos techniques du turfu nous allons estimer BLABLABLA. 
 
 
 \pagebreak
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+
+%%% Premier chapitre %%%
 \chapter{Un peu de théorie}
 
+% section 1
 \section{Modélisation du problème}
-Afin de modéliser commodément le problème, nous introduisons les variables aléatoires suivantes :
+
+Nous allons pour commencer donner une première définition, qui est au coeur du présent projet.
+
+\begin{defn}[Loi de mélange]
+On appelle loi de mélange toute loi dont la densité s'écrit sous la forme d'une combinaison linéaire de diverses densités. C'est-à-dire que si l'on se donne $n$ variables aléatoires $X_1, \cdots, X_n$ de densité respective $f_1(x), \cdots, f_n(x)$, alors est appellée loi de mélange toute variable aléatoire $X$ dont la densité $f$ s'exprime sous la forme
+\begin{center} $f(x) := \displaystyle\sum_{i=1}^n \alpha(i) f_i(x)$ , $\alpha(i) \in\R$ \end{center}
+
+\end{defn}
+
+Continuons, afin de modéliser commodément le problème, par introduire les variables aléatoires suivantes :
 
 \begin{itemize}[label=\adfflowerleft]
 	\item La variable aléatoire $X$, modélisant la taille des nids
@@ -200,6 +215,19 @@ La distribution de la taille des nids de mouettes, \underline{i.e.} $X$, admet p
 \begin{center} $f_\theta(x) = \displaystyle\sum_{j=1}^J \alpha(j) \gamma_{\mu_j, v_j}(x) $ \end{center}
 \end{prop}
 
+\begin{proof}
+On vérifie que l'on obtient bien une densité de probabilité, la forme de cette dernière étant la conséquence directe de la définition de la variable aléatoire $X$ : \newline
+\begin{center} $\displaystyle\int_\R f_\theta(x) dx = \int_\R\sum_{j=1}^J \alpha(j) \gamma_{\mu_j, v_j}(x)dx = \sum_{j=1}^J\alpha(j)\int_\R \gamma_{\mu_j, v_j}(x)dx = \sum_{j=1}^J\alpha(j) = 1$ \end{center}
+\end{proof}
+
+\begin{rem}
+Il est intéressant de noter que si $f_\theta$ est bien une densité, cela vient du fait que la combinaison à l'origine du mélange de loi est une combinaison \textit{convexe}. ET SINON ?
+\end{rem}
+
+\begin{exm}
+ICI une simulation ?
+\end{exm}
+
 Le but de ce projet sera d'étudier des méthodes permettant l'estimation des divers paramètres de cette densité. Nous détonerons par $\theta := (\alpha_j, \mu_j, v_j)_{1\leq j\leq J}$ les vecteurs des ces dits paramètres. \newline
 Pour cela, nous nous placerons sous l'hypothèse suivante
 
@@ -218,8 +246,10 @@ qui sont, respectivement, contre la mesure de comptage sur $\N$, et par rapport 
 
 Introduisons deux dernières densités, qui nous seront fort utile quant à l'expression des Log-vraisemblances conditionnelles :
 
-\begin{prop}[Densité de $Z$ sachant $X$]
+\begin{prop}[Densité de $Z$ sachant $X$] La densité de la loi de $Z$ sachant $X$ est donnée par
+\begin{center}
 $g_\theta(z | X=x ) = \frac{\displaystyle\alpha(z)\gamma_{\mu_j, v_j}(x)}{\displaystyle\sum_{j=1}^J\alpha(j)\gamma_{\mu_j, v_j}(x)}$, pour $z\in \{1,\cdots,J\}$
+\end{center}
 \end{prop}
 
 \begin{proof}
@@ -232,7 +262,7 @@ Soit le vecteur aléatoire $(X, Z)$; sa densité nous est donnée par
 \end{prop}
 
 \begin{proof}
-En effet, si on note par $F$ la fonction de répartition de ce vecteur aléatoire, on obtient
+En effet, si on dénote par $F$ la fonction de répartition de ce vecteur aléatoire, on obtient
 \begin{align*}
 F(x, z) &= \prob(X \leq x, Z = z)\\
 &= \prob(X\leq x | Z = z)\times\prob(Z=z)\\
@@ -242,8 +272,106 @@ F(x, z) &= \prob(X \leq x, Z = z)\\
 La densité de $(X,Z)$ s'ensuit.
 \end{proof}
 
-\section{Le cas simple}
+Nous allons dès à présent nous intéresser à l'estimation de ces paramètres.
 
+% Section 2
+\section{Un cas élémentaire}
+
+Regardons dans un premier temps un cas simplifié, un cas ne décrivant pas la réalité des observations mais qui a le mérite de constituer une agréable entrée en matière. \newline
+Nous supposerons ici qu'ont été relevés simultanément et les mesures des tailles des nids et l'espèce de mouette qui l'a construit. Le modèle ici considéré est donc composé des couple $(X_i, Z_i)$, $i \in \llbracket1,n \rrbracket$. On considérera dès lors la fonction de densité $h_\theta(x,z)$.\newline
+L'estimation des divers paramètres est alors élémentaire, en témoigne les propositions suivante :
+\begin{prop}[Fonction de Log-vraisemblance]
+La Log-vraisemblance du modèle s'écrit
+\begin{center} $\mathcal{L}_\theta(X_1, \cdots, X_n, Z_1, \cdots, Z_n) = \displaystyle \sum_{j=1}^J \#A_j ln(\alpha(j)) + \sum_{j=1}^J\sum_{i\in A_j}ln(\gamma_{\mu_j, v_j}(X_i))$ \end{center}
+\underline{où} les $A_j$ sont définis par $A_j := \{ i\in \llbracket1,n \rrbracket$ tels que $Z_i = j \}$  $\displaystyle\bigcup_{j=1}^J A_j = \llbracket1,n \rrbracket$
+\end{prop}
+
+\begin{proof}
+La Log-vraisemblance du modèle s'écrit:
+\begin{align*}
+\mathcal{L}_\theta(X_1, \cdots, X_n, z_1, \cdots, z_n) &= ln\left(\displaystyle\prod_{i=1}^n  \alpha(z_i)\gamma_{\mu_j, v_j}(x_i) \right)\\
+&= \displaystyle\sum_{i=1}^n ln(\alpha(z_i))+ ln(\gamma_{\mu_j, v_j}(x_i))\\
+\end{align*}
+$z_i$ est à valeur dans $\llbracket1,J \rrbracket$, on  partitionne donc $I := \llbracket1,n \rrbracket$ comme $I = \displaystyle\bigcup_{j=1}^J A_j$ pour obtenir
+\begin{align*}
+\mathcal{L}_\theta(X_1, \cdots, X_n, Z_1, \cdots, Z_n) &=  \displaystyle\sum_{j=1}^J\sum_{i\in A_j} ln(\alpha(z_i))+ \sum_{j=1}^J\sum_{i\in A_j} ln(\gamma_{\mu_j, v_j}(x_i))\\
+&= \displaystyle\sum_{j=1}^J\sum_{i\in A_j} ln(\alpha(j))+ \sum_{j=1}^J\sum_{i\in A_j} ln(\gamma_{\mu_j, v_j}(x_i)) \\
+&= \displaystyle\sum_{j=1}^J \#A_j ln(\alpha(j))+ \sum_{j=1}^J\sum_{i\in A_j} ln(\gamma_{\mu_j, v_j}(x_i)) \\
+\end{align*}
+\end{proof}
+Nous pouvons dès lors maximiser la log-vraisemblance afin d'obtenir les estimateurs souhaités :
+\begin{prop}[Estimateurs]
+Les estimateurs du maximum de vraisemblance $\hat{\alpha(j)}$ (resp. $\hat{\mu_j}$, et $\hat{v_j}$) de $\alpha(j)$ (resp. $\mu_j$ et $v_j$) sont donnés par
+\begin{center}
+$\hat{\alpha(j)} = \frac{\#A_j}{n}$
+\end{center}
+\begin{center}
+$ \hat{\mu_j} = \displaystyle\frac{\sum_{i\in A_j} X_i}{\#A_j} $
+\end{center}
+\begin{center}
+$ \hat{v_j} = \displaystyle \frac{\sum_{i\in A_j}(X_i - \hat{\mu_j})^2}{\#A_j}$
+\end{center}
+\end{prop}
+
+\begin{proof}
+Soit $\theta = (\alpha(j), \mu_j, v_j)_{j \in \llbracket 1,J \rrbracket}$. Il s'agit de déterminer 
+\begin{center}
+	$\underset{\theta\in\R^{3n}, \sum_{j=1}^J\alpha(j) = 1}{\text{argmax}}\left(\displaystyle\sum_{j=1}^J \#A_j ln(\alpha(j))+ \sum_{j=1}^J\sum_{i\in A_j} ln(\gamma_{\mu_j, v_j}(x_i))\right)$
+\end{center}
+Nous avons donc à résoudre un programme de minimisation d'une fonction convexe sur un convexe avec une contraire égalité, il est ainsi naturel de faire appel au Lagrangien. \newline 
+Ce dernier s'écrit
+\begin{align*} 
+L(\theta) &= \displaystyle\sum_{j=1}^J \#A_j ln(\alpha(j))+ \sum_{j=1}^J\sum_{i\in A_j} ln(\gamma_{\mu_j, v_j}(x_i)) - \lambda\times\left(\sum_{j=1}^J\alpha(j) - 1\right)\\
+&= \displaystyle\sum_{j=1}^J \#A_j ln(\alpha(j))+ \sum_{j=1}^J\sum_{i\in A_j} ln\left(\frac{1}{\sqrt{2\pi v_j}}\exp\left(-\frac{\left(x_i -\mu_j\right)^2}{2v_j} \right)\right) - \lambda\times\left(\sum_{j=1}^J\alpha(j) - 1\right)\\
+&= \displaystyle\sum_{j=1}^J \#A_j ln(\alpha(j))+ \sum_{j=1}^J\sum_{i\in A_j}\left( (-1/2)ln(2\pi v_j) -\frac{(x_i-\mu_j)^2}{2v_j}\right) - \lambda\times\left(\sum_{j=1}^J\alpha(j) - 1\right)\\
+\end{align*}
+
+Il reste maintenant à résoudre le système suivant, afin d'obtenir le vecteur $\hat{\theta} := (\hat{\alpha}(j), \hat{\mu_j}, \hat{v_j})_{j\in\llbracket 1,J \rrbracket}$ solution du programme.
+
+$
+\begin{cases}
+\displaystyle\frac{\#A_j}{\hat{\alpha}(j)} - \lambda &= 0 \text{ } \forall j \in \llbracket 1,J \rrbracket \\
+\displaystyle\sum_{i\in A_j} (x_i-\hat{\mu_j})/\hat{v_j} & = 0 \text{ } \forall j \in \llbracket 1,J \rrbracket \\
+\displaystyle\sum_{i\in A_j} \frac{-0.5 * 2 * \pi}{2\pi \hat{v_j}} +\frac{(x_i-\hat{\mu_j})^2}{2\hat{v_j}^2} &= 0 \text{ } \forall j \in \llbracket 1,J \rrbracket\\
+\displaystyle\sum_{j=1}^J \hat{\alpha}(j) = 1
+\end{cases}
+$
+
+Ceci équivaut à 
+
+$
+\begin{cases}
+\displaystyle\frac{\#A_j}{\hat{\alpha}(j)} &= \lambda \text{ } \forall j \in \llbracket 1,J \rrbracket \\
+\displaystyle\sum_{i\in A_j}x_i & =\displaystyle\sum_{i\in A_j} \hat{\mu_j} \text{ } \forall j \in \llbracket 1,J \rrbracket \\
+\displaystyle\sum_{i\in A_j} (x_i-\hat{\mu_j})^2 &= \displaystyle\sum_{i\in A_j} \hat{v_j}  \text{ } \forall j \in \llbracket 1,J \rrbracket \\
+\displaystyle\sum_{j=1}^J \hat{\alpha}(j) = 1
+\end{cases}
+$
+$\Leftrightarrow$
+$
+\begin{cases}
+\displaystyle\frac{\#A_j}{\hat{\alpha}(j)} &= \lambda \text{ } \forall j \in \llbracket 1,J \rrbracket \\
+\displaystyle\sum_{i\in A_j}\frac{x_i}{\#A_j} & = \hat{\mu_j} \text{ } \forall j \in \llbracket 1,J \rrbracket \\
+\displaystyle\sum_{i\in A_j} \frac{(x_i-\hat{\mu_j})^2}{\#A_j} &=  \hat{v_j}  \text{ } \forall j \in \llbracket 1,J \rrbracket \\
+\displaystyle\sum_{j=1}^J \hat{\alpha}(j) = 1
+\end{cases}
+$
+
+En sommant les $J$ premières lignes du système, on obtient $\displaystyle\sum_{j=1}^J\#A_j = \sum_{j=1}^J\hat{\alpha}(j)\lambda$, \underline{i.e.} $\lambda = n$. En injectant ceci dans le précédent système, on obtient finalement ce qui était annoncé :
+
+$
+\begin{cases}
+\hat{\alpha(j)} &= \displaystyle \frac{\#A_j}{n} \text{ } \forall j \in \llbracket 1,J \rrbracket \\
+\hat{\mu_j} &= \displaystyle\sum_{i\in A_j}\frac{x_i}{\#A_j} \text{ } \forall j \in \llbracket 1,J \rrbracket \\
+\hat{v_j} &= \displaystyle\sum_{i\in A_j} \frac{(x_i-\hat{\mu_j})^2}{\#A_j}  \text{ } \forall j \in \llbracket 1,J \rrbracket \\
+\end{cases}
+$
+
+
+\end{proof}
+
+
+%section 3
 \section{Le cas réel}
 
 \pagebreak
@@ -251,7 +379,12 @@ La densité de $(X,Z)$ s'ensuit.
 
 \chapter*{Bibliographie}
 \addcontentsline{toc}{part}{Bibliographie}
+ 
+Documents qui m'ont l'air pas mal, à voir s'ils seront utiles
 
+https://www.lpsm.paris/pageperso/rebafka/BookGraphes/algorithme-em.html
+
+https://members.loria.fr/moberger/Enseignement/AVR/Exposes/algo-em.pdf
 
 
 \pagebreak

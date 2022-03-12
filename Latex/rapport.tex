@@ -170,7 +170,6 @@
 
 \chapter*{Introduction}
 \addcontentsline{toc}{part}{Introduction}
-Nos amis les ornithologues aiment bien se balader en slibard et compter les nids de mouettes, il faut bien s'occuper pendant le chômage. Hélas, ce sont des flemmards, ils mesurent la taille des nids mais n'attendent pas que le piaf reviennent pour savoir à quel espèce il appartient. Heureusement, nous sommes là pour combler l'incompétence de ces gueux, grâce à nos techniques du turfu nous allons estimer BLABLABLA. 
 
 
 \pagebreak
@@ -212,27 +211,19 @@ La variable $Z$ est discrète et à valeur dans un sous-ensemble fini de $\N$, e
 Il s'ensuit la proposition suivante, qui sera la racine du présent projet.
 \begin{prop}
 La distribution de la taille des nids de mouettes, \underline{i.e.} $X$, admet pour densité ,au point $x$ et par rapport à la mesure de Lebesgue sur $\R$, la fonction $f_ \theta$ définie comme suit
-\begin{center} $f_\theta(x) = \displaystyle\sum_{j=1}^J \alpha(j) \gamma_{\mu_j, v_j}(x) $ \end{center}
+\begin{center} $f(x) = \displaystyle\sum_{j=1}^J \alpha(j) \gamma_{\mu_j, v_j}(x) $ \end{center}
 \end{prop}
 
 \begin{proof}
 On vérifie que l'on obtient bien une densité de probabilité, la forme de cette dernière étant la conséquence directe de la définition de la variable aléatoire $X$ : \newline
-\begin{center} $\displaystyle\int_\R f_\theta(x) dx = \int_\R\sum_{j=1}^J \alpha(j) \gamma_{\mu_j, v_j}(x)dx = \sum_{j=1}^J\alpha(j)\int_\R \gamma_{\mu_j, v_j}(x)dx = \sum_{j=1}^J\alpha(j) = 1$ \end{center}
+\begin{center} $\displaystyle\int_\R f(x) dx = \int_\R\sum_{j=1}^J \alpha(j) \gamma_{\mu_j, v_j}(x)dx = \sum_{j=1}^J\alpha(j)\int_\R \gamma_{\mu_j, v_j}(x)dx = \sum_{j=1}^J\alpha(j) = 1$ \end{center}
 \end{proof}
-
-\begin{rem}
-Il est intéressant de noter que si $f_\theta$ est bien une densité, cela vient du fait que la combinaison à l'origine du mélange de loi est une combinaison \textit{convexe}. ET SINON ?
-\end{rem}
-
-\begin{exm}
-ICI une simulation ?
-\end{exm}
 
 Le but de ce projet sera d'étudier des méthodes permettant l'estimation des divers paramètres de cette densité. Nous détonerons par $\theta := (\alpha_j, \mu_j, v_j)_{1\leq j\leq J}$ les vecteurs des ces dits paramètres. \newline
 Pour cela, nous nous placerons sous l'hypothèse suivante
 
 \begin{hyp}
-Soit $\Theta := \{ \theta = (\alpha_j,\mu_j, v_j)_{1 \leq j \leq J} \text{ tels que } \alpha_j > 0 \forall j\in \llbracket 1,J\rrbracket \text{ et } \displaystyle\sum_{j=1}^J\alpha_j=1\}$. Soient $X_1, \cdots, X_n$ un échantillon iid de même loi que $X$. On supposera qu'il existe un $\theta \in \Theta$ tel que les données récoltées, ici les tailles des nids, soient la réalisation du précédent échantillon.
+Soit $\Theta := \{ \theta = (\alpha_j,\mu_j, v_j)_{1 \leq j \leq J} \text{ tels que } \alpha_j > 0 \text{ } \forall j\in \llbracket 1,J\rrbracket \text{ et } \displaystyle\sum_{j=1}^J\alpha_j=1\}$. Soient $X_1, \cdots, X_n$ un échantillon de même loi que $X$. On supposera qu'il existe un $\theta \in \Theta$ tel que les données récoltées, ici les tailles des nids, soient la réalisation du précédent échantillon.
 \end{hyp}
 
 \begin{nota}[Densités]
@@ -252,9 +243,6 @@ $g_\theta(z | X=x ) = \frac{\displaystyle\alpha(z)\gamma_{\mu_j, v_j}(x)}{\displ
 \end{center}
 \end{prop}
 
-\begin{proof}
-En effet, BLABLABLA Nicolas le fera
-\end{proof}
 
 \begin{prop}[Densité du vecteur (X,Z)]
 Soit le vecteur aléatoire $(X, Z)$; sa densité nous est donnée par
@@ -264,10 +252,10 @@ Soit le vecteur aléatoire $(X, Z)$; sa densité nous est donnée par
 \begin{proof}
 En effet, si on dénote par $F$ la fonction de répartition de ce vecteur aléatoire, on obtient
 \begin{align*}
-F(x, z) &= \prob(X \leq x, Z = z)\\
-&= \prob(X\leq x | Z = z)\times\prob(Z=z)\\
-&= \int_{-\infty}^x \gamma_{\mu_z,v_z}(t)dt \times \alpha(z)\\
-&= \int_{-\infty}^x \int_\N\alpha(z)\gamma_{\mu_z,v_z}(t)dt\delta_z
+F(x, z) &= \prob(X \leq x, Z \leq z)\\
+&=\displaystyle\sum_{\zeta \in \llbracket1,z \rrbracket} \prob(X\leq x | Z = \zeta)\times\prob(Z = \zeta)\\
+&=\displaystyle\sum_{\zeta = 1}^z \int_{-\infty}^x \gamma_{\mu_\zeta,v_\zeta}(t)dt \times \alpha(\zeta)\\
+&= \int_{-\infty}^x \int_\N\alpha(\zeta)\1_{\llbracket 1,z\rrbracket}(\zeta)\gamma_{\mu_\zeta,v_\zeta}(t)dt\delta_\zeta
 \end{align*}
 La densité de $(X,Z)$ s'ensuit.
 \end{proof}
@@ -283,7 +271,7 @@ L'estimation des divers paramètres est alors élémentaire, en témoigne les pr
 \begin{prop}[Fonction de Log-vraisemblance]
 La Log-vraisemblance du modèle s'écrit
 \begin{center} $\mathcal{L}_\theta(X_1, \cdots, X_n, Z_1, \cdots, Z_n) = \displaystyle \sum_{j=1}^J \#A_j ln(\alpha(j)) + \sum_{j=1}^J\sum_{i\in A_j}ln(\gamma_{\mu_j, v_j}(X_i))$ \end{center}
-\underline{où} les $A_j$ sont définis par $A_j := \{ i\in \llbracket1,n \rrbracket$ tels que $Z_i = j \}$  $\displaystyle\bigcup_{j=1}^J A_j = \llbracket1,n \rrbracket$
+\underline{où} les $A_j$ sont définis par $A_j := \{ i\in \llbracket1,n \rrbracket$ tels que $Z_i = j \}$ \underline{i.e.} $\displaystyle\bigcup_{j=1}^J, A_j = \llbracket1,n \rrbracket$
 \end{prop}
 
 \begin{proof}
@@ -316,7 +304,7 @@ $ \hat{v_j} = \displaystyle \frac{\sum_{i\in A_j}(X_i - \hat{\mu_j})^2}{\#A_j}$
 \begin{proof}
 Soit $\theta = (\alpha(j), \mu_j, v_j)_{j \in \llbracket 1,J \rrbracket}$. Il s'agit de déterminer 
 \begin{center}
-	$\underset{\theta\in\R^{3n}, \sum_{j=1}^J\alpha(j) = 1}{\text{argmax}}\left(\displaystyle\sum_{j=1}^J \#A_j ln(\alpha(j))+ \sum_{j=1}^J\sum_{i\in A_j} ln(\gamma_{\mu_j, v_j}(x_i))\right)$
+	$\underset{\theta\in\R^{3J}, \sum_{j=1}^J\alpha(j) = 1}{\text{argmax}}\left(\displaystyle\sum_{j=1}^J \#A_j ln(\alpha(j))+ \sum_{j=1}^J\sum_{i\in A_j} ln(\gamma_{\mu_j, v_j}(x_i))\right)$
 \end{center}
 Nous avons donc à résoudre un programme de minimisation d'une fonction convexe sur un convexe avec une contraire égalité, il est ainsi naturel de faire appel au Lagrangien. \newline 
 Ce dernier s'écrit
@@ -366,25 +354,43 @@ $
 \hat{v_j} &= \displaystyle\sum_{i\in A_j} \frac{(x_i-\hat{\mu_j})^2}{\#A_j}  \text{ } \forall j \in \llbracket 1,J \rrbracket \\
 \end{cases}
 $
-
-
 \end{proof}
 
 
 %section 3
 \section{Le cas réel}
+Nous nous placerons désormais dans un contexte tout autre que celui du paragraphe précédent, un contexte correspondant davantage à la réalité. Dans ce qui suit, nous supperons que ne sont observées que les tailles des nids, les diverses espèces de mouettes les ayant construit étant en quelques sortes des données "cachées". Nous avons donc un échantillon $X := (X_1,\cdots, X_n$ de même loi que la variable $X$ comme définie ci-dessus. \newline
+On définit $\mathcal{L}_{obs}$ la log-vraisemblance des observations, nous obtenons ainsi 
+
+\begin{defn} 
+La log-vraisemblance des observations s'écrit 
+\begin{center} $\mathcal{L}_{obs}(\theta,X) := ln\left( \displaystyle\prod_{i=1}^n f_\theta(X_i) \right) = \displaystyle\sum_{i=1}^nln\left( \sum_{j=1}^J \alpha(j) \gamma_{\mu_j, v_j}(X_i) \right)$ \end{center}
+\end{defn}
+
+Nous voyons dès lors que l'existence d'une expression analytique du maximum de la log-vraisemblance n'est pas assurée. Il est donc nécessaire de trouver un moyen d'approcher les valeurs des différents estimateurs.
+
+
+\begin{prop}[log-vraisemblance conditionnelle]
+
+\end{prop}
+
 
 \pagebreak
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% chapitre 2
 
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter*{Bibliographie}
 \addcontentsline{toc}{part}{Bibliographie}
  
-Documents qui m'ont l'air pas mal, à voir s'ils seront utiles
+Liens utiles
 
-https://www.lpsm.paris/pageperso/rebafka/BookGraphes/algorithme-em.html
-
-https://members.loria.fr/moberger/Enseignement/AVR/Exposes/algo-em.pdf
+\url{https://www.lpsm.paris/pageperso/rebafka/BookGraphes/algorithme-em.html} \newline
+\url{https://members.loria.fr/moberger/Enseignement/AVR/Exposes/algo-em.pdf} \newline
+\url{http://faculty.washington.edu/fxia/courses/LING572/EM_collins97.pdf}\newline
+\url{https://core.ac.uk/download/pdf/155777956.pdf}
 
 
 \pagebreak

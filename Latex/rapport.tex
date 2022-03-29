@@ -120,6 +120,7 @@
 \newcommand{\prob}{\mathbbm{P}}
 \newcommand{\Nc}{\mathcal{N}}
 \newcommand{\Cc}{\mathcal{C}}
+\newcommand{\K}{\mathcal{K}}
 \newcommand{\Xti}{\widetilde{X_i}}
 \newcommand{\Xtj}{\widetilde{X_j}}
 \newcommand{\Xn}{\overline{X_n}}
@@ -417,35 +418,59 @@ Hop gros pecs à toi de jouer
 hop
 \end{proof}
 
+
+
+
+\pagebreak
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% chapitre 2
+
+\chapter{L'algorithme EM}
+
+A REVOIR
+
+% section 1
+\section{Quelques preuves}
+
+
+
 \begin{thm}
-Gros théorème de BG
+blabla
 \end{thm}
 
-\newpage
+
 \begin{proof}
 \underline{EN CONSTRUCTION}
 
 
 Préliminaire \newline
 
-Donnons une autre forme de la log-vraisemblance, dépendant de $\lv_ {obs}(\theta, X)$ et d'un terme $\Delta_k$:
+Donnons une autre forme de la log-vraisemblance, dépendant de $\lv_ {obs}(\theta, X)$ et d'un terme $\K_{\theta,\theta_k}$:
 \begin{align*}
 \lv_c(\theta, \theta_k, X) &=  \displaystyle\sum_{i=1}^n\sum_{j=1}^J ln(h_\theta(X_i ,j))  g_{\theta_k}(j|X_i)\\
 &=  \displaystyle\sum_{i=1}^n\sum_{j=1}^J ln\big[f_\theta(X_i)\times g_\theta(j|X_i=x_i)\big]g_{\theta_k}(j|X_i)\\
 &=  \displaystyle\sum_{i=1}^n\sum_{j=1}^J ln(f_\theta(X_i))g_{\theta_k}(j|X_i) + \sum_{i=1}^n\sum_{j=1}^J ln(g_\theta(j|X_i=x_i))g_{\theta_k}(j|X_i)\\
 &= \displaystyle\sum_{i=1}^n ln(f_\theta(X_i))\times\underbrace{\sum_{j=1}^J g_{\theta_k}(j|X_i)}_{=1} +\sum_{i=1}^n \E_{\theta_k}\big[ln(g_\theta(Z_i|X_i=x_i)) \big]\\
 &= \displaystyle\sum_{i=1}^n ln(f_\theta(X_i)) + \E_{\theta_k}\big[ln(g_\theta(Z|X=x)) \\
-&= \lv_{obs}(\theta, X) + \Delta_k
+&= \lv_{obs}(\theta, X) + \K_{\theta,\theta_k}
 \end{align*}
 
 
+On a 
+\begin{center} $\lv_obs(a, X) = \lv_c(a,\theta_k, X) \forall a \in \R$ \end{center}
+donc
+\begin{center} $test$ \end{center}
 
 
 \end{proof}
 
-\pagebreak
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% chapitre 2
+
+\begin{thm}[Non monotonie de la vraisemblance]
+
+\end{thm}
+
+% section 2
+\section{L'algo}
 
 
 

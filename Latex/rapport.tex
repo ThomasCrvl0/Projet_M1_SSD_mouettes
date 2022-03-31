@@ -201,8 +201,15 @@ Continuons, afin de modéliser commodément le problème, par introduire les var
 	\item Et $Z$, la variable aléatoire représentant l'espèce de mouette qui a construit le nid
 \end{itemize}
 
+Enfin, nous nous placerons sous les hypothèses suivantes:
+
 \begin{hyp}
 Nous supposerons que la taille des nids d'une espèce $j$ ( \underline{i.e.} $X$ conditionnelement à $(Z=j)$ ) suit une loi normale $\n(\mu_j,v_j)$. 
+\end{hyp}
+
+
+\begin{hyp}
+Soit $\Theta := \{ \theta = (\alpha_j,\mu_j, v_j)_{1 \leq j \leq J} \text{ tels que } \alpha_j > 0 \text{ } \forall j\in \llbracket 1,J\rrbracket \text{ et } \displaystyle\sum_{j=1}^J\alpha_j=1\}$. Soient $X_1, \cdots, X_n$ un échantillon de même loi que $X$. On supposera qu'il existe un $\theta \in \Theta$ tel que les données récoltées, ici les tailles des nids, soient la réalisation du précédent échantillon.
 \end{hyp}
 
 \begin{prop}
@@ -214,20 +221,15 @@ La variable $Z$ est discrète et à valeur dans un sous-ensemble fini de $\N$, e
 Il s'ensuit la proposition suivante, qui sera la racine du présent projet.
 \begin{prop}
 La distribution de la taille des nids de mouettes, \underline{i.e.} $X$, admet pour densité ,au point $x$ et par rapport à la mesure de Lebesgue sur $\R$, la fonction $f_ \theta$ définie comme suit
-\begin{center} $f(x) = \displaystyle\sum_{j=1}^J \alpha(j) \gamma_{\mu_j, v_j}(x) $ \end{center}
+\begin{center} $f_\theta(x) = \displaystyle\sum_{j=1}^J \alpha(j) \gamma_{\mu_j, v_j}(x) $ \end{center}
 \end{prop}
 
 \begin{proof}
 On vérifie que l'on obtient bien une densité de probabilité, la forme de cette dernière étant la conséquence directe de la définition de la variable aléatoire $X$ : \newline
-\begin{center} $\displaystyle\int_\R f(x) dx = \int_\R\sum_{j=1}^J \alpha(j) \gamma_{\mu_j, v_j}(x)dx = \sum_{j=1}^J\alpha(j)\int_\R \gamma_{\mu_j, v_j}(x)dx = \sum_{j=1}^J\alpha(j) = 1$ \end{center}
+\begin{center} $\displaystyle\int_\R f_\theta(x) dx = \int_\R\sum_{j=1}^J \alpha(j) \gamma_{\mu_j, v_j}(x)dx = \sum_{j=1}^J\alpha(j)\int_\R \gamma_{\mu_j, v_j}(x)dx = \sum_{j=1}^J\alpha(j) = 1$ \end{center}
 \end{proof}
 
-Le but de ce projet sera d'étudier des méthodes permettant l'estimation des divers paramètres de cette densité. Nous détonerons par $\theta := (\alpha_j, \mu_j, v_j)_{1\leq j\leq J}$ les vecteurs des ces dits paramètres. \newline
-Pour cela, nous nous placerons sous l'hypothèse suivante
-
-\begin{hyp}
-Soit $\Theta := \{ \theta = (\alpha_j,\mu_j, v_j)_{1 \leq j \leq J} \text{ tels que } \alpha_j > 0 \text{ } \forall j\in \llbracket 1,J\rrbracket \text{ et } \displaystyle\sum_{j=1}^J\alpha_j=1\}$. Soient $X_1, \cdots, X_n$ un échantillon de même loi que $X$. On supposera qu'il existe un $\theta \in \Theta$ tel que les données récoltées, ici les tailles des nids, soient la réalisation du précédent échantillon.
-\end{hyp}
+Le but de ce projet sera d'étudier des méthodes permettant l'estimation des divers paramètres de cette densité. Nous détonerons par $\theta := (\alpha_j, \mu_j, v_j)_{1\leq j\leq J}$ les vecteurs des ces dits paramètres.
 
 \begin{nota}[Densités]
 Le vecteur $\theta$ ayant été dûment introduit, nous noterons
@@ -240,7 +242,7 @@ qui sont, respectivement, contre la mesure de comptage sur $\N$, et par rapport 
 
 Introduisons deux dernières densités, qui nous seront fort utile quant à l'expression des Log-vraisemblances conditionnelles :
 
-\begin{prop}[Densité de $Z$ sachant $X$] La densité de la loi de $Z$ sachant $X$ est donnée par
+\begin{prop}[Densité de $Z$ sachant $X$] La densité de la loi de $Z$ sachant $X$, par rapport à la mesure de comptage sur $\N$, est donnée par
 \begin{center}
 $g_\theta(z | X=x ) = \frac{\displaystyle\alpha(z)\gamma_{\mu_j, v_j}(x)}{\displaystyle\sum_{j=1}^J\alpha(j)\gamma_{\mu_j, v_j}(x)}$, pour $z\in \{1,\cdots,J\}$
 \end{center}
@@ -269,18 +271,18 @@ Nous allons dès à présent nous intéresser à l'estimation de ces paramètres
 \section{Un cas élémentaire}
 
 Regardons dans un premier temps un cas simplifié, un cas ne décrivant pas la réalité des observations mais qui a le mérite de constituer une agréable entrée en matière. \newline
-Nous supposerons ici qu'ont été relevés simultanément et les mesures des tailles des nids et l'espèce de mouette qui l'a construit. Le modèle ici considéré est donc composé des couple $(X_i, Z_i)$, $i \in \llbracket1,n \rrbracket$. On considérera dès lors la fonction de densité $h_\theta(x,z)$.\newline
-L'estimation des divers paramètres est alors élémentaire, en témoigne les propositions suivante :
+Nous supposerons ici qu'ont été relevés simultanément et les mesures des tailles des nids et l'espèce de mouette qui l'a construit. Le modèle ici considéré est donc composé des couples $(X_i, Z_i)$, $i \in \llbracket1,n \rrbracket$. On considérera dès lors la fonction de densité $h_\theta(x,z)$.\newline
+L'estimation des divers paramètres est alors élémentaire, en témoigne les propositions suivantes :
 \begin{prop}[Fonction de Log-vraisemblance]
 La Log-vraisemblance du modèle s'écrit
 \begin{center} $\mathcal{L}_\theta(X_1, \cdots, X_n, Z_1, \cdots, Z_n) = \displaystyle \sum_{j=1}^J \#A_j ln(\alpha(j)) + \sum_{j=1}^J\sum_{i\in A_j}ln(\gamma_{\mu_j, v_j}(X_i))$ \end{center}
-\underline{où} les $A_j$ sont définis par $A_j := \{ i\in \llbracket1,n \rrbracket$ tels que $Z_i = j \}$ \underline{i.e.} $\displaystyle\bigcup_{j=1}^J, A_j = \llbracket1,n \rrbracket$
+\underline{où} les $A_j$ sont définis par $A_j := \{ i\in \llbracket1,n \rrbracket$ tels que $Z_i = j \}$ \underline{i.e.} $\displaystyle\bigcup_{j=1}^J A_j = \llbracket1,n \rrbracket$
 \end{prop}
 
 \begin{proof}
 La Log-vraisemblance du modèle s'écrit:
 \begin{align*}
-\mathcal{L}_\theta(X_1, \cdots, X_n, z_1, \cdots, z_n) &= ln\left(\displaystyle\prod_{i=1}^n  \alpha(z_i)\gamma_{\mu_j, v_j}(x_i) \right)\\
+\mathcal{L}_\theta(X_1, \cdots, X_n, Z_1, \cdots, Z_n) &= ln\left(\displaystyle\prod_{i=1}^n  \alpha(z_i)\gamma_{\mu_j, v_j}(x_i) \right)\\
 &= \displaystyle\sum_{i=1}^n ln(\alpha(z_i))+ ln(\gamma_{\mu_j, v_j}(x_i))\\
 \end{align*}
 $z_i$ est à valeur dans $\llbracket1,J \rrbracket$, on  partitionne donc $I := \llbracket1,n \rrbracket$ comme $I = \displaystyle\bigcup_{j=1}^J A_j$ pour obtenir
@@ -383,21 +385,18 @@ On a
 \end{prop}
 
 \begin{proof}
-En effet,
+En effet
 \begin{align*}
-\lv_{c}(\theta, \thetat, X) &= \E_{\thetat}[\lv(\theta,X,Z)|X)] \\
+\lv_{c}(\theta, \thetat, X) &= \E_{\thetat}[\lv(\theta,X,Z)|X] \\
 &= \E_{\thetat}[\lv(\theta,X,Z)|X_1, \cdots, X_n]\\
 &=  \E_{\thetat}\bigg[\displaystyle ln\left(\prod_{i=1}^n  h_\theta(X_i,Z_i)\right) |X_1,\cdots X_n \bigg]\\
-&= \displaystyle\sum_{i=1}^n  \E_{\thetat}[ln(h_\theta(X_i,Z_i)|X_1,\cdots,X_n]\\
+&= \displaystyle\sum_{i=1}^n  \E_{\thetat}[ln(h_\theta(X_i,Z_i))|X_1,\cdots,X_n]\\
 \end{align*}
 Or, les couples $(X_i,Z_i)$ sont indépendants et de même loi, donc
 \begin{align*}
-\lv_{c}(\theta, \thetat, X) &= \displaystyle\sum_{i=1}^n  \E_{\thetat}[ln(h_\theta(X_i,Z_i)|X_i]\\
-\end{align*}
-Puis, par définition de l'espérance conditionnelle, on a $\E[X|X] = X$, donc
-\begin{align*}
-\lv_{c}(\theta, \thetat, X) &= \displaystyle\sum_{i=1}^n \int_{\N} ln(h_\theta(X_i,z)) g_{\thetat} (z|X_i) \delta_z\\
-&= \displaystyle\sum_{i=1}^n\sum_{j=1}^J ln(h_\theta(X_i ,j))  g_{\thetat}(j|X_i)
+\lv_{c}(\theta, \thetat, X) &= \displaystyle\sum_{i=1}^n  \E_{\thetat}[ln(h_\theta(X_i,Z_i))|X_i]\\
+&= \displaystyle\sum_{i=1}^n \int_{\N} ln(h_\theta(X_i,z)) g_{\thetat} (z|X_i) \delta_z\\
+&= \displaystyle\sum_{i=1}^n\sum_{j=1}^J ln(h_\theta(X_i ,j))  g_{\thetat}(j|X_i)\\
 \end{align*}
 Car $g_{\thetat}(z | X = x)$ est définie pour $z\in \{1,\cdots,J\}$.
 \end{proof}
@@ -427,7 +426,6 @@ hop
 
 \chapter{L'algorithme EM}
 
-A REVOIR
 
 % section 1
 \section{Quelques preuves}
@@ -437,7 +435,7 @@ Soit $(\theta_k)_{k\in \N}$ la suite de paramètres construite à l'aide de l'al
 \begin{center} $\lv_{obs}(\theta_{k+1}, X) \geq \lv_{obs}(\theta_k, X)$ \end{center}
 \end{thm}
 
-\underline{\textsc{Nota Bene}}:  Nous dénoterons par $d\prob_{\theta_k, Z | X}$ la loi de probabilité de $X$ sachant $Z$, \underline{i.e.} 
+\begin{nota} Nous dénoterons par $d\prob_{\theta_k, Z | X}$ la loi de probabilité de $X$ sachant $Z$, \underline{i.e.} \end{nota}
 \begin{center} $d\prob_{\theta_k, Z | X} := g_{\theta_k}(z|X=x)\delta_z$ \end{center}
 
 \begin{proof}
@@ -448,7 +446,7 @@ Nous allons commencer cette preuve en donnant une autre forme de la log-vraisemb
 &=  \displaystyle\sum_{i=1}^n\sum_{j=1}^J ln\big[f_\theta(X_i)\times g_\theta(j|X_i=x_i)\big]g_{\theta_k}(j|X_i)\\
 &=  \displaystyle\sum_{i=1}^n\sum_{j=1}^J ln(f_\theta(X_i))g_{\theta_k}(j|X_i) + \sum_{i=1}^n\sum_{j=1}^J ln(g_\theta(j|X_i=x_i))g_{\theta_k}(j|X_i)\\
 &= \displaystyle\sum_{i=1}^n ln(f_\theta(X_i))\times\underbrace{\sum_{j=1}^J g_{\theta_k}(j|X_i)}_{=1} +\sum_{i=1}^n \E_{\theta_k}\big[ln(g_\theta(Z_i|X_i=x_i)) \big]\\
-&= \displaystyle\sum_{i=1}^n ln(f_\theta(X_i)) + \E_{\theta_k}\big[ln(g_\theta(Z|X=x)) \\
+&= \displaystyle\sum_{i=1}^n ln(f_\theta(X_i)) + \E_{\theta_k}\big[ln(g_\theta(Z|X=x)\big] \\
 &= \lv_{obs}(\theta, X) + \K_{\theta,\theta_k}
 \end{align*}
 
@@ -467,20 +465,19 @@ En effet, on a
 \begin{align*}
 \kappa_{\theta_{k}, \theta_k}-\kappa_{\theta_{k+1}, \theta_k} &= \E_{\theta_k}\big[ln(g_{\theta_k}(Z|X=x)\big] - \E_{\theta_k}\big[ln(g_{\theta_{k+1}}(Z|X=x)\big]\\
 &= \E_{\theta_k}\bigg[ ln\left(\frac{g_{\theta_k}(Z|X=x)}{g_{\theta_{k+1}}(Z|X=x)}\right) \bigg]\\
-&= \displaystyle\int ln\left( \frac{g_{\theta_k}(Z|X=x)}{g_{\theta_{k+1}}(Z|X=x)} \right) d\prob_{\theta_k, Z | X} \\
-&= \displaystyle\int ln\left( \frac{g_{\theta_k}(z|X=x)}{g_{\theta_{k+1}}(Z|X=x)}\right) g_{\theta_k}(z|X=x)\delta_z  \\
-&= - \displaystyle\int ln\left( \frac{g_{\theta_{k+1}}(z|X=x)}{g_{\theta_k}(z|X=x)}\right) g_{\theta_k}(z|X=x)\delta_z  \\
-&\geq - ln\left( \displaystyle\int \frac{g_{\theta_{k+1}}(z|X=x)}{g_{\theta_k}(z|X=x)} g_{\theta_k}(z|X=x)\delta_z \right) \text{(Inégalité de \textit{Jensen})}\\
-&= - ln\left( \displaystyle\int g_{\theta_{k+1}}(z|X=x)\delta_z \right)\\
+&= \displaystyle\int_\N ln\left( \frac{g_{\theta_k}(Z|X=x)}{g_{\theta_{k+1}}(Z|X=x)} \right) d\prob_{\theta_k, Z | X} \\
+&= \displaystyle\int_\N ln\left( \frac{g_{\theta_k}(z|X=x)}{g_{\theta_{k+1}}(Z|X=x)}\right) g_{\theta_k}(z|X=x)\delta_z  \\
+&= - \displaystyle\int_\N ln\left( \frac{g_{\theta_{k+1}}(z|X=x)}{g_{\theta_k}(z|X=x)}\right) g_{\theta_k}(z|X=x)\delta_z  \\
+&\geq - ln\left( \displaystyle\int_\N \frac{g_{\theta_{k+1}}(z|X=x)}{g_{\theta_k}(z|X=x)} g_{\theta_k}(z|X=x)\delta_z \right) \text{(Inégalité de \textit{Jensen})}\\
+&= - ln\left( \displaystyle\int_\N g_{\theta_{k+1}}(z|X=x)\delta_z \right)\\
 &= -ln(1)\\
 &= 0
 \end{align*}
 
-On a ainsi
+On obtient ainsi
 
 \begin{center} $\kappa_{\theta_{k}, \theta_k}-\kappa_{\theta_{k+1}, \theta_k} \geq 0$ \end{center}
-et 
-\begin{center} $ \lv_c(\theta_{k+1}, \theta_k, X) - \lv_c(\theta_k, \theta_k, X) \geq 0$ \end{center}
+
 
 Et finalement
 \begin{center} $\lv_{obs}(\theta_{k+1}, X) \geq \lv_{obs}(\theta_k, X)$ \end{center}

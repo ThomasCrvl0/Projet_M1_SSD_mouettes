@@ -396,7 +396,7 @@ Or, les couples $(X_i,Z_i)$ sont indépendants et de même loi, donc
 \end{align*}
 Puis, par définition de l'espérance conditionnelle, on a $\E[X|X] = X$, donc
 \begin{align*}
-\lv_{c}(\theta, \thetat, X) &= \displaystyle\sum_{i=1}^n \int_{\N} ln(h_\theta(X_i,z)) g_{\thetat} (z|X_i) dN(z)\\
+\lv_{c}(\theta, \thetat, X) &= \displaystyle\sum_{i=1}^n \int_{\N} ln(h_\theta(X_i,z)) g_{\thetat} (z|X_i) \delta_z\\
 &= \displaystyle\sum_{i=1}^n\sum_{j=1}^J ln(h_\theta(X_i ,j))  g_{\thetat}(j|X_i)
 \end{align*}
 Car $g_{\thetat}(z | X = x)$ est définie pour $z\in \{1,\cdots,J\}$.
@@ -451,8 +451,6 @@ Nous allons commencer cette preuve en donnant une autre forme de la log-vraisemb
 &= \displaystyle\sum_{i=1}^n ln(f_\theta(X_i)) + \E_{\theta_k}\big[ln(g_\theta(Z|X=x)) \\
 &= \lv_{obs}(\theta, X) + \K_{\theta,\theta_k}
 \end{align*}
-Rappelons que
-\begin{center} $\lv_{obs(a, X)} = \lv_c(a,\theta_k, X) \forall a \in \R$ \end{center}
 
 Dès lors, on obtient
 \begin{align*}
@@ -467,13 +465,13 @@ Il reste donc à prouver que
 
 En effet, on a
 \begin{align*}
-\kappa_{\theta_{k}, \theta_k}-\kappa_{\theta_{k+1}, \theta_k} &= \E_{\theta_k}\big[ln(g_{\theta_k}(Z|X=x)) - \E_{\theta_k}\big[ln(g_{\theta_{k+1}}(Z|X=x))\\
+\kappa_{\theta_{k}, \theta_k}-\kappa_{\theta_{k+1}, \theta_k} &= \E_{\theta_k}\big[ln(g_{\theta_k}(Z|X=x)\big] - \E_{\theta_k}\big[ln(g_{\theta_{k+1}}(Z|X=x)\big]\\
 &= \E_{\theta_k}\bigg[ ln\left(\frac{g_{\theta_k}(Z|X=x)}{g_{\theta_{k+1}}(Z|X=x)}\right) \bigg]\\
 &= \displaystyle\int ln\left( \frac{g_{\theta_k}(Z|X=x)}{g_{\theta_{k+1}}(Z|X=x)} \right) d\prob_{\theta_k, Z | X} \\
 &= \displaystyle\int ln\left( \frac{g_{\theta_k}(z|X=x)}{g_{\theta_{k+1}}(Z|X=x)}\right) g_{\theta_k}(z|X=x)\delta_z  \\
 &= - \displaystyle\int ln\left( \frac{g_{\theta_{k+1}}(z|X=x)}{g_{\theta_k}(z|X=x)}\right) g_{\theta_k}(z|X=x)\delta_z  \\
 &\geq - ln\left( \displaystyle\int \frac{g_{\theta_{k+1}}(z|X=x)}{g_{\theta_k}(z|X=x)} g_{\theta_k}(z|X=x)\delta_z \right) \text{(Inégalité de \textit{Jensen})}\\
-& - ln\left( \displaystyle\int g_{\theta_{k+1}}(z|X=x)\delta_z \right)\\
+&= - ln\left( \displaystyle\int g_{\theta_{k+1}}(z|X=x)\delta_z \right)\\
 &= -ln(1)\\
 &= 0
 \end{align*}

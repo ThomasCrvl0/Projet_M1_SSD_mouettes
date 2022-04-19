@@ -180,7 +180,7 @@
 
 
 %%% Premier chapitre %%%
-\chapter{Un peu de théorie}
+\chapter{Modélisation du problème}
 
 % section 1
 \section{Modélisation du problème}
@@ -188,23 +188,22 @@
 Nous allons pour commencer donner une première définition, qui est au coeur du présent projet.
 
 \begin{defn}[Loi de mélange]
-On appelle loi de mélange toute loi dont la densité s'écrit sous la forme d'une combinaison linéaire de diverses densités. C'est-à-dire que si l'on se donne $n$ variables aléatoires $X_1, \cdots, X_n$ de densité respective $f_1(x), \cdots, f_n(x)$, alors est appellée loi de mélange toute variable aléatoire $X$ dont la densité $f$ s'exprime sous la forme
-\begin{center} $f(x) := \displaystyle\sum_{i=1}^n \alpha(i) f_i(x)$ , $\alpha(i) \in\R$ \end{center}
+On appelle loi de mélange toute loi dont la densité s'écrit sous la forme d'une combinaison convexe de diverses densités. C'est-à-dire que si l'on se donne $n$ variables aléatoires $X_1, \cdots, X_J$ de densité respective $f_1(x), \cdots, f_J(x)$, alors est appellée loi de mélange toute variable aléatoire $X$ dont la densité $f$ s'exprime sous la forme
+\begin{center} $f(x) := \displaystyle\sum_{i=1}^J \alpha_i f_i(x)$ , $\alpha_i \in\R$ \end{center}
 
 \end{defn}
 
-Continuons, afin de modéliser commodément le problème, par introduire les variables aléatoires suivantes :
+Afin de modéliser commodément le problème, nous introduisons les variables aléatoires suivantes :
 
 \begin{itemize}[label=\adfflowerleft]
 	\item La variable aléatoire $X$, modélisant la taille des nids
-	\item La variable aléatoire $Y$, décrivant la taille du nid d'une espèce donnée
 	\item Et $Z$, la variable aléatoire représentant l'espèce de mouette qui a construit le nid
 \end{itemize}
 
 Enfin, nous nous placerons sous les hypothèses suivantes:
 
 \begin{hyp}
-Nous supposerons que la taille des nids d'une espèce $j$ ( \underline{i.e.} $X$ conditionnelement à $(Z=j)$ ) suit une loi normale $\n(\mu_j,v_j)$. 
+Nous supposerons que, $\forall j\in \llbracket 1,J \rrbracket$, la taille des nids d'une espèce $j$ ( \underline{i.e.} $X$ conditionnellement à $(Z=j)$ ) suit une loi normale $\n(\mu_j,v_j)$. Nous dénoterons par $\gamma_{\mu_j, v_j}(x)$ cette densité.
 \end{hyp}
 
 
@@ -214,19 +213,19 @@ Soit $\Theta := \{ \theta = (\alpha_j,\mu_j, v_j)_{1 \leq j \leq J} \text{ tels 
 
 \begin{prop}
 La variable $Z$ est discrète et à valeur dans un sous-ensemble fini de $\N$, elle suit donc une loi 
-\begin{center} $\displaystyle \sum_{j=1}^J \alpha(j)\delta_j$ \end{center}
-\underline{où} $J$ représente le nombre d'espèce de mouettes considéré et les $\alpha(j)$ sont des réels, positifs stricts, représentant la proportion de nids de l'espèce $j$, tels que $\displaystyle\sum_{i=1}^J \alpha(j) = 1$.
+\begin{center} $\displaystyle \sum_{j=1}^J \alpha_j\delta_j$ \end{center}
+\underline{où} $J$ représente le nombre d'espèce de mouettes considéré et les $\alpha(j)$ sont des réels, positifs stricts, représentant la proportion de nids de l'espèce $j$, tels que $\displaystyle\sum_{i=1}^J \alpha_j = 1$.
 \end{prop}
 
 Il s'ensuit la proposition suivante, qui sera la racine du présent projet.
 \begin{prop}
 La distribution de la taille des nids de mouettes, \underline{i.e.} $X$, admet pour densité ,au point $x$ et par rapport à la mesure de Lebesgue sur $\R$, la fonction $f_ \theta$ définie comme suit
-\begin{center} $f_\theta(x) = \displaystyle\sum_{j=1}^J \alpha(j) \gamma_{\mu_j, v_j}(x) $ \end{center}
+\begin{center} $f_\theta(x) = \displaystyle\sum_{j=1}^J \alpha_j \gamma_{\mu_j, v_j}(x) $ \end{center}
 \end{prop}
 
 \begin{proof}
 On vérifie que l'on obtient bien une densité de probabilité, la forme de cette dernière étant la conséquence directe de la définition de la variable aléatoire $X$ : \newline
-\begin{center} $\displaystyle\int_\R f_\theta(x) dx = \int_\R\sum_{j=1}^J \alpha(j) \gamma_{\mu_j, v_j}(x)dx = \sum_{j=1}^J\alpha(j)\int_\R \gamma_{\mu_j, v_j}(x)dx = \sum_{j=1}^J\alpha(j) = 1$ \end{center}
+\begin{center} $\displaystyle\int_\R f_\theta(x) dx = \int_\R\sum_{j=1}^J \alpha_j \gamma_{\mu_j, v_j}(x)dx = \sum_{j=1}^J\alpha_j\int_\R \gamma_{\mu_j, v_j}(x)dx = \sum_{j=1}^J\alpha_j = 1$ \end{center}
 \end{proof}
 
 Le but de ce projet sera d'étudier des méthodes permettant l'estimation des divers paramètres de cette densité. Nous détonerons par $\theta := (\alpha_j, \mu_j, v_j)_{1\leq j\leq J}$ les vecteurs des ces dits paramètres.
@@ -234,36 +233,43 @@ Le but de ce projet sera d'étudier des méthodes permettant l'estimation des di
 \begin{nota}[Densités]
 Le vecteur $\theta$ ayant été dûment introduit, nous noterons
 \begin{enumerate}
-	\item $g_\theta(z) = \alpha(z)$ la densité de la variable aléatoire $Z$
-	\item $f_\theta(x | Z=j) := \gamma_{\mu_j, v_j}(x)$  la densité de la loi de $X$ sachant $Z$, \underline{i.e.} de la variable aléatoire $Y$
+	\item $\prob_\theta(Z=j) := \alpha_j$ la probabilité que la variable aléatoire $Z$ prenne la valeur $j$
+	\item $f_\theta(x | Z=j) := \gamma_{\mu_j, v_j}(x)$  la densité de la loi de $X$ sachant $Z$
 \end{enumerate}
 qui sont, respectivement, contre la mesure de comptage sur $\N$, et par rapport à la mesure de $\mathcal{L}$ebesgue sur $\R$,
 \end{nota}
 
 Introduisons deux dernières densités, qui nous seront fort utile quant à l'expression des Log-vraisemblances conditionnelles :
 
-\begin{prop}[Densité de $Z$ sachant $X$] La densité de la loi de $Z$ sachant $X$, par rapport à la mesure de comptage sur $\N$, est donnée par
+\begin{prop}[Probabilité de $Z$ sachant $X$] La probabilité de la loi de $Z$ sachant $X$ nous est donnée par
 \begin{center}
-$g_\theta(z | X=x ) = \frac{\displaystyle\alpha(z)\gamma_{\mu_j, v_j}(x)}{\displaystyle\sum_{j=1}^J\alpha(j)\gamma_{\mu_j, v_j}(x)}$, pour $z\in \{1,\cdots,J\}$
+$\prob_\theta(Z = j | X=x ) = \frac{\displaystyle\alpha_j \times \gamma_{\mu_j, v_j}(x)}{\displaystyle\sum_{i=1}^J\alpha_i \gamma_{\mu_i, v_i}(x)}$, pour $i\in \{1,\cdots,J\}$
 \end{center}
 \end{prop}
 
 
 \begin{prop}[Densité du vecteur (X,Z)]
 Soit le vecteur aléatoire $(X, Z)$; sa densité nous est donnée par
-\begin{center} $h_\theta(x,z) := \alpha(z)\gamma_{\mu_j, v_j}(x)$ \end{center}
+\begin{center} $h_\theta(x,j) := \alpha_j\gamma_{\mu_j, v_j}(x)$ \end{center}
 \end{prop}
 
 \begin{proof}
 En effet, si on dénote par $F$ la fonction de répartition de ce vecteur aléatoire, on obtient
 \begin{align*}
-F(x, z) &= \prob(X \leq x, Z \leq z)\\
-&=\displaystyle\sum_{\zeta \in \llbracket1,z \rrbracket} \prob(X\leq x | Z = \zeta)\times\prob(Z = \zeta)\\
-&=\displaystyle\sum_{\zeta = 1}^z \int_{-\infty}^x \gamma_{\mu_\zeta,v_\zeta}(t)dt \times \alpha(\zeta)\\
-&= \int_{-\infty}^x \int_\N\alpha(\zeta)\1_{\llbracket 1,z\rrbracket}(\zeta)\gamma_{\mu_\zeta,v_\zeta}(t)dt\delta_\zeta
+F(x, j) &= \prob(X \leq x, Z \leq j)\\
+&=\displaystyle\sum_{z \in \llbracket1,J \rrbracket} \prob(X\leq x | Z = z)\times\prob(Z = z)\\
+&=\displaystyle\sum_{z = 1}^J \int_{-\infty}^x \gamma_{\mu_z,v_z}(t)\times \alpha_zdt \\
 \end{align*}
 La densité de $(X,Z)$ s'ensuit.
 \end{proof}
+
+\begin{rem}
+Nous pouvons dès à présent noter que pour un échantillon $X_1, \cdots, X_n$ de même loi que $X$, nous avons 
+\begin{center}
+$\forall i \in \llbracket 1,n \rrbracket$, $h_\theta(X_i,j) = f_\theta(X_i) \times \prob_\theta(Z = j | X = X_i )$
+\end{center}
+Ceci nous sera utile dans la suite.
+\end{rem}
 
 Nous allons dès à présent nous intéresser à l'estimation de ces paramètres.
 
@@ -275,28 +281,29 @@ Nous supposerons ici qu'ont été relevés simultanément et les mesures des tai
 L'estimation des divers paramètres est alors élémentaire, en témoigne les propositions suivantes :
 \begin{prop}[Fonction de Log-vraisemblance]
 La Log-vraisemblance du modèle s'écrit
-\begin{center} $\mathcal{L}_\theta(X_1, \cdots, X_n, Z_1, \cdots, Z_n) = \displaystyle \sum_{j=1}^J \#A_j ln(\alpha(j)) + \sum_{j=1}^J\sum_{i\in A_j}ln(\gamma_{\mu_j, v_j}(X_i))$ \end{center}
+\begin{center} $\mathcal{L}_\theta(X_1, \cdots, X_n, Z_1, \cdots, Z_n) = \displaystyle \sum_{j=1}^J \#A_j ln(\alpha_j) + \sum_{j=1}^J\sum_{i\in A_j}ln(\gamma_{\mu_j, v_j}(X_i))$ \end{center}
 \underline{où} les $A_j$ sont définis par $A_j := \{ i\in \llbracket1,n \rrbracket$ tels que $Z_i = j \}$ \underline{i.e.} $\displaystyle\bigcup_{j=1}^J A_j = \llbracket1,n \rrbracket$
 \end{prop}
 
 \begin{proof}
 La Log-vraisemblance du modèle s'écrit:
 \begin{align*}
-\mathcal{L}_\theta(X_1, \cdots, X_n, Z_1, \cdots, Z_n) &= ln\left(\displaystyle\prod_{i=1}^n  \alpha(z_i)\gamma_{\mu_j, v_j}(x_i) \right)\\
-&= \displaystyle\sum_{i=1}^n ln(\alpha(z_i))+ ln(\gamma_{\mu_j, v_j}(x_i))\\
+\mathcal{L}_\theta(X_1, \cdots, X_n, Z_1, \cdots, Z_n) &= ln\left(\displaystyle\prod_{i=1}^n h_\theta(X_i, Z_i) \right)\\
+&= ln\left(\displaystyle\prod_{i=1}^n  \alpha_{Z_i}\gamma_{\mu_j, v_j}(X_i) \right)\\
+&= \displaystyle\sum_{i=1}^n ln(\alpha_{Z_i})+ ln(\gamma_{\mu_j, v_j}(X_i))\\
 \end{align*}
-$z_i$ est à valeur dans $\llbracket1,J \rrbracket$, on  partitionne donc $I := \llbracket1,n \rrbracket$ comme $I = \displaystyle\bigcup_{j=1}^J A_j$ pour obtenir
+$Z_i$ est à valeur dans $\llbracket1,J \rrbracket$, on  partitionne donc $I := \llbracket1,n \rrbracket$ comme $I = \displaystyle\bigcup_{j=1}^J A_j$ pour obtenir
 \begin{align*}
-\mathcal{L}_\theta(X_1, \cdots, X_n, Z_1, \cdots, Z_n) &=  \displaystyle\sum_{j=1}^J\sum_{i\in A_j} ln(\alpha(z_i))+ \sum_{j=1}^J\sum_{i\in A_j} ln(\gamma_{\mu_j, v_j}(x_i))\\
-&= \displaystyle\sum_{j=1}^J\sum_{i\in A_j} ln(\alpha(j))+ \sum_{j=1}^J\sum_{i\in A_j} ln(\gamma_{\mu_j, v_j}(x_i)) \\
-&= \displaystyle\sum_{j=1}^J \#A_j ln(\alpha(j))+ \sum_{j=1}^J\sum_{i\in A_j} ln(\gamma_{\mu_j, v_j}(x_i)) \\
+\mathcal{L}_\theta(X_1, \cdots, X_n, Z_1, \cdots, Z_n) &=  \displaystyle\sum_{j=1}^J\sum_{i\in A_j} ln(\alpha_{Z_i})+ \sum_{j=1}^J\sum_{i\in A_j} ln(\gamma_{\mu_j, v_j}(X_i))\\
+&= \displaystyle\sum_{j=1}^J\sum_{i\in A_j} ln(\alpha_j)+ \sum_{j=1}^J\sum_{i\in A_j} ln(\gamma_{\mu_j, v_j}(X_i)) \\
+&= \displaystyle\sum_{j=1}^J \#A_j ln(\alpha_j)+ \sum_{j=1}^J\sum_{i\in A_j} ln(\gamma_{\mu_j, v_j}(X_i)) \\
 \end{align*}
 \end{proof}
 Nous pouvons dès lors maximiser la log-vraisemblance afin d'obtenir les estimateurs souhaités :
 \begin{prop}[Estimateurs]
-Les estimateurs du maximum de vraisemblance $\hat{\alpha(j)}$ (resp. $\hat{\mu_j}$, et $\hat{v_j}$) de $\alpha(j)$ (resp. $\mu_j$ et $v_j$) sont donnés par
+Les estimateurs du maximum de vraisemblance $\hat{\alpha_j}$ (resp. $\hat{\mu_j}$, et $\hat{v_j}$) de $\alpha_j$ (resp. $\mu_j$ et $v_j$) sont donnés par
 \begin{center}
-$\hat{\alpha(j)} = \frac{\#A_j}{n}$
+$\hat{\alpha_j} = \frac{\#A_j}{n}$
 \end{center}
 \begin{center}
 $ \hat{\mu_j} = \displaystyle\frac{\sum_{i\in A_j} X_i}{\#A_j} $
@@ -307,26 +314,26 @@ $ \hat{v_j} = \displaystyle \frac{\sum_{i\in A_j}(X_i - \hat{\mu_j})^2}{\#A_j}$
 \end{prop}
 
 \begin{proof}
-Soit $\theta = (\alpha(j), \mu_j, v_j)_{j \in \llbracket 1,J \rrbracket}$. Il s'agit de déterminer 
+Soit $\theta = (\alpha_j, \mu_j, v_j)_{j \in \llbracket 1,J \rrbracket}$. Il s'agit de déterminer 
 \begin{center}
-	$\underset{\theta\in\R^{3J}, \sum_{j=1}^J\alpha(j) = 1}{\text{argmax}}\left(\displaystyle\sum_{j=1}^J \#A_j ln(\alpha(j))+ \sum_{j=1}^J\sum_{i\in A_j} ln(\gamma_{\mu_j, v_j}(x_i))\right)$
+	$\underset{\theta\in\R^{3J}, \sum_{j=1}^J\alpha_j = 1}{\text{argmax}}\left(\displaystyle\sum_{j=1}^J \#A_j ln(\alpha_j)+ \sum_{j=1}^J\sum_{i\in A_j} ln(\gamma_{\mu_j, v_j}(x_i))\right)$
 \end{center}
 Nous avons donc à résoudre un programme de minimisation d'une fonction convexe sur un convexe avec une contraire égalité, il est ainsi naturel de faire appel au Lagrangien. \newline 
 Ce dernier s'écrit
 \begin{align*} 
-L(\theta) &= \displaystyle\sum_{j=1}^J \#A_j ln(\alpha(j))+ \sum_{j=1}^J\sum_{i\in A_j} ln(\gamma_{\mu_j, v_j}(x_i)) - \lambda\times\left(\sum_{j=1}^J\alpha(j) - 1\right)\\
-&= \displaystyle\sum_{j=1}^J \#A_j ln(\alpha(j))+ \sum_{j=1}^J\sum_{i\in A_j} ln\left(\frac{1}{\sqrt{2\pi v_j}}\exp\left(-\frac{\left(x_i -\mu_j\right)^2}{2v_j} \right)\right) - \lambda\times\left(\sum_{j=1}^J\alpha(j) - 1\right)\\
-&= \displaystyle\sum_{j=1}^J \#A_j ln(\alpha(j))+ \sum_{j=1}^J\sum_{i\in A_j}\left( \frac{-1}{2}ln(2\pi v_j) -\frac{(x_i-\mu_j)^2}{2v_j}\right) - \lambda\times\left(\sum_{j=1}^J\alpha(j) - 1\right)\\
+L(\theta) &= \displaystyle\sum_{j=1}^J \#A_j ln(\alpha_j)+ \sum_{j=1}^J\sum_{i\in A_j} ln(\gamma_{\mu_j, v_j}(x_i)) - \lambda\times\left(\sum_{j=1}^J\alpha_j - 1\right)\\
+&= \displaystyle\sum_{j=1}^J \#A_j ln(\alpha_j)+ \sum_{j=1}^J\sum_{i\in A_j} ln\left(\frac{1}{\sqrt{2\pi v_j}}\exp\left(-\frac{\left(x_i -\mu_j\right)^2}{2v_j} \right)\right) - \lambda\times\left(\sum_{j=1}^J\alpha_j - 1\right)\\
+&= \displaystyle\sum_{j=1}^J \#A_j ln(\alpha_j)+ \sum_{j=1}^J\sum_{i\in A_j}\left( \frac{-1}{2}ln(2\pi v_j) -\frac{(x_i-\mu_j)^2}{2v_j}\right) - \lambda\times\left(\sum_{j=1}^J\alpha_j - 1\right)\\
 \end{align*}
 
-Il reste maintenant à résoudre le système suivant, afin d'obtenir le vecteur $\hat{\theta} := (\hat{\alpha}(j), \hat{\mu_j}, \hat{v_j})_{j\in\llbracket 1,J \rrbracket}$ solution du programme.
+Il reste maintenant à résoudre le système suivant, afin d'obtenir le vecteur $\hat{\theta} := (\hat{\alpha_j}, \hat{\mu_j}, \hat{v_j})_{j\in\llbracket 1,J \rrbracket}$ solution du programme.
 
 $
 \begin{cases}
-\displaystyle\frac{\#A_j}{\hat{\alpha}(j)} - \lambda &= 0 \text{ } \forall j \in \llbracket 1,J \rrbracket \\
+\displaystyle\frac{\#A_j}{\hat{\alpha_j}} - \lambda &= 0 \text{ } \forall j \in \llbracket 1,J \rrbracket \\
 \displaystyle\sum_{i\in A_j} (x_i-\hat{\mu_j})/\hat{v_j} & = 0 \text{ } \forall j \in \llbracket 1,J \rrbracket \\
 \displaystyle\sum_{i\in A_j} \frac{-0.5 \times 2 \times \pi}{2\pi \hat{v_j}} +\frac{(x_i-\hat{\mu_j})^2}{2\hat{v_j}^2} &= 0 \text{ } \forall j \in \llbracket 1,J \rrbracket\\
-\displaystyle\sum_{j=1}^J \hat{\alpha}(j) = 1
+\displaystyle\sum_{j=1}^J \hat{\alpha_j} = 1
 \end{cases}
 $
 
@@ -334,27 +341,27 @@ Ceci équivaut à
 
 $
 \begin{cases}
-\displaystyle\frac{\#A_j}{\hat{\alpha}(j)} &= \lambda \text{ } \forall j \in \llbracket 1,J \rrbracket \\
+\displaystyle\frac{\#A_j}{\hat{\alpha_j}} &= \lambda \text{ } \forall j \in \llbracket 1,J \rrbracket \\
 \displaystyle\sum_{i\in A_j}x_i & =\displaystyle\sum_{i\in A_j} \hat{\mu_j} \text{ } \forall j \in \llbracket 1,J \rrbracket \\
 \displaystyle\sum_{i\in A_j} (x_i-\hat{\mu_j})^2 &= \displaystyle\sum_{i\in A_j} \hat{v_j}  \text{ } \forall j \in \llbracket 1,J \rrbracket \\
-\displaystyle\sum_{j=1}^J \hat{\alpha}(j) = 1
+\displaystyle\sum_{j=1}^J \hat{\alpha_j} = 1
 \end{cases}
 $
 $\Leftrightarrow$
 $
 \begin{cases}
-\displaystyle\frac{\#A_j}{\hat{\alpha}(j)} &= \lambda \text{ } \forall j \in \llbracket 1,J \rrbracket \\
+\displaystyle\frac{\#A_j}{\hat{\alpha_j}} &= \lambda \text{ } \forall j \in \llbracket 1,J \rrbracket \\
 \displaystyle\sum_{i\in A_j}\frac{x_i}{\#A_j} & = \hat{\mu_j} \text{ } \forall j \in \llbracket 1,J \rrbracket \\
 \displaystyle\sum_{i\in A_j} \frac{(x_i-\hat{\mu_j})^2}{\#A_j} &=  \hat{v_j}  \text{ } \forall j \in \llbracket 1,J \rrbracket \\
-\displaystyle\sum_{j=1}^J \hat{\alpha}(j) = 1
+\displaystyle\sum_{j=1}^J \hat{\alpha_j} = 1
 \end{cases}
 $
 
-En sommant les $J$ premières lignes du système, on obtient $\displaystyle\sum_{j=1}^J\#A_j = \sum_{j=1}^J\hat{\alpha}(j)\lambda$, \underline{i.e.} $\lambda = n$. En injectant ceci dans le précédent système, on obtient finalement ce qui était annoncé :
+En sommant les $J$ premières lignes du système, on obtient $\displaystyle\sum_{j=1}^J\#A_j = \sum_{j=1}^J\hat{\alpha_j}\lambda$, \underline{i.e.} $\lambda = n$. En injectant ceci dans le précédent système, on obtient finalement ce qui était annoncé :
 
 $
 \begin{cases}
-\hat{\alpha(j)} &= \displaystyle \frac{\#A_j}{n} \text{ } \forall j \in \llbracket 1,J \rrbracket \\
+\hat{\alpha_j} &= \displaystyle \frac{\#A_j}{n} \text{ } \forall j \in \llbracket 1,J \rrbracket \\
 \hat{\mu_j} &= \displaystyle\sum_{i\in A_j}\frac{x_i}{\#A_j} \text{ } \forall j \in \llbracket 1,J \rrbracket \\
 \hat{v_j} &= \displaystyle\sum_{i\in A_j} \frac{(x_i-\hat{\mu_j})^2}{\#A_j}  \text{ } \forall j \in \llbracket 1,J \rrbracket \\
 \end{cases}
@@ -364,45 +371,43 @@ $
 
 %section 3
 \section{Le cas réel}
-Nous nous placerons désormais dans un contexte tout autre que celui du paragraphe précédent, un contexte correspondant davantage à la réalité. Dans ce qui suit, nous supperons que ne sont observées que les tailles des nids, les diverses espèces de mouettes les ayant construit étant en quelques sortes des données "cachées". Nous avons donc un échantillon $X := (X_1,\cdots, X_n$ de même loi que la variable $X$ comme définie ci-dessus. \newline
+Nous nous placerons désormais dans un contexte tout autre que celui du paragraphe précédent, un contexte correspondant davantage à la réalité. Dans ce qui suit, nous supperons que ne sont observées que les tailles des nids, les diverses espèces de mouettes les ayant construit étant en quelques sortes des données "cachées". Nous avons donc un échantillon $X_1,\cdots, X_n$ de même loi que la variable $X$ comme définie ci-dessus. \newline
 On définit $\mathcal{L}_{obs}$ la log-vraisemblance des observations, nous obtenons ainsi 
 
 \begin{defn} 
 La log-vraisemblance des observations s'écrit 
-\begin{center} $\mathcal{L}_{obs}(\theta,X) := ln\left( \displaystyle\prod_{i=1}^n f_\theta(X_i) \right) = \displaystyle\sum_{i=1}^nln\left( \sum_{j=1}^J \alpha(j) \gamma_{\mu_j, v_j}(X_i) \right)$ \end{center}
+\begin{center} $\mathcal{L}_{obs}(\theta, X_1, \cdots, X_n) := ln\left( \displaystyle\prod_{i=1}^n f_\theta(X_i) \right) = \displaystyle\sum_{i=1}^nln\left( \sum_{j=1}^J \alpha_j \gamma_{\mu_j, v_j}(X_i) \right)$ \end{center}
 \end{defn}
 
 Nous voyons dès lors que l'existence d'une expression analytique du maximum de la log-vraisemblance n'est pas assurée. Il est donc nécessaire de trouver un moyen d'approcher les valeurs des différents estimateurs. \newline
-Pour ce faire, on définit une log-vraisemblance des couples $(X_i,Z_i)$ sachant le vecteurs des observations $X = (X_1,\cdots,X_n)$.
+Pour ce faire, on définit une log-vraisemblance des couples $(X_i,Z_i)$ sachant le vecteurs des observations $X_1, \cdots, X_n$.
 \begin{prop}[log-vraisemblance conditionnelle]
-On définit la log-vraisemblance $\lv_{c}(\theta, \thetat, X) $ conditionnelle par
-\begin{center} $\lv_{c}(\theta, \thetat, X) = \E_{\thetat}[\lv(\theta,X,Z)|X)]$ \end{center}
+On définit la log-vraisemblance $\lv_{c}(\theta, \thetat, X_1, \cdots, X_n) $ conditionnelle par
+\begin{center} $\lv_{c}(\theta, \thetat, X_1, \cdots, X_n) = \E_{\thetat}[\lv_\theta(X_1, \cdots, X_n, Z_1, \cdots, Z_n) | X_1, \cdots, X_n]$ \end{center}
 \end{prop}
 
 \begin{prop}
 On a
-\begin{center} $\lv_{c}(\theta, \thetat, X) = \displaystyle\sum_{i=1}^n\sum_{j=1}^J ln(h_\theta ,j)  g_{\thetat}(j|X_i)$ \end{center}
+\begin{center} $\lv_{c}(\theta, \thetat, X_1, \cdots, X_n) = \displaystyle\sum_{i=1}^n\sum_{j=1}^J ln(h_\theta(X_i ,j))  \prob_{\thetat}(Z = j|X = X_i)$ \end{center}
 \end{prop}
 
 \begin{proof}
 En effet
 \begin{align*}
-\lv_{c}(\theta, \thetat, X) &= \E_{\thetat}[\lv(\theta,X,Z)|X] \\
-&= \E_{\thetat}[\lv(\theta,X,Z)|X_1, \cdots, X_n]\\
-&=  \E_{\thetat}\bigg[\displaystyle ln\left(\prod_{i=1}^n  h_\theta(X_i,Z_i)\right) |X_1,\cdots X_n \bigg]\\
-&= \displaystyle\sum_{i=1}^n  \E_{\thetat}[ln(h_\theta(X_i,Z_i))|X_1,\cdots,X_n]\\
+\lv_{c}(\theta, \thetat, X_1, \cdots, X_n) &= \E_{\thetat}[\lv_\theta(X_1, \cdots, X_n, Z_1, \cdots, X_n)|X_1, \cdots, X_n]\\
+&=  \E_{\thetat}\bigg[\displaystyle ln\left(\prod_{i=1}^n  h_\theta(X_i,Z_i)\right) |X_1, \cdots X_n \bigg]\\
+&= \displaystyle\sum_{i=1}^n  \E_{\thetat}[ln(h_\theta(X_i,Z_i))|X_1, \cdots, X_n]\\
 \end{align*}
-Or, les couples $(X_i,Z_i)$ sont indépendants et de même loi, donc
+Or, les couples $(X_i,Z_i)$ sont indépendants, donc
 \begin{align*}
-\lv_{c}(\theta, \thetat, X) &= \displaystyle\sum_{i=1}^n  \E_{\thetat}[ln(h_\theta(X_i,Z_i))|X_i]\\
-&= \displaystyle\sum_{i=1}^n \int_{\N} ln(h_\theta(X_i,z)) g_{\thetat} (z|X_i) \delta_z\\
-&= \displaystyle\sum_{i=1}^n\sum_{j=1}^J ln(h_\theta(X_i ,j))  g_{\thetat}(j|X_i)\\
+\lv_{c}(\theta, \thetat, X_1, \cdots, X_n) &= \displaystyle\sum_{i=1}^n  \E_{\thetat}[ln(h_\theta(X_i,Z_i))|X_i ]\\
+&= \displaystyle\sum_{i=1}^n \sum_{j = 1}^J ln(h_\theta(X_i,j)) \prob_{\thetat} (Z = j|X = X_i)\\
 \end{align*}
-Car $g_{\thetat}(z | X = x)$ est définie pour $z\in \{1,\cdots,J\}$.
+
 \end{proof}
 
 \begin{prop}[Expression log-vraisemblance]
-Hop gros pecs à toi de jouer
+
 \end{prop}
 
 \begin{proof}
@@ -410,7 +415,7 @@ hop
 \end{proof}
 
 \begin{prop}[Estimateurs]
-Hop gros pecs à toi de jouer
+
 \end{prop}
 
 \begin{proof}
@@ -432,47 +437,44 @@ hop
 
 \begin{thm}
 Soit $(\theta_k)_{k\in \N}$ la suite de paramètres construite à l'aide de l'algorithme EM. La log-vraisemblance $\lv_{obs}$ des observations vérifie 
-\begin{center} $\lv_{obs}(\theta_{k+1}, X) \geq \lv_{obs}(\theta_k, X)$ \end{center}
+\begin{center} $\lv_{obs}(\theta_{k+1}, X_1, \cdots, X_n) \geq \lv_{obs}(\theta_k, X_1, \cdots, X_n)$ \end{center}
 \end{thm}
-
-\begin{nota} Nous dénoterons par $d\prob_{\theta_k, Z | X}$ la loi de probabilité de $X$ sachant $Z$, \underline{i.e.} \end{nota}
-\begin{center} $d\prob_{\theta_k, Z | X} := g_{\theta_k}(z|X=x)\delta_z$ \end{center}
 
 \begin{proof}
 
-Nous allons commencer cette preuve en donnant une autre forme de la log-vraisemblance, dépendant de $\lv_ {obs}(\theta, X)$ et d'un terme $\K_{\theta,\theta_k}$. Nous avons :
+Nous allons commencer cette preuve en donnant une autre forme de la log-vraisemblance, dépendant de $\lv_ {obs}(\theta, X_1, \cdots, X_n)$ et d'un terme $\kappa_{\theta,\theta_k}$. Nous avons :
 \begin{align*}
-\lv_c(\theta, \theta_k, X) &=  \displaystyle\sum_{i=1}^n\sum_{j=1}^J ln(h_\theta(X_i ,j))  g_{\theta_k}(j|X_i)\\
-&=  \displaystyle\sum_{i=1}^n\sum_{j=1}^J ln\big[f_\theta(X_i)\times g_\theta(j|X_i=x_i)\big]g_{\theta_k}(j|X_i)\\
-&=  \displaystyle\sum_{i=1}^n\sum_{j=1}^J ln(f_\theta(X_i))g_{\theta_k}(j|X_i) + \sum_{i=1}^n\sum_{j=1}^J ln(g_\theta(j|X_i=x_i))g_{\theta_k}(j|X_i)\\
-&= \displaystyle\sum_{i=1}^n ln(f_\theta(X_i))\times\underbrace{\sum_{j=1}^J g_{\theta_k}(j|X_i)}_{=1} +\sum_{i=1}^n \E_{\theta_k}\big[ln(g_\theta(Z_i|X_i=x_i)) \big]\\
-&= \displaystyle\sum_{i=1}^n ln(f_\theta(X_i)) + \E_{\theta_k}\big[ln(g_\theta(Z|X=x)\big] \\
-&= \lv_{obs}(\theta, X) + \K_{\theta,\theta_k}
+\lv_c(\theta, \theta_k, X_1, \cdots, X_n) &=  \displaystyle\sum_{i=1}^n\sum_{j=1}^J ln(h_\theta(X_i ,j))  \prob_{\theta_k}(Z = j|X = X_i)\\
+&=  \displaystyle\sum_{i=1}^n\sum_{j=1}^J ln\big[f_\theta(X_i)\times \prob_\theta(Z = j|X=X_i)\big]\prob_{\theta_k}(Z = j|X = X_i)\\
+&=  \displaystyle\sum_{i=1}^n\sum_{j=1}^J ln(f_\theta(X_i))\prob_{\theta_k}(Z = j|X = X_i) + \sum_{i=1}^n\sum_{j=1}^J ln(\prob_\theta(Z = j|X=X_i))\prob_{\theta_k}(Z = j|X = X_i)\\
+&= \displaystyle\sum_{i=1}^n ln(f_\theta(X_i))\times\underbrace{\sum_{j=1}^J \prob_{\theta_k}(Z = j|X = X_i)}_{=1} + \sum_{i=1}^n\sum_{j=1}^J ln(\prob_\theta(Z = j|X = X_i))\prob_{\theta_k}(Z = j|X = X_i)\\
+&= \displaystyle\sum_{i=1}^n ln(f_\theta(X_i)) + \sum_{i=1}^n\sum_{j=1}^J ln(\prob_\theta(Z = j|X=X_i))\prob_{\theta_k}(Z = j|X = X_i) \\
+&= \lv_{obs}(\theta, X_1, \cdots, X_n) + \kappa_{\theta,\theta_k}
 \end{align*}
 
 Dès lors, on obtient
 \begin{align*}
-\lv_{obs}(\theta_{k+1}, X) - \lv_{obs}(\theta_k, X) &= \lv_c(\theta_{k+1}, \theta_k, X) - \kappa_{\theta_{k+1}, \theta_k} -  \lv_c(\theta_k, \theta_k, X) + \kappa_{\theta_{k}, \theta_k}
+\lv_{obs}(\theta_{k+1}, X_1, \cdots, X_n) - \lv_{obs}(\theta_k, X_1, \cdots, X_n) &= \lv_c(\theta_{k+1}, \theta_k, X_1, \cdots, X_n) - \kappa_{\theta_{k+1}, \theta_k} -  \lv_c(\theta_k, \theta_k, X_1, \cdots, X_n) + \kappa_{\theta_{k}, \theta_k}
 \end{align*}
 
 Or, la quantité $\lv_c$ est maximisée en $\theta_{k+1}$ lors de l'étape $M$ de l'algorithme, donc
-\begin{center} $ \lv_c(\theta_{k+1}, \theta_k, X) - \lv_c(\theta_k, \theta_k, X) \geq 0$ \end{center}
+\begin{center} $ \lv_c(\theta_{k+1}, \theta_k, X_1, \cdots, X_n) - \lv_c(\theta_k, \theta_k, X_1, \cdots, X_n) \geq 0$ \end{center}
 
 Il reste donc à prouver que 
 \begin{center} $\kappa_{\theta_{k}, \theta_k}-\kappa_{\theta_{k+1}, \theta_k} \geq 0$ \end{center}
 
-En effet, on a
+En effet, nous avons
 \begin{align*}
-\kappa_{\theta_{k}, \theta_k}-\kappa_{\theta_{k+1}, \theta_k} &= \E_{\theta_k}\big[ln(g_{\theta_k}(Z|X=x)\big] - \E_{\theta_k}\big[ln(g_{\theta_{k+1}}(Z|X=x)\big]\\
-&= \E_{\theta_k}\bigg[ ln\left(\frac{g_{\theta_k}(Z|X=x)}{g_{\theta_{k+1}}(Z|X=x)}\right) \bigg]\\
-&= \displaystyle\int_\N ln\left( \frac{g_{\theta_k}(Z|X=x)}{g_{\theta_{k+1}}(Z|X=x)} \right) d\prob_{\theta_k, Z | X} \\
-&= \displaystyle\int_\N ln\left( \frac{g_{\theta_k}(z|X=x)}{g_{\theta_{k+1}}(Z|X=x)}\right) g_{\theta_k}(z|X=x)\delta_z  \\
-&= - \displaystyle\int_\N ln\left( \frac{g_{\theta_{k+1}}(z|X=x)}{g_{\theta_k}(z|X=x)}\right) g_{\theta_k}(z|X=x)\delta_z  \\
-&\geq - ln\left( \displaystyle\int_\N \frac{g_{\theta_{k+1}}(z|X=x)}{g_{\theta_k}(z|X=x)} g_{\theta_k}(z|X=x)\delta_z \right) \text{(Inégalité de \textit{Jensen})}\\
-&= - ln\left( \displaystyle\int_\N g_{\theta_{k+1}}(z|X=x)\delta_z \right)\\
-&= -ln(1)\\
+\kappa_{\theta_{k}, \theta_k}-\kappa_{\theta_{k+1}, \theta_k} &= \sum_{i=1}^n\sum_{j=1}^J ln(\prob_{\theta_k}(Z = j|X=X_i))\prob_{\theta_k}(Z = j|X = X_i) - \sum_{i=1}^n \sum_{j=1}^J ln(\prob_{\theta_{k+1}}(Z = j|X=X_i))\prob_{\theta_k}(Z = j|X = X_i) \\
+&= \sum_{i=1}^n \sum_{j=1}^J ln\left(\frac{\prob_{\theta_k}(Z = j|X=X_i)}{\prob_{\theta_{k+1}}(Z = j|X=X_i)}\right)\prob_{\theta_k}(Z = j|X = X_i)\\
+&= - \sum_{i=1}^n \sum_{j=1}^J ln\left(\frac{\prob_{\theta_{k+1}}(Z = j|X=X_i)}{\prob_{\theta_k}(Z = j|X=X_i)}\right)\prob_{\theta_k}(Z = j|X = X_i)\\
+&\geq - \sum_{i=1}^n ln\left(\sum_{j=1}^J \frac{\prob_{\theta_{k+1}}(Z = j|X=X_i)}{\prob_{\theta_k}(Z = j|X=X_i)}\prob_{\theta_k}(Z = j|X = X_i) \right)\\
+&\text{$\big[$Cette dernière inégalité est due à la convexité du $log$ et au fait que $\displaystyle\sum_{j=1}^J\prob_{\theta_k}(Z = j|X)=1\big]$}\\
+&= - \sum_{i=1}^n ln\left(\sum_{j=1}^J\prob_{\theta_{k+1}}(Z = j|X=X_i)\right)\\
+&=  - \sum_{i=1}^n ln(1)\\
 &= 0
 \end{align*}
+
 
 On obtient ainsi
 
@@ -480,7 +482,7 @@ On obtient ainsi
 
 
 Et finalement
-\begin{center} $\lv_{obs}(\theta_{k+1}, X) \geq \lv_{obs}(\theta_k, X)$ \end{center}
+\begin{center} $\lv_{obs}(\theta_{k+1}, X_1, \cdots, X_n) \geq \lv_{obs}(\theta_k, X_1, \cdots, X_n)$ \end{center}
 
 \end{proof}
 

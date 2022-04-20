@@ -188,7 +188,7 @@
 Nous allons pour commencer donner une première définition, qui est au coeur du présent projet.
 
 \begin{defn}[Loi de mélange]
-On appelle loi de mélange toute loi dont la densité s'écrit sous la forme d'une combinaison convexe de diverses densités. C'est-à-dire que si l'on se donne $n$ variables aléatoires $X_1, \cdots, X_J$ de densité respective $f_1(x), \cdots, f_J(x)$, alors est appellée loi de mélange toute variable aléatoire $X$ dont la densité $f$ s'exprime sous la forme
+On appelle loi de mélange toute loi dont la densité s'écrit sous la forme d'une combinaison convexe de diverses densités. C'est-à-dire que si l'on se donne $J$ variables aléatoires $X_1, \cdots, X_J$ de densité respective $f_1(x), \cdots, f_J(x)$, alors est appellée loi de mélange toute variable aléatoire $X$ dont la densité $f$ s'exprime sous la forme
 \begin{center} $f(x) := \displaystyle\sum_{i=1}^J \alpha_i f_i(x)$ , $\alpha_i \in\R$ \end{center}
 
 \end{defn}
@@ -243,14 +243,14 @@ Introduisons deux dernières densités, qui nous seront fort utile quant à l'ex
 
 \begin{prop}[Probabilité de $Z$ sachant $X$] La probabilité de la loi de $Z$ sachant $X$ nous est donnée par
 \begin{center}
-$\prob_\theta(Z = j | X=x ) = \frac{\displaystyle\alpha_j \times \gamma_{\mu_j, v_j}(x)}{\displaystyle\sum_{i=1}^J\alpha_i \gamma_{\mu_i, v_i}(x)}$, pour $i\in \{1,\cdots,J\}$
+$\prob_\theta(Z = j | X=x ) = \frac{\displaystyle\alpha_j \times \gamma_{\mu_j, v_j}(x)}{\displaystyle\sum_{i=1}^J\alpha_i \times\gamma_{\mu_i, v_i}(x)}$, pour $i\in \{1,\cdots,J\}$
 \end{center}
 \end{prop}
 
 
 \begin{prop}[Densité du vecteur (X,Z)]
 Soit le vecteur aléatoire $(X, Z)$; sa densité nous est donnée par
-\begin{center} $h_\theta(x,j) := \alpha_j\gamma_{\mu_j, v_j}(x)$ \end{center}
+\begin{center} $h_\theta(x,j) := \alpha_j\times\gamma_{\mu_j, v_j}(x)$ \end{center}
 \end{prop}
 
 \begin{proof}
@@ -465,7 +465,8 @@ Il reste donc à prouver que
 
 En effet, nous avons
 \begin{align*}
-\kappa_{\theta_{k}, \theta_k}-\kappa_{\theta_{k+1}, \theta_k} &= \sum_{i=1}^n\sum_{j=1}^J ln(\prob_{\theta_k}(Z = j|X=X_i))\prob_{\theta_k}(Z = j|X = X_i) - \sum_{i=1}^n \sum_{j=1}^J ln(\prob_{\theta_{k+1}}(Z = j|X=X_i))\prob_{\theta_k}(Z = j|X = X_i) \\
+\kappa_{\theta_{k}, \theta_k}-\kappa_{\theta_{k+1}, \theta_k} &= \sum_{i=1}^n\sum_{j=1}^J ln(\prob_{\theta_k}(Z = j|X=X_i))\prob_{\theta_k}(Z = j|X = X_i) \\
+&- \sum_{i=1}^n \sum_{j=1}^J ln(\prob_{\theta_{k+1}}(Z = j|X=X_i))\prob_{\theta_k}(Z = j|X = X_i) \\
 &= \sum_{i=1}^n \sum_{j=1}^J ln\left(\frac{\prob_{\theta_k}(Z = j|X=X_i)}{\prob_{\theta_{k+1}}(Z = j|X=X_i)}\right)\prob_{\theta_k}(Z = j|X = X_i)\\
 &= - \sum_{i=1}^n \sum_{j=1}^J ln\left(\frac{\prob_{\theta_{k+1}}(Z = j|X=X_i)}{\prob_{\theta_k}(Z = j|X=X_i)}\right)\prob_{\theta_k}(Z = j|X = X_i)\\
 &\geq - \sum_{i=1}^n ln\left(\sum_{j=1}^J \frac{\prob_{\theta_{k+1}}(Z = j|X=X_i)}{\prob_{\theta_k}(Z = j|X=X_i)}\prob_{\theta_k}(Z = j|X = X_i) \right)\\

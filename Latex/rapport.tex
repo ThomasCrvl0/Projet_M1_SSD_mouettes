@@ -241,26 +241,31 @@ qui sont, respectivement, contre la mesure de comptage sur $\N$, et par rapport 
 
 Introduisons deux dernières densités, qui nous seront fort utile quant à l'expression des Log-vraisemblances conditionnelles :
 
-\begin{prop}[Probabilité de $Z$ sachant $X$] La probabilité de la loi de $Z$ sachant $X$ nous est donnée par
-\begin{center}
-$\prob_\theta(Z = j | X=x ) = \frac{\displaystyle\alpha_j \times \gamma_{\mu_j, v_j}(x)}{\displaystyle\sum_{i=1}^J\alpha_i \times\gamma_{\mu_i, v_i}(x)}$, pour $i\in \{1,\cdots,J\}$
-\end{center}
-\end{prop}
-
-
-\begin{prop}[Densité du vecteur (X,Z)]
-Soit le vecteur aléatoire $(X, Z)$; sa densité nous est donnée par
-\begin{center} $h_\theta(x,j) := \alpha_j\times\gamma_{\mu_j, v_j}(x)$ \end{center}
+\begin{prop}[Loi de densité du vecteur (X,Z) et loi de densité de Z sachant X]
+La densité du vecteur aléatoire $(X, Z)$ est donnée par :
+\begin{align*} 
+h_\theta : &~(R\times \left\{1,\cdots,J\right\}) \rightarrow R_+\\
+&~(x,z) \mapsto \alpha_j\times\gamma_{\mu_j, v_j}(x) 
+\end{align*}
 \end{prop}
 
 \begin{proof}
-En effet, si on dénote par $F$ la fonction de répartition de ce vecteur aléatoire, on obtient
-\begin{align*}
-F(x, j) &= \prob(X \leq x, Z \leq j)\\
-&=\displaystyle\sum_{z \in \llbracket1,J \rrbracket} \prob(X\leq x | Z = z)\times\prob(Z = z)\\
-&=\displaystyle\sum_{z = 1}^J \int_{-\infty}^x \gamma_{\mu_z,v_z}(t)\times \alpha_zdt \\
+En utilisant la réciproque du théorème de transfert et la densité conditionnelle de $X$ sachant $Z$ et $Z$ sachant $X$, on obtient ainsi :
+\begin{align*} 
+\E[h(X,Z)] & = \int_{R\times\left\{1,\cdots,J\right\}}h(x,z)\times h_\theta(x,z)~d\lambda(x)\times dN(z)\\
+&= \int_{R\times\left\{1,\cdots,J\right\}}h(x,z)\times f_{X|Z}(x) f_Z(z)~d\lambda(x)\times dN(z)\\
+&= \int_{R\times\left\{1,\cdots,J\right\}}h(x,z)\times \gamma_{m(z),v(z)}(x)\alpha_z~d\lambda(x)\times dN(z)\\
+&= \int_{R\times\left\{1,\cdots,J\right\}}h(x,z)\times f_{Z|X}(z) f_X(x)~d\lambda(x)\times dN(z)\\
 \end{align*}
-La densité de $(X,Z)$ s'ensuit.
+Par identification on en déduit, la densité du couple $(X,Z)$
+\begin{align*}
+f_{Z|X}(z) f_X(x) &=  f_{X|Z}(x) f_Z(z)\\
+&= \gamma_{m(z),v(z)}\alpha_z
+\end{align*}
+et puis la de densité conditionnelle de $Z$ sachant $X$
+\begin{center}
+$f_{Z|X}(z) = \frac{\gamma_{m(z),v(z)}\alpha_z}{\sum_{i=1}^J \alpha_i \times \gamma_{m(i), v(i)}(x)}$
+\end{center}
 \end{proof}
 
 \begin{rem}
@@ -406,15 +411,65 @@ Or, les couples $(X_i,Z_i)$ sont indépendants, donc
 
 \end{proof}
 
-\begin{prop}[Expression log-vraisemblance]
-
+\begin{prop}[Expression log-vraisemblance conditionnelle] La fonction $\lv_{c}$ se réecrit sous la forme suivante : 
+\begin{align*}
+ \lv_{c}(\theta, \thetat, \bar{X}) &= -\frac{n}{2}log(2\pi)+\sum_{j=1}^J \left(\sum_{i = 1}^n g_{\thetat} (j|X=X_i)\right) log(\alpha(j))\\
+&~~~-\frac{1}{2}\sum_{j=1}^J\left(\sum_{i=1}^n g_{\thetat}(j|X=X_i)\right)\left(log(v(j))+\frac{(X_i-m(j))^2}{v(j)}\right)
+\end{align*}
 \end{prop}
 
 \begin{proof}
-hop
+Il suffit de partir de la forme précédente de la log-vraisemblance conditionnelle, on a ainsi : 
+\begin{align*}
+ \lv_{c}(\theta, \thetat, \bar{X}) &= \sum_{i=1}^n \sum_{j = 1}^J ln(h_\theta(X_i,j)) \prob_{\thetat} (Z = j|X = X_i)\\
+&= \sum_{i=1}^n \sum_{j = 1}^J ln(\alpha(j)\gamma_{m(j),v(j)}(X_i))\times \prob_{\thetat} (Z = j|X = X_i)\\
+&= \sum_{i=1}^n \sum_{j = 1}^J \left(ln(\alpha(j))+ln(\gamma_{m(j),v(j)}(X_i))\right)\times \prob_{\thetat} (Z = j|X = X_i)\\
+&= \sum_{i=1}^n \sum_{j = 1}^J ln(\alpha(j))\prob_{\thetat} (Z = j|X = X_i)+\sum_{i=1}^n \sum_{j = 1}^J ln(\gamma_{m(j),v(j)}(X_i))\prob_{\thetat} (Z = j|X = X_i)\\
+\end{align*}
+Traitons la double somme 
+$\sum_{i=1}^n \sum_{j = 1}^J ln(\gamma_{m(j),v(j)}(X_i))\prob_{\thetat} (Z = j|X = X_i)$
+on a :
+\begin{center}
+$\gamma_{m(j),v(j)}(X_i) = \frac{1}{\sqrt{2 \pi v(j)}}e^{-\frac{1}{2}\frac{(X_i - m(j))^2}{v(j)}}$
+\end{center}
+\begin{center}
+$\prob_{\thetat} (Z = j|X = X_i) = \frac{\alpha(j)\gamma_{m(j),v(j)}}{\sum_{i=1}^J \alpha(j)\gamma_{m(i),v(i)}}$
+\end{center}
+La double somme devient alors 
+\begin{center}
+$\sum_{i=1}^n \sum_{j = 1}^J ln\left(\frac{1}{\sqrt{2 \pi v(j)}}e^{-\frac{1}{2}\frac{(X_i - m(j))^2}{v(j)}}\right)\prob_{\thetat} (Z = j|X = X_i)$
+\end{center}
+\begin{center}
+$=\sum_{i=1}^n \sum_{j = 1}^J ln\left(\frac{1}{\sqrt{2 \pi v(j)}}\right)\prob_{\thetat} (Z = j|X = X_i) -\frac{1}{2}\left(\frac{(X_i - m(j))^2}{v(j)}\right)\prob_{\thetat} (Z = j|X = X_i) $
+\end{center}
+\begin{center}
+$=\sum_{i=1}^n \sum_{j = 1}^J -\frac{1}{2} ln(2\pi) \prob_{\thetat} (Z = j|X = X_i)-\frac{1}{2}ln(v(j)) \prob_{\thetat} (Z = j|X = X_i) -\frac{1}{2}\left(\frac{(X_i - m(j))^2}{v(j)}\right)\prob_{\thetat} (Z = j|X = X_i) $
+\end{center}
+\begin{center}
+$=-\frac{n}{2}ln(2\pi)  -\frac{1}{2} \sum_{i=1}^n \sum_{j = 1}^J \left(ln(v(j)) + \frac{(X_i - m(j))^2}{v(j)}\right)\prob_{\thetat} (Z = j|X = X_i) $
+\end{center}
+\begin{center}
+$=-\frac{n}{2}ln(2\pi)  -\frac{1}{2} \sum_{j=1}^J \left( \sum_{i = 1}^n \prob_{\thetat} (Z = j|X = X_i) \right) \left(ln(v(j)) + \frac{(X_i - m(j))^2}{v(j)}\right) $
+\end{center}
+On obtient bien le résultat espéré :
+\begin{align*}
+ \lv_{c}(\theta, \thetat, \bar{X}) &= -\frac{n}{2}log(2\pi)+\sum_{j=1}^J \left(\sum_{i = 1}^n g_{\thetat} (j|X=X_i)\right) log(\alpha(j))\\
+&~~~-\frac{1}{2}\sum_{j=1}^J\left(\sum_{i=1}^n g_{\thetat}(j|X=X_i)\right)\left(log(v(j))+\frac{(X_i-m(j))^2}{v(j)}\right)
+\end{align*}
 \end{proof}
 
-\begin{prop}[Estimateurs]
+\begin{prop}[Estimateurs du maximum de la log-vraisemblance conditionnelle] La fonction $\theta \mapsto \lv_{c}(\theta,\thetat,\bar{X})$ admet un unique maximum $\theta_M$ donné par : 
+\begin{center}
+$\alpha_M(j) = \frac{1}{n}\sum_{i=1}^n g_{\thetat}(j|X=X_i)$
+\end{center}
+\begin{center}
+
+$m_M(j) = \frac{\sum_{i=1}^n X_i g_{\thetat}(j|X=X_i)}{\sum{i=1}^n g_{\thetat}(j|X=X_i)}$
+\end{center}
+\begin{center}
+
+$v_M(j) = \frac{\sum_{i=1}^n (X_i -m(j))^2 g_{\thetat}(j|X=X_i)}{\sum{i=1}^n g_{\thetat}(j|X=X_i)}$
+\end{center}
 
 \end{prop}
 
@@ -506,7 +561,8 @@ Liens utiles
 \url{https://www.lpsm.paris/pageperso/rebafka/BookGraphes/algorithme-em.html} \newline
 \url{https://members.loria.fr/moberger/Enseignement/AVR/Exposes/algo-em.pdf} \newline
 \url{http://faculty.washington.edu/fxia/courses/LING572/EM_collins97.pdf}\newline
-\url{https://core.ac.uk/download/pdf/155777956.pdf}
+\url{https://core.ac.uk/download/pdf/155777956.pdf}\newline
+\url{http://www.cmap.polytechnique.fr/~bansaye/CoursTD6.pdf}
 
 
 \pagebreak

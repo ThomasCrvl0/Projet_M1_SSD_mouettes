@@ -291,11 +291,11 @@ En utilisant la réciproque du théorème de transfert et la densité conditionn
 Par identification on en déduit, la densité du couple $(X,Z)$
 \begin{align*}
 f_{Z|X}(z) f_X(x) &=  f_{X|Z}(x) f_Z(z)\\
-&= \gamma_{m(z),v(z)}\alpha_z
+&= \gamma_{m(z),v(z)}\times\alpha_z
 \end{align*}
 et puis la de densité conditionnelle de $Z$ sachant $X$
 \begin{center}
-$f_{Z|X}(z) = \frac{\gamma_{m(z),v(z)}\alpha_z}{\sum_{i=1}^J \alpha_i \times \gamma_{m(i), v(i)}(x)}$
+$f_{Z|X}(z) =\displaystyle \frac{\gamma_{m(z),v(z)}\times\alpha_z}{\sum_{i=1}^J \alpha_i \times \gamma_{m(i), v(i)}(x)}$
 \end{center}
 \end{proof}
 
@@ -444,8 +444,8 @@ Or, les couples $(X_i,Z_i)$ sont indépendants, donc
 
 \begin{prop}[Expression log-vraisemblance conditionnelle] La fonction $\lv_{c}$ se réecrit sous la forme suivante : 
 \begin{align*}
- \lv_{c}(\theta, \thetat, \bar{X}) &= -\frac{n}{2}log(2\pi)+\sum_{j=1}^J \left(\sum_{i = 1}^n g_{\thetat} (j|X=X_i)\right) log(\alpha(j))\\
-&~~~-\frac{1}{2}\sum_{j=1}^J\left(\sum_{i=1}^n g_{\thetat}(j|X=X_i)\right)\left(log(v(j))+\frac{(X_i-m(j))^2}{v(j)}\right)
+ \lv_{c}(\theta, \thetat, \bar{X}) &= -\frac{n}{2}log(2\pi)+\sum_{j=1}^J \left(\sum_{i = 1}^n \prob_{\thetat}(Z= j|X=X_i)\right) log(\alpha(j))\\
+&~~~-\frac{1}{2}\sum_{j=1}^J\left(\sum_{i=1}^n  \prob_{\thetat}(Z=j|X=X_i)\right)\left(log(v(j))+\frac{(X_i-m(j))^2}{v(j)}\right)
 \end{align*}
 \end{prop}
 
@@ -484,28 +484,28 @@ $=-\frac{n}{2}ln(2\pi)  -\frac{1}{2} \sum_{j=1}^J \left( \sum_{i = 1}^n \prob_{\
 \end{center}
 On obtient bien le résultat espéré :
 \begin{align*}
- \lv_{c}(\theta, \thetat, \bar{X}) &= -\frac{n}{2}log(2\pi)+\sum_{j=1}^J \left(\sum_{i = 1}^n g_{\thetat} (j|X=X_i)\right) log(\alpha(j))\\
-&~~~-\frac{1}{2}\sum_{j=1}^J\left(\sum_{i=1}^n g_{\thetat}(j|X=X_i)\right)\left(log(v(j))+\frac{(X_i-m(j))^2}{v(j)}\right)
+ \lv_{c}(\theta, \thetat, \bar{X}) &= -\frac{n}{2}log(2\pi)+\sum_{j=1}^J \left(\sum_{i = 1}^n  \prob_{\thetat}(Z=j|X=X_i)\right) log(\alpha(j))\\
+&~~~-\frac{1}{2}\sum_{j=1}^J\left(\sum_{i=1}^n \prob_{\thetat}(Z=j|X=X_i)\right)\left(log(v(j))+\frac{(X_i-m(j))^2}{v(j)}\right)
 \end{align*}
 \end{proof}
 
 \begin{prop}[Estimateurs du maximum de la log-vraisemblance conditionnelle] La fonction $\theta \mapsto \lv_{c}(\theta,\thetat,\bar{X})$ admet un unique maximum $\theta_M$ donné par : 
 \begin{center}
-$\alpha_M(j) = \frac{1}{n}\sum_{i=1}^n g_{\thetat}(j|X=X_i)$
+$\alpha_M(j) = \displaystyle\frac{1}{n}\sum_{i=1}^n \prob_{\thetat}(Z=j|X=X_i)$
 \end{center}
 \begin{center}
 
-$m_M(j) = \frac{\sum_{i=1}^n X_i g_{\thetat}(j|X=X_i)}{\sum{i=1}^n g_{\thetat}(j|X=X_i)}$
+$m_M(j) = \displaystyle\frac{\sum_{i=1}^n X_i\prob_{\thetat}(Z=j|X=X_i)}{\sum{i=1}^n \prob_{\thetat}(Z=j|X=X_i)}$
 \end{center}
 \begin{center}
 
-$v_M(j) = \frac{\sum_{i=1}^n (X_i -m(j))^2 g_{\thetat}(j|X=X_i)}{\sum{i=1}^n g_{\thetat}(j|X=X_i)}$
+$v_M(j) = \displaystyle\frac{\sum_{i=1}^n (X_i -m(j))^2 \prob_{\thetat}(Z=j|X=X_i)}{\sum{i=1}^n\prob_{\thetat}(Z=j|X=X_i)}$
 \end{center}
 
 \end{prop}
 
 \begin{proof}
-hop
+
 \end{proof}
 
 
@@ -578,6 +578,8 @@ Et finalement
 
 \end{thm}
 
+\newpage
+
 % section 2
 \section{Pseudo code de l'algorithme EM}
 Pour l'implémentation de cet algorithme, nous nous sommes appuyés sur le pseudo-code suivant.
@@ -585,11 +587,11 @@ Pour l'implémentation de cet algorithme, nous nous sommes appuyés sur le pseud
 \begin{algorithm}
 	\caption{\textbf{L’algorithme EM (Dempster et al., 1977).}}
 	\begin{algorithmic}[1]
-		\REQUIRE{$N \in \mathbb{N}$, $\widehat{\theta_0} \in \Theta$, un jeu de données $y_1 \dots y_n$;}
+		\REQUIRE{$N \in \mathbb{N}$, $\widehat{\theta_0} \in \Theta$, un jeu de données $x_1 \dots x_n$;}
 		\ENSURE
 		\STATE {$k:=1$;}
 		\WHILE {$K < N + 1$}
-		\STATE {$\text{\textbf{ETAPE E :} \textit{Calculer la fonction }} Q(\theta;\widehat{\theta}_{k-1}) = \frac{1}{n} \sum_{i=1}^{n} \mathbb{E}_{\widehat{\theta}_{k-1}} [log f(X_i,Y_i,\theta)|Y_i = y_i]$;}
+		\STATE {$\text{\textbf{ETAPE E :} \textit{Calculer la fonction }} Q(\theta;\widehat{\theta}_{k-1}) = \frac{1}{n} \sum_{i=1}^{n} \mathbb{E}_{\widehat{\theta}_{k-1}} [log f(X_i,Z_i,\theta)|X_i = x_i]$;}
 		\STATE {$\text{\textbf{ETAPE M : }} \widehat{\theta}_k = argmax \hspace{1.5mm} Q(\theta;\widehat{\theta}_{k-1})$;}
 		\STATE {$k \leftarrow k+1$;}
 		\ENDWHILE

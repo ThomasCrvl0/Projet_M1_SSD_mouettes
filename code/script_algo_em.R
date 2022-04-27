@@ -27,3 +27,40 @@ GetRealParam = function(listOfSpecies){
   }
   return(nest_data[v_index,])
 }
+
+# Choix de 2 espèces European Goldfinch et Ring Ouzel afin d'avoir un mélange
+# de 2 gaussiennes
+df_th = GetRealParam(c("European Goldfinch", "Ring Ouzel"))
+
+# Dataframe des données d'initialisations choisies par l'utilisateur
+data_init = data.frame(species_chosen = c("European Goldfinch", "Ring Ouzel")
+                       ,alpha_init = c(0.2,0.8), mean_init = c(50, 280),
+                       sd_init = c(11, 130))
+
+simulation = function(data, n=100){
+  X = NULL
+  X = matrix(nrow=n,ncol=1)
+  J = dim(data)[1]
+  for(i in 1:n){
+    Z = runif(1)
+    if (Z <= data$alpha_init[1]){
+      X[i] = rnorm(1, data$mean_init[1], data$sd_init[1])
+    }else{
+      k = 1
+      l = 2
+      Bool = FALSE
+      vec_alpha = data$alpha_init
+      cumul_alpha = cumsum(vec_alpha)
+      while((Bool == FALSE) & (k < J) & (l < J+1)){
+        if((cumul_alpha[k]<=Z) & (cumul_alpha[l]>=Z)){
+          Bool = TRUE
+          param_index = l
+        }
+        k = k+1
+        l = l+1
+      }
+      X[i] = rnorm(1, data$mean_init[param_index], data$sd_init[param_index])
+    }
+  }
+  return(X)
+}

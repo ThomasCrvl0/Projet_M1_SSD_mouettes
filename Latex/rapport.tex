@@ -445,7 +445,7 @@ Or, les couples $(X_i,Z_i)$ sont indépendants, donc
 \begin{prop}[Expression log-vraisemblance conditionnelle] La fonction $\lv_{c}$ se réecrit sous la forme suivante : 
 \begin{align*}
  \lv_{c}(\theta, \thetat, \bar{X}) &= -\frac{n}{2}log(2\pi)+\sum_{j=1}^J \left(\sum_{i = 1}^n \prob_{\thetat}(Z= j|X=X_i)\right) log(\alpha(j))\\
-&~~~-\frac{1}{2}\sum_{j=1}^J\left(\sum_{i=1}^n  \prob_{\thetat}(Z=j|X=X_i)\right)\left(log(v(j))+\frac{(X_i-m(j))^2}{v(j)}\right)
+&~~~-\frac{1}{2}\sum_{j=1}^J\left(\sum_{i=1}^n  \prob_{\thetat}(Z=j|X=X_i)\left(log(v(j))+\frac{(X_i-m(j))^2}{v(j)}\right)\right)
 \end{align*}
 \end{prop}
 
@@ -480,12 +480,12 @@ $=\sum_{i=1}^n \sum_{j = 1}^J -\frac{1}{2} ln(2\pi) \prob_{\thetat} (Z = j|X = X
 $=-\frac{n}{2}ln(2\pi)  -\frac{1}{2} \sum_{i=1}^n \sum_{j = 1}^J \left(ln(v(j)) + \frac{(X_i - m(j))^2}{v(j)}\right)\prob_{\thetat} (Z = j|X = X_i) $
 \end{center}
 \begin{center}
-$=-\frac{n}{2}ln(2\pi)  -\frac{1}{2} \sum_{j=1}^J \left( \sum_{i = 1}^n \prob_{\thetat} (Z = j|X = X_i) \right) \left(ln(v(j)) + \frac{(X_i - m(j))^2}{v(j)}\right) $
+$=-\frac{n}{2}ln(2\pi)  -\frac{1}{2} \sum_{j=1}^J \left( \sum_{i = 1}^n \prob_{\thetat} (Z = j|X = X_i) \left(ln(v(j)) + \frac{(X_i - m(j))^2}{v(j)}\right)\right) $
 \end{center}
 On obtient bien le résultat espéré :
 \begin{align*}
  \lv_{c}(\theta, \thetat, \bar{X}) &= -\frac{n}{2}log(2\pi)+\sum_{j=1}^J \left(\sum_{i = 1}^n  \prob_{\thetat}(Z=j|X=X_i)\right) log(\alpha(j))\\
-&~~~-\frac{1}{2}\sum_{j=1}^J\left(\sum_{i=1}^n \prob_{\thetat}(Z=j|X=X_i)\right)\left(log(v(j))+\frac{(X_i-m(j))^2}{v(j)}\right)
+&~~~-\frac{1}{2}\sum_{j=1}^J\left(\sum_{i=1}^n \prob_{\thetat}(Z=j|X=X_i)\left(log(v(j))+\frac{(X_i-m(j))^2}{v(j)}\right)\right)
 \end{align*}
 \end{proof}
 
@@ -501,10 +501,57 @@ $m_M(j) = \displaystyle\frac{\sum_{i=1}^n X_i\prob_{\thetat}(Z=j|X=X_i)}{\sum{i=
 
 $v_M(j) = \displaystyle\frac{\sum_{i=1}^n (X_i -m(j))^2 \prob_{\thetat}(Z=j|X=X_i)}{\sum{i=1}^n\prob_{\thetat}(Z=j|X=X_i)}$
 \end{center}
-
 \end{prop}
 
 \begin{proof}
+Cherchons à maximiser pour toutes valeurs fixées de $\bar{X}$ la fonction $\theta \mapsto \lv_{c}(\theta,\thetat,\bar{X})$
+
+Puisqu'il s'agit d'un problème d'optimisation, on introduit le Lagrangien du problème sous la contrainte $\sum_{i=1}^n\alpha(i) = 1$.
+Le Lagrangien est défini par : 
+\begin{align*}
+\lv &: \Theta \times R \rightarrow R_+\\
+&:(\theta,\lambda) \mapsto \lv_c(\theta,\thetat,\bar{X}) - \lambda(\sum_{i=1}^n\alpha(i)-1)
+\end{align*}
+Reprenons maintenant l'écriture précédente de $\lv_c(\theta,\thetat,\bar{X})$
+
+On obtient ainsi 
+\begin{align*}
+\lv(\theta,\lambda) = &-\frac{n}{2}log(2\pi)+\sum_{j=1}^J \left(\sum_{i = 1}^n  \prob_{\thetat}(Z=j|X=X_i)\right) log(\alpha(j))\\
+&-\frac{1}{2}\sum_{j=1}^J\left(\sum_{i=1}^n \prob_{\thetat}(Z=j|X=X_i)\left(log(v(j))+\frac{(X_i-m(j))^2}{v(j)}\right)\right) - \lambda(\sum_{i=1}^n\alpha(i)-1)
+\end{align*}
+Le Lagrangien admet un maximum sous la contrainte et ce maximum $\theta^*$vérifie le système suivant :
+
+$
+\begin{cases}
+\frac{\partial \lv}{\partial \alpha(j)} (\theta^*) = \frac{\sum_{i=1}^n \prob_{\thetat}(Z=j|X=X_i)}{v(j)} - \lambda &=0 \text{ } \forall j \in \llbracket 1,J \rrbracket \\
+\frac{\partial \lv}{\partial m(j)} (\theta^*) = \sum_{i=1}^n \prob_{\thetat}(Z=j|X=X_i)(-2X_i+2m(j)) &=0 \text{ } \forall j \in \llbracket 1,J \rrbracket \\
+\frac{\partial \lv}{\partial v(j)} (\theta^*) = -\frac{1}{2v(j)}\sum_{i=1}^n \prob_{\thetat}(Z=j|X=X_i) + \frac{1}{2v(j)^2}\sum_{i=1}^n \prob_{\thetat}(Z=j|X=X_i)(X_i-m(j))^2 &=0 \text{ } \forall j \in \llbracket 1,J \rrbracket \\
+\frac{\partial \lv}{\partial \lambda} (\theta^*) = \sum_{i=1}^n\alpha(i)-1 &=0 
+\end{cases}
+$
+
+Sous $\thetat$ fixé, et ce qui est bien le cas, on a $\prob_{\thetat}(Z=j|X=X_i)$ une constante.
+Le système devient alors :
+
+$
+\begin{cases}
+\alpha(j) = \frac{\sum_{i=1}^n g_{\thetat}(j|X=X_i)}{\lambda} &\text{ } \forall j \in \llbracket 1,J \rrbracket \\
+m(j) = \frac{\sum_{i=1}^n X_i\prob_{\thetat}(Z=j|X=X_i)}{\sum{i=1}^n \prob_{\thetat}(Z=j|X=X_i)} &\text{ } \forall j \in \llbracket 1,J \rrbracket \\
+v(j) = \frac{\sum_{i=1}^n (X_i -m(j))^2 \prob_{\thetat}(Z=j|X=X_i)}{\sum{i=1}^n\prob_{\thetat}(Z=j|X=X_i)} &\text{ } \forall j \in \llbracket 1,J \rrbracket \\
+\sum_{i=1}^J\alpha(i) =1 
+\end{cases}
+$
+
+Sous la contrainte $\sum_{i=1}^n\alpha(i) =1$ et la première équation du système précedent on obtient l'égalité suivante : 
+
+\begin{align*}
+\sum_{i=1}^J\alpha(i) &= \sum_{i=1}^J \left(\frac{\sum_{i=1}^n \prob_{\thetat}(Z=j|X=X_i)}{\lambda}\right)\\
+&=\frac{\sum_{i=1}^J \sum_{i=1}^n \prob_{\thetat}(Z=j|X=X_i)}{\lambda}\\
+&=\frac{\sum_{i=1}^n \sum_{i=1}^J \prob_{\thetat}(Z=j|X=X_i)}{\lambda}\\
+&=\frac{\sum_{i=1}^n 1}{\lambda}= 1\\
+\end{align*}
+
+On en déduit ainsi $\lambda = n$, ainsi que le résultat énoncé.
 
 \end{proof}
 

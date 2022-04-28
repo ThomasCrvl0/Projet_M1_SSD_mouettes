@@ -30,11 +30,15 @@ GetRealParam = function(listOfSpecies){
 
 # Choix de 2 espèces European Goldfinch et Ring Ouzel afin d'avoir un mélange
 # de 2 gaussiennes
-df_th = GetRealParam(c("European Goldfinch", "Ring Ouzel"))
+df_th = data.frame(bird_names = c("European Goldfinch", "Ring Ouzel")
+                        ,proportion_alpha = c(0.3,0.7), mean_th = c(38, 298.6),
+                          sd_th = c(9.1, 125.1))
+
 
 # Dataframe des données d'initialisations choisies par l'utilisateur
-data_init = data.frame(species_chosen = c("European Goldfinch", "Ring Ouzel")
-                       ,alpha_init = c(0.2,0.8), mean_init = c(50, 280),
+# On a choisi les espece suivantes: "European Goldfinch"
+# et "Ring Ouzel"
+data_init = data.frame(alpha_init = c(0.2,0.8), mean_init = c(50, 280),
                        sd_init = c(11, 130))
 
 simulation = function(data, n=100){
@@ -43,13 +47,13 @@ simulation = function(data, n=100){
   J = dim(data)[1]
   for(i in 1:n){
     Z = runif(1)
-    if (Z <= data$alpha_init[1]){
-      X[i] = rnorm(1, data$mean_init[1], data$sd_init[1])
+    if (Z <= data$proportion_alpha[1]){
+      X[i] = rnorm(1, data$mean_th[1], data$sd_th[1])
     }else{
       k = 1
       l = 2
       Bool = FALSE
-      vec_alpha = data$alpha_init
+      vec_alpha = data$proportion_alpha
       cumul_alpha = cumsum(vec_alpha)
       while((Bool == FALSE) & (k < J) & (l < J+1)){
         if((cumul_alpha[k]<=Z) & (cumul_alpha[l]>=Z)){
@@ -59,7 +63,7 @@ simulation = function(data, n=100){
         k = k+1
         l = l+1
       }
-      X[i] = rnorm(1, data$mean_init[param_index], data$sd_init[param_index])
+      X[i] = rnorm(1, data$mean_th[param_index], data$sd_th[param_index])
     }
   }
   return(X)
@@ -99,7 +103,7 @@ algo_EM = function(df, X, N=30){
         v = append(v, colname)
         # dans le "else if" on calcule la somme des alpha(l)X_i avec l ds [1:J]
       }else if(col == J+1){
-        df_stateE[[colname]] = rowSums(df[v])
+        df_stateE[[colname]] = rowSums(df_stateE[v])
         index = col
         # dans le else on calcule les H_ij
       }else{
@@ -108,23 +112,23 @@ algo_EM = function(df, X, N=30){
       }
     }
     # Etape M
-    for(i in 1:3){
+    for(j in 1:3){
       k = J+2
-      for(j in 1:J){
+      for(i in 1:J){
         # dans le if on met à jour les alpha
-        if(i == 1){
+        if(j == 1){
           H = df_stateE[[k]]
           new_df[i,j] = mean(H)
           k = k+1
           # dans le else if on met à jour les mu
-        }else if(i == 2){
+        }else if(j == 2){
           H = df_stateE[[k]]
           new_df[i,j] = sum(H * X)/(sum(H))
           k = k+1
           # dans le else on met à jour les sigma
         }else{
           H = df_stateE[[k]]
-          new_df[i,j] = sqrt( sum(H*(X-new_df$mu_EM[j])^2) / (sum(H)) )
+          new_df[i,j] = sqrt( sum(H*(X-new_df$mu_EM[i])^2) / (sum(H)) )
           k = k+1
         }
       } 
@@ -132,3 +136,7 @@ algo_EM = function(df, X, N=30){
   }
   return(new_df)
 }
+
+# teste des fonctions simulation et algo_EM
+X = simulation(df_th, 100)
+algo_EM(data_init, X, 30)

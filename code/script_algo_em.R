@@ -137,6 +137,77 @@ algo_EM = function(df, X, N=30){
   return(new_df)
 }
 
-# teste des fonctions simulation et algo_EM
-X = simulation(df_th, 100)
-algo_EM(data_init, X, 30)
+# Fonction calculant la racine carré de l'erreur quadratique moyenne pour
+# les  paramètre à savoir alpha, mu et sigma
+# les RMSE respectives de ces 3 paramatres sont stockées dans un df
+calcul_rmse = function(df_th, new_df){
+  df_rmse = data.frame(rmse_alpha = NA, rmse_mu = NA, rmse_sigma = NA)
+  df_th[[1]] = NULL
+  for(i in 1:3){
+    df_rmse[[i]] = sqrt(mean((df_th[[i]] - new_df[[i]])^2))
+  }
+  return(df_rmse)
+}
+
+monteCarlo = function(df_th, df_init, X, k){
+  df_monteCarlo = data.frame(rmse_alpha = rep(NA, k),
+                             rmse_mu = rep(NA, k),
+                             rmse_sigma = rep(NA, k))
+  for(i in 1:k){
+    new_df = algo_EM(df_init, X, i)
+    df_rmse = calcul_rmse(df_th, new_df)
+    v_rmse = as.numeric(df_rmse)
+    df_monteCarlo[i, ] = v_rmse
+  }
+  return(df_monteCarlo)
+}
+
+# Choix de 2 espèces European Goldfinch et Ring Ouzel afin d'avoir un mélange
+# de 2 gaussiennes
+df_th2 = data.frame(bird_names = c("European Goldfinch", "Ring Ouzel")
+                   ,proportion_alpha = c(0.3,0.7), mean_th = c(38, 298.6),
+                   sd_th = c(9.1, 125.1))
+
+
+# Dataframe des données d'initialisations choisies par l'utilisateur
+# On a choisi les espèces suivantes: "European Goldfinch"
+# et "Ring Ouzel"
+data_init2 = data.frame(alpha_init = c(0.2,0.8), mean_init = c(50, 280),
+                       sd_init = c(11, 130))
+
+# teste des fonctions simulation et algo_EM pour ce mélange de 2 gaussiennes
+X2 = simulation(df_th2, 100)
+print(df_th2)
+algo_EM(data_init2, X2, 30)
+
+# Autre exemple avec 3 espèces
+df_th3 = data.frame(bird_names = c("Stonechat", "European Goldfinch",
+                                   "Common Blackbird")
+                    ,proportion_alpha = c(0.3,0.5,0.2),
+                    mean_th = c(91.0, 38.0, 293.6),
+                    sd_th = c(46.5, 9.1, 78.5))
+
+data_init3 = data.frame(alpha_init = c(0.4,0.5,0.1),
+                    mean_init = c(110, 20, 275),
+                    sd_init = c(55, 21, 98.6))
+
+# teste des fonctions simulation et algo_EM pour ce mélange de 3 gaussiennes
+X3 = simulation(df_th3, 100)
+print(df_th3)
+algo_EM(data_init3, X3, 30)
+
+# Autre exemple avec 4 espèces
+df_th4 = data.frame(bird_names = c("Eurasian Bullfinch", "Common Chaffinch",
+                                   "Mistle Thrush", "Ring Ouzel")
+                    ,proportion_alpha = c(0.3,0.4,0.2, 0.1),
+                    mean_th = c(45, 58.3, 266.1, 298.6),
+                    sd_th = c(3.8, 15.0, 56.6, 125.1))
+
+data_init4 = data.frame(alpha_init = c(0.2,0.2,0.3, 0.3),
+                    mean_init = c(60, 40, 270, 313),
+                    sd_init = c(7, 8.25, 42, 142))
+
+# teste des fonctions simulation et algo_EM pour ce mélange de 4 gaussiennes
+X4 = simulation(df_th4, 100)
+print(df_th4)
+algo_EM(data_init4, X4, 30)

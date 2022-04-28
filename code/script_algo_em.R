@@ -86,11 +86,11 @@ dataStateE = function(n, J){
   return(df_stateE)
 }
 
-algo_EM = function(df, X, N=30){
+algo_EM = function(df, X, N){
   J = dim(df)[1]
   df_stateE = dataStateE(dim(X)[1], J)
-  new_df = data.frame(alpha_EM = rep(NA, J), mu_EM = rep(NA, J),
-                      sd_EM = rep(NA, J))
+  # new_df = data.frame(alpha_EM = rep(NA, J), mu_EM = rep(NA, J),
+  #                     sd_EM = rep(NA, J))
   for(n in 1:N){
     v = c()
     for(col in 1:dim(df_stateE)[2]){
@@ -98,8 +98,8 @@ algo_EM = function(df, X, N=30){
       colname = colnames(df_stateE)[col]
       # dans le if on calcule les alpha(j)X_i
       if(col <= J){
-        df_stateE[[colname]] = df$alpha_init[col]*dnorm(X, df$mean_init[col],
-                                                      df$sd_init[col])
+        df_stateE[[colname]] = df[[1]][col]*dnorm(X, df[[2]][col],
+                                                      df[[3]][col])
         v = append(v, colname)
         # dans le "else if" on calcule la somme des alpha(l)X_i avec l ds [1:J]
       }else if(col == J+1){
@@ -118,23 +118,24 @@ algo_EM = function(df, X, N=30){
         # dans le if on met à jour les alpha
         if(j == 1){
           H = df_stateE[[k]]
-          new_df[i,j] = mean(H)
+          df[i,j] = mean(H)
           k = k+1
           # dans le else if on met à jour les mu
         }else if(j == 2){
           H = df_stateE[[k]]
-          new_df[i,j] = sum(H * X)/(sum(H))
+          df[i,j] = sum(H * X)/(sum(H))
           k = k+1
           # dans le else on met à jour les sigma
         }else{
           H = df_stateE[[k]]
-          new_df[i,j] = sqrt( sum(H*(X-new_df$mu_EM[i])^2) / (sum(H)) )
+          df[i,j] = sqrt( sum(H*(X-df$mean[i])^2) / (sum(H)) )
           k = k+1
         }
       } 
     }
   }
-  return(new_df)
+  colnames(df) = c("alpha_EM","mu_EM","sigma_EM")
+  return(df)
 }
 
 # Fonction calculant la racine carré de l'erreur quadratique moyenne pour
@@ -162,6 +163,7 @@ monteCarlo = function(df_th, df_init, X, k){
   return(df_monteCarlo)
 }
 
+
 # Choix de 2 espèces European Goldfinch et Ring Ouzel afin d'avoir un mélange
 # de 2 gaussiennes
 df_th2 = data.frame(bird_names = c("European Goldfinch", "Ring Ouzel")
@@ -172,8 +174,8 @@ df_th2 = data.frame(bird_names = c("European Goldfinch", "Ring Ouzel")
 # Dataframe des données d'initialisations choisies par l'utilisateur
 # On a choisi les espèces suivantes: "European Goldfinch"
 # et "Ring Ouzel"
-data_init2 = data.frame(alpha_init = c(0.2,0.8), mean_init = c(50, 280),
-                       sd_init = c(11, 130))
+data_init2 = data.frame(alpha = c(0.2,0.8), mean = c(50, 280),
+                       sd = c(11, 130))
 
 # teste des fonctions simulation et algo_EM pour ce mélange de 2 gaussiennes
 X2 = simulation(df_th2, 100)

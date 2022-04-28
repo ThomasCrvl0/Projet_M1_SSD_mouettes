@@ -64,3 +64,71 @@ simulation = function(data, n=100){
   }
   return(X)
 }
+
+# Fonction générant le dataframe (pour l'instant vide)
+# qui contiendra les données calculées à l'étape E
+dataStateE = function(n, J){
+  df_stateE = data.frame(matrix(NA, nrow = n, ncol = J*2+1))
+  for(e in 1:dim(df_stateE)[2]){
+    if(e <= J){
+      names(df_stateE)[e] = paste("alpha", e, "Xi", sep="")
+    }else if(e == J+1){
+      names(df_stateE)[e] = "sumAlpha_j_Xi"
+      index = e
+    }else{
+      names(df_stateE)[e] = paste("H", e-index, sep="_")
+    }
+  }
+  return(df_stateE)
+}
+
+algo_EM = function(df, X, N=30){
+  J = dim(df)[1]
+  df_stateE = dataStateE(dim(X)[1], J)
+  new_df = data.frame(alpha_EM = rep(NA, J), mu_EM = rep(NA, J),
+                      sd_EM = rep(NA, J))
+  for(n in 1:N){
+    v = c()
+    for(col in 1:dim(df_stateE)[2]){
+      # Etape E
+      colname = colnames(df_stateE)[col]
+      # dans le if on calcule les alpha(j)X_i
+      if(col <= J){
+        df_stateE[[colname]] = df$alpha_init[col]*dnorm(X, df$mean_init[col],
+                                                      df$sd_init[col])
+        v = append(v, colname)
+        # dans le "else if" on calcule la somme des alpha(l)X_i avec l ds [1:J]
+      }else if(col == J+1){
+        df_stateE[[colname]] = rowSums(df[v])
+        index = col
+        # dans le else on calcule les H_ij
+      }else{
+        ind_a = col - index
+        df_stateE[[colname]] = df_stateE[[ind_a]]/(df_stateE[[J+1]])
+      }
+    }
+    # Etape M
+    for(i in 1:3){
+      k = J+2
+      for(j in 1:J){
+        # dans le if on met à jour les alpha
+        if(i == 1){
+          H = df_stateE[[k]]
+          new_df[i,j] = mean(H)
+          k = k+1
+          # dans le else if on met à jour les mu
+        }else if(i == 2){
+          H = df_stateE[[k]]
+          new_df[i,j] = sum(H * X)/(sum(H))
+          k = k+1
+          # dans le else on met à jour les sigma
+        }else{
+          H = df_stateE[[k]]
+          new_df[i,j] = sqrt( sum(H*(X-new_df$mu_EM[j])^2) / (sum(H)) )
+          k = k+1
+        }
+      } 
+    }
+  }
+  return(new_df)
+}

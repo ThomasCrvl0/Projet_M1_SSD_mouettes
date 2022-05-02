@@ -1,0 +1,861 @@
+%%% packages %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  
+\documentclass[frenchb]{report}
+%\usepackage{natbib}
+\usepackage[toc,page]{appendix}
+\usepackage[dvipsnames]{xcolor}
+\usepackage[french]{babel}
+\usepackage{url}
+\usepackage[utf8x]{inputenc}
+\usepackage{graphicx}
+\graphicspath{{images/}}
+\usepackage{parskip}
+\usepackage{fancyhdr}
+\usepackage{fancyvrb}
+\usepackage{vmargin}
+\usepackage{xcolor}
+\usepackage{bbm}
+\usepackage{amsmath,amssymb}
+\usepackage{amsthm}
+\usepackage{dsfont}
+\usepackage{stmaryrd}
+\usepackage{systeme}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{pifont}
+\usepackage{textcomp}
+\usepackage{calrsfs}
+\usepackage[T1]{fontenc}
+\usepackage[toc,page]{appendix}
+\usepackage{lipsum}
+\usepackage{verbatim}
+\usepackage{listings}
+\usepackage{adforn}
+\usepackage{float}
+% Les packages necessaires pour faire le pseudo code
+%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{algorithm}
+\usepackage{algorithmic}
+%%%%%%%%%%%%%%%%%%%%%%%%%
+% Je renomme les commandes en français
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\renewcommand{\algorithmicrequire}{\textbf{Entrée(s) :}}
+\renewcommand{\algorithmicreturn}{\textbf{retourner}}
+\renewcommand{\algorithmicensure}{\textbf{Initialisation ;}}
+\renewcommand{\algorithmicwhile}{\textbf{Tant que}}
+\renewcommand{\algorithmicdo}{\textbf{Initialisation}}
+\renewcommand{\algorithmicendwhile}{\textbf{fin du Tant que ;}}
+\renewcommand{\algorithmicend}{\textbf{fin}}
+\renewcommand{\algorithmicif}{\textbf{si}}
+\renewcommand{\algorithmicendif}{\textbf{fin du si}}
+\renewcommand{\algorithmicelse}{\textbf{sinon}}
+\renewcommand{\algorithmicelsif}{\textbf{fin du sinon}}
+\renewcommand{\algorithmicthen}{\textbf{alors}}
+\renewcommand{\algorithmicthen}{\textbf{Étape E}}
+\renewcommand{\algorithmicthen}{\textbf{Étape M}}
+\renewcommand{\algorithmicfor}{\textbf{pour}}
+\renewcommand{\algorithmicforall}{\textbf{pour tout}}
+\renewcommand{\algorithmicto}{\textbf{à}}
+\renewcommand{\algorithmicendfor}{\textbf{fin du pour}}
+\renewcommand{\algorithmicdo}{\textbf{faire}}
+\renewcommand{\algorithmicloop}{\textbf{boucler}}
+\renewcommand{\algorithmicendloop}{\textbf{fin de la boucle}}
+\renewcommand{\algorithmicrepeat}{\textbf{répéter}}
+\renewcommand{\algorithmicuntil}{\textbf{jusqu’à}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\setlength{\hoffset}{-18pt}        
+\setlength{\oddsidemargin}{0pt} % Marge gauche sur pages impaires
+\setlength{\evensidemargin}{9pt} % Marge gauche sur pages paires
+\setlength{\marginparwidth}{54pt} % Largeur de note dans la marge
+\setlength{\textwidth}{481pt} % Largeur de la zone de texte (17cm)
+\setlength{\voffset}{-18pt} % Bon pour DOS
+\setlength{\marginparsep}{7pt} % Séparation de la marge
+\setlength{\topmargin}{0pt} % Pas de marge en haut
+\setlength{\headheight}{13pt} % Haut de page
+\setlength{\headsep}{10pt} % Entre le haut de page et le texte
+\setlength{\footskip}{27pt} % Bas de page + séparation
+\setlength{\textheight}{708pt} % Hauteur de la zone de texte (25cm)
+\usepackage{hyperref}
+\lstset{%
+            inputencoding=utf8,
+                extendedchars=true,
+                literate=%
+                {é}{{\'e}}{1}%
+                {è}{{\`e}}{1}%
+                {à}{{\`a}}{1}%
+                {ç}{{\c{c}}}{1}%
+                {œ}{{\oe}}{1}%
+                {ù}{{\`u}}{1}%
+                {É}{{\'E}}{1}%
+                {È}{{\`E}}{1}%
+                {À}{{\`A}}{1}%
+                {Ç}{{\c{C}}}{1}%
+                {Œ}{{\OE}}{1}%
+                {Ê}{{\^E}}{1}%
+                {ê}{{\^e}}{1}%
+                {î}{{\^i}}{1}%
+                {ô}{{\^o}}{1}%
+                {û}{{\^u}}{1}%
+                {ë}{{\¨{e}}}1
+                {û}{{\^{u}}}1
+                {â}{{\^{a}}}1
+                {Â}{{\^{A}}}1
+                {Î}{{\^{I}}}1
+        }
+    
+    
+\lstset{ language=R,
+  backgroundcolor=\color{lightgray},   % choose the background color; you must add \usepackage{color} or \usepackage{xcolor}; should come as last argument %MidnightBlue
+   basicstyle=\small\ttfamily\color{white},        % the size of the fonts that are used for the code
+  breakatwhitespace=false,         % sets if automatic breaks should only happen at whitespace
+  breaklines=true,                 % sets automatic line breaking
+  captionpos=b,                    % sets the caption-position to bottom
+  commentstyle=\color{SpringGreen},    % comment style
+  deletekeywords={data,frame,length,as,character},           % if you want to delete keywords from the given language
+  extendedchars=true,              % lets you use non-ASCII characters; for 8-bits encodings only, does not work with UTF-8
+  frame=single,	                   % adds a frame around the code
+  keepspaces=true,                 % keeps spaces in text, useful for keeping indentation of code (possibly needs columns=flexible)
+   keywordstyle=\color{Peach},       % keyword style
+  morekeywords={kable,*,...},            % if you want to add more keywords to the set
+  numbers=left,                    % where to put the line-numbers; possible values are (none, left, right)
+  numbersep=5pt,                   % how far the line-numbers are from the code
+  %numberstyle=\tiny\color{gray}, % the style that is used for the line-numbers
+  rulecolor=\color{white},         % if not set, the frame-color may be changed on line-breaks within not-black text (e.g. comments (green here))
+  showspaces=false,                % show spaces everywhere adding particular underscores; it overrides 'showstringspaces'
+  showstringspaces=false,          % underline spaces within strings only
+  showtabs=false,                  % show tabs within strings adding particular underscores
+  stepnumber=2,                    % the step between two line-numbers. If it's 1, each line will be numbered
+      % string literal style
+  tabsize=2,	                   % sets default tabsize to 2 spaces
+  title=\lstname,                  % show the filename of files included with \lstinputlisting; also try caption instead of title
+  mathescape=true,
+  escapechar=|
+  }
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%        
+
+
+        
+\makeatletter
+\let\thetitle\@title
+\let\theauthor\@author
+\let\thedate\@date
+\makeatother
+
+%%% commandes mise en page %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%        
+\newcommand{\ld}{\log_{2}}
+\newcommand{\R}{\mathbbm{R}}
+\newcommand{\N}{\mathbbm{N}}
+\newcommand{\1}{\mathbbm{1}}
+\newcommand{\E}{\mathbbm{E}}
+\newcommand{\V}{\mathbbm{V}}
+\newcommand{\prob}{\mathbbm{P}}
+\newcommand{\Nc}{\mathcal{N}}
+\newcommand{\Cc}{\mathcal{C}}
+\newcommand{\K}{\mathcal{K}}
+\newcommand{\Xti}{\widetilde{X_i}}
+\newcommand{\Xtj}{\widetilde{X_j}}
+\newcommand{\Xn}{\overline{X_n}}
+\newcommand{\gn}{\hat{g_n}}
+\newcommand{\n}{\mathcal{N}}
+\newcommand{\lv}{\mathcal{L}}
+\newcommand{\thetat}{\tilde{\theta}}
+
+\newcommand{\console}[1]{\colorbox{black}{\begin{minipage}[c]{1\linewidth}\textcolor{white}{\texttt{#1}}\end{minipage}}}
+
+\newtheorem{prop}{Proposition}
+\newtheorem{thm}{Théorème}
+\newtheorem{cor}{Corollaire}
+\newtheorem{lem}{Lemme}
+\newtheorem{hyp}{Hypothèse}
+\theoremstyle{definition}\newtheorem{defn}{Définition}
+\theoremstyle{definition}\newtheorem{exm}{Exemple}
+\theoremstyle{definition}\newtheorem{nota}{Notation}
+\theoremstyle{definition}\newtheorem{rem}{Remarque}
+
+\renewcommand{\qedsymbol}{\adfhangingflatleafright}
+
+
+\begin{document}
+%%% Pour l'annexe
+\def\appendixpage{\vspace*{8cm}
+\begin{center}
+\Huge\textbf{Annexes}
+\end{center}
+}
+\def\appendixname{Annexe}%
+%%%
+
+%%% Page de garde %%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{titlepage}
+\begin{center}
+\includegraphics[scale=0.6]{logo.png}
+\hfill
+\includegraphics[scale=0.35]{fds_logo.png}\\[3cm]
+\linespread{1.2}\huge {\bfseries Projet Master 1 SSD }\\[0.5cm]
+\linespread{1.2}\LARGE {\bfseries Un modèle pour les nids de mouettes}\\[1.5cm]
+\linespread{1}
+
+{\large Rédigé par\\}
+{\Large \textsc{carvaillo} Thomas}\\
+{\Large \textsc{côme} Olivier}\\
+{\Large \textsc{pralon} Nicolas}\\[1cm]
+{\large \emph{Encadrante :} Elodie \textsc{Brunel-Piccinini}}\\[1.5cm] 
+
+\includegraphics[scale=0.7]{imag_logo.png}
+
+\end{center}
+\end{titlepage}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\tableofcontents
+\newpage
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\chapter*{Introduction}
+\addcontentsline{toc}{part}{Introduction}
+
+
+\pagebreak
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%% Premier chapitre %%%
+\chapter{Modélisation du problème et liminaire mathématique}
+
+% section 1
+\section{Modélisation du problème}
+
+Nous allons pour commencer donner une première définition, qui est au coeur du présent projet.
+
+\begin{defn}[Loi de mélange]
+On appelle loi de mélange toute loi dont la densité s'écrit sous la forme d'une combinaison convexe de diverses densités. C'est-à-dire que si l'on se donne $J$ variables aléatoires $X_1, \cdots, X_J$ de densité respective $f_1(x), \cdots, f_J(x)$, alors est appellée loi de mélange toute variable aléatoire $X$ dont la densité $f$ s'exprime sous la forme
+\begin{center} $f(x) := \displaystyle\sum_{i=1}^J \alpha_i f_i(x)$ , $\alpha_i \in\R$ \end{center}
+
+\end{defn}
+
+Afin de modéliser commodément le problème, nous introduisons les variables aléatoires suivantes :
+
+\begin{itemize}[label=\adfflowerleft]
+	\item La variable aléatoire $X$, modélisant la taille des nids
+	\item $Z$, la variable aléatoire représentant l'espèce de mouette qui a construit le nid
+\end{itemize}
+
+Enfin, nous nous placerons sous les hypothèses suivantes:
+
+\begin{hyp}
+Nous supposerons que, $\forall j\in \llbracket 1,J \rrbracket$, la taille des nids d'une espèce $j$ ( \underline{i.e.} $X$ conditionnellement à $(Z=j)$ ) suit une loi normale $\n(\mu_j,v_j)$. Nous dénoterons par $f_\theta(x | Z = j) := \gamma_{\mu_j, v_j}(x)$ cette densité.
+\end{hyp}
+
+
+\begin{hyp}
+Soit $\Theta := \{ \theta = (\alpha_j,\mu_j, v_j)_{1 \leq j \leq J} \text{ tels que } \alpha_j > 0 \text{ } \forall j\in \llbracket 1,J\rrbracket \text{ et } \displaystyle\sum_{j=1}^J\alpha_j=1\}$. Soient $X_1, \cdots, X_n$ un échantillon de même loi que $X$. On supposera qu'il existe un $\theta \in \Theta$ tel que les données récoltées, ici les tailles des nids, soient la réalisation du précédent échantillon.
+\end{hyp}
+
+\begin{prop}
+La variable $Z$ est discrète et à valeur dans un sous-ensemble fini de $\N$, elle suit donc une loi 
+\begin{center} $\displaystyle \sum_{j=1}^J \alpha_j\delta_j$ \end{center}
+\underline{où} $J$ représente le nombre d'espèce de mouettes considéré et les $\alpha(j)$ sont des réels, positifs stricts, représentant la proportion de nids de l'espèce $j$, tels que $\displaystyle\sum_{i=1}^J \alpha_j = 1$.
+\end{prop}
+
+Il s'ensuit la proposition suivante, qui sera la racine du présent projet.
+\begin{prop}
+La distribution de la taille des nids de mouettes, \underline{i.e.} $X$, admet pour densité ,au point $x$ et par rapport à la mesure de Lebesgue sur $\R$, la fonction $f_ \theta$ définie comme suit
+\begin{center} $f_\theta(x) = \displaystyle\sum_{j=1}^J \alpha_j \gamma_{\mu_j, v_j}(x) $ \end{center}
+\end{prop}
+
+\begin{proof}
+On vérifie que l'on obtient bien une densité de probabilité, la forme de cette dernière étant la conséquence directe de la définition de la variable aléatoire $X$ : \newline
+\begin{center} $\displaystyle\int_\R f_\theta(x) dx = \int_\R\sum_{j=1}^J \alpha_j \gamma_{\mu_j, v_j}(x)dx = \sum_{j=1}^J\alpha_j\int_\R \gamma_{\mu_j, v_j}(x)dx = \sum_{j=1}^J\alpha_j = 1$ \end{center}
+\end{proof}
+
+Le but de ce projet sera d'étudier des méthodes permettant l'estimation des divers paramètres de cette densité. Nous détonerons par $\theta := (\alpha_j, \mu_j, v_j)_{1\leq j\leq J}$ les vecteurs des ces dits paramètres.
+
+\section{Une histoire de densités}
+
+Introduisons une dernière densité et une dernière probabilité, qui nous seront fort utile quant à l'expression des Log-vraisemblances conditionnelles :
+
+\begin{prop} Nous avons les résultats suivant :
+\begin{enumerate}
+\item La densité du vecteur aléatoire $(X, Z)$ nous est donnée par :
+\begin{align*} 
+h_\theta : &~\R\times \left\{1,\cdots,J\right\} \rightarrow \R_+\\
+&~(x,j) \mapsto \alpha_j\times\gamma_{\mu_j, v_j}(x) 
+\end{align*}
+\item La probabilité de la loi de $Z$ sachant $X=x$ nous est donnée par:
+\begin{center} $\prob_\theta(Z = j | X = x)=\displaystyle \frac{\gamma_{\mu(z),v(z)}\times\alpha_z}{\sum_{i=1}^J \alpha_i \times \gamma_{\mu(i), v(i)}(x)}$ \end{center}
+\end{enumerate}
+\end{prop}
+
+\begin{proof}
+Par propriété des lois conditionnelles, nous avons que  
+\begin{center} $h_\theta(x,j) = f_\theta(x | Z = j)\times \prob_\theta(Z = j) = f_\theta(x)\times\prob_\theta(Z = j | X = x)$ \end{center}
+De ceci, nous déduisons aisément la densité de la loi du vecteur aléatoire $(X,Z)$ : 
+\begin{center} $h_\theta(x,j) = \alpha_j\times\gamma_{\mu_j, v_j}(x)$ \end{center}
+Puis la densité de la loi conditionnelle de $Z$ sachant $X = x$ :
+\begin{center}
+$\prob_\theta(Z = j | X = x)=\displaystyle \frac{\gamma_{\mu(z),v(z)}\times\alpha_z}{\sum_{i=1}^J \alpha_i \times \gamma_{\mu(i), v(i)}(x)}$
+\end{center}
+\end{proof}
+
+\begin{rem}
+Nous pouvons dès à présent noter que pour un échantillon $X_1, \cdots, X_n$ de même loi que $X$, nous avons 
+\begin{center}
+$\forall i \in \llbracket 1,n \rrbracket$, $h_\theta(X_i,j) = f_\theta(X_i) \times \prob_\theta(Z = j | X = X_i )$
+\end{center}
+Ceci nous sera utile dans la suite.
+\end{rem}
+
+Nous allons dès à présent nous intéresser à l'estimation de ces paramètres.
+
+% Section 2
+\section{Une approche élémentaire}
+
+Regardons dans un premier temps un cas simplifié, un cas ne décrivant pas la réalité des observations mais qui a le mérite de constituer une agréable entrée en matière. \newline
+Nous supposerons ici qu'ont été relevés simultanément et les mesures des tailles des nids et l'espèce de mouette qui l'a construit. Le modèle ici considéré est donc composé des couples $(X_i, Z_i)$, $i \in \llbracket1,n \rrbracket$. On considérera dès lors la fonction de densité $h_\theta(x,z)$.\newline
+L'estimation des divers paramètres est alors élémentaire, en témoigne les propositions suivantes :
+\begin{prop}[Fonction de Log-vraisemblance]
+La Log-vraisemblance du modèle s'écrit
+\begin{center} $\mathcal{L}_\theta(X_1, \cdots, X_n, Z_1, \cdots, Z_n) = \displaystyle \sum_{j=1}^J \#A_j ln(\alpha_j) + \sum_{j=1}^J\sum_{i\in A_j}ln(\gamma_{\mu_j, v_j}(X_i))$ \end{center}
+\underline{où} les $A_j$ sont définis par $A_j := \{ i\in \llbracket1,n \rrbracket$ tels que $Z_i = j \}$ \underline{i.e.} $\displaystyle\bigcup_{j=1}^J A_j = \llbracket1,n \rrbracket$
+\end{prop}
+
+\begin{proof}
+La Log-vraisemblance du modèle s'écrit:
+\begin{align*}
+\mathcal{L}_\theta(X_1, \cdots, X_n, Z_1, \cdots, Z_n) &= ln\left(\displaystyle\prod_{i=1}^n h_\theta(X_i, Z_i) \right)\\
+&= ln\left(\displaystyle\prod_{i=1}^n  \alpha_{Z_i}\gamma_{\mu_j, v_j}(X_i) \right)\\
+&= \displaystyle\sum_{i=1}^n ln(\alpha_{Z_i})+ ln(\gamma_{\mu_j, v_j}(X_i))\\
+\end{align*}
+$Z_i$ est à valeur dans $\llbracket1,J \rrbracket$, on  partitionne donc $I := \llbracket1,n \rrbracket$ comme $I = \displaystyle\bigcup_{j=1}^J A_j$ pour obtenir
+\begin{align*}
+\mathcal{L}_\theta(X_1, \cdots, X_n, Z_1, \cdots, Z_n) &=  \displaystyle\sum_{j=1}^J\sum_{i\in A_j} ln(\alpha_{Z_i})+ \sum_{j=1}^J\sum_{i\in A_j} ln(\gamma_{\mu_j, v_j}(X_i))\\
+&= \displaystyle\sum_{j=1}^J\sum_{i\in A_j} ln(\alpha_j)+ \sum_{j=1}^J\sum_{i\in A_j} ln(\gamma_{\mu_j, v_j}(X_i)) \\
+&= \displaystyle\sum_{j=1}^J \#A_j ln(\alpha_j)+ \sum_{j=1}^J\sum_{i\in A_j} ln(\gamma_{\mu_j, v_j}(X_i)) \\
+\end{align*}
+\end{proof}
+Nous pouvons dès lors maximiser la log-vraisemblance afin d'obtenir les estimateurs souhaités :
+\begin{prop}[Estimateurs]
+Les estimateurs du maximum de vraisemblance $\hat{\alpha_j}$ (resp. $\hat{\mu_j}$, et $\hat{v_j}$) de $\alpha_j$ (resp. $\mu_j$ et $v_j$) sont donnés par
+\begin{center}
+$\hat{\alpha_j} = \frac{\#A_j}{n}$
+\end{center}
+\begin{center}
+$ \hat{\mu_j} = \displaystyle\frac{\sum_{i\in A_j} X_i}{\#A_j} $
+\end{center}
+\begin{center}
+$ \hat{v_j} = \displaystyle \frac{\sum_{i\in A_j}(X_i - \hat{\mu_j})^2}{\#A_j}$
+\end{center}
+\end{prop}
+
+\begin{proof}
+Soit $\theta = (\alpha_j, \mu_j, v_j)_{j \in \llbracket 1,J \rrbracket}$. Il s'agit de déterminer 
+\begin{center}
+	$\underset{\theta\in\R^{3J}, \sum_{j=1}^J\alpha_j = 1}{\text{argmax}}\left(\displaystyle\sum_{j=1}^J \#A_j ln(\alpha_j)+ \sum_{j=1}^J\sum_{i\in A_j} ln(\gamma_{\mu_j, v_j}(x_i))\right)$
+\end{center}
+Nous avons donc à résoudre un programme de minimisation d'une fonction convexe sur un convexe avec une contraire égalité, il est ainsi naturel de faire appel au Lagrangien. \newline 
+Ce dernier s'écrit
+\begin{align*} 
+L(\theta) &= \displaystyle\sum_{j=1}^J \#A_j ln(\alpha_j)+ \sum_{j=1}^J\sum_{i\in A_j} ln(\gamma_{\mu_j, v_j}(x_i)) - \lambda\times\left(\sum_{j=1}^J\alpha_j - 1\right)\\
+&= \displaystyle\sum_{j=1}^J \#A_j ln(\alpha_j)+ \sum_{j=1}^J\sum_{i\in A_j} ln\left(\frac{1}{\sqrt{2\pi v_j}}\exp\left(-\frac{\left(x_i -\mu_j\right)^2}{2v_j} \right)\right) - \lambda\times\left(\sum_{j=1}^J\alpha_j - 1\right)\\
+&= \displaystyle\sum_{j=1}^J \#A_j ln(\alpha_j)+ \sum_{j=1}^J\sum_{i\in A_j}\left( \frac{-1}{2}ln(2\pi v_j) -\frac{(x_i-\mu_j)^2}{2v_j}\right) - \lambda\times\left(\sum_{j=1}^J\alpha_j - 1\right)\\
+\end{align*}
+
+Il reste maintenant à résoudre le système suivant, afin d'obtenir le vecteur $\hat{\theta} := (\hat{\alpha_j}, \hat{\mu_j}, \hat{v_j})_{j\in\llbracket 1,J \rrbracket}$ solution du programme.
+
+$
+\begin{cases}
+\displaystyle\frac{\#A_j}{\hat{\alpha_j}} - \lambda &= 0 \text{ } \forall j \in \llbracket 1,J \rrbracket \\
+\displaystyle\sum_{i\in A_j} (x_i-\hat{\mu_j})/\hat{v_j} & = 0 \text{ } \forall j \in \llbracket 1,J \rrbracket \\
+\displaystyle\sum_{i\in A_j} \frac{-0.5 \times 2 \times \pi}{2\pi \hat{v_j}} +\frac{(x_i-\hat{\mu_j})^2}{2\hat{v_j}^2} &= 0 \text{ } \forall j \in \llbracket 1,J \rrbracket\\
+\displaystyle\sum_{j=1}^J \hat{\alpha_j} = 1
+\end{cases}
+$
+
+Ceci équivaut à 
+
+$
+\begin{cases}
+\displaystyle\frac{\#A_j}{\hat{\alpha_j}} &= \lambda \text{ } \forall j \in \llbracket 1,J \rrbracket \\
+\displaystyle\sum_{i\in A_j}x_i & =\displaystyle\sum_{i\in A_j} \hat{\mu_j} \text{ } \forall j \in \llbracket 1,J \rrbracket \\
+\displaystyle\sum_{i\in A_j} (x_i-\hat{\mu_j})^2 &= \displaystyle\sum_{i\in A_j} \hat{v_j}  \text{ } \forall j \in \llbracket 1,J \rrbracket \\
+\displaystyle\sum_{j=1}^J \hat{\alpha_j} = 1
+\end{cases}
+$
+$\Leftrightarrow$
+$
+\begin{cases}
+\displaystyle\frac{\#A_j}{\hat{\alpha_j}} &= \lambda \text{ } \forall j \in \llbracket 1,J \rrbracket \\
+\displaystyle\sum_{i\in A_j}\frac{x_i}{\#A_j} & = \hat{\mu_j} \text{ } \forall j \in \llbracket 1,J \rrbracket \\
+\displaystyle\sum_{i\in A_j} \frac{(x_i-\hat{\mu_j})^2}{\#A_j} &=  \hat{v_j}  \text{ } \forall j \in \llbracket 1,J \rrbracket \\
+\displaystyle\sum_{j=1}^J \hat{\alpha_j} = 1
+\end{cases}
+$
+
+En sommant les $J$ premières lignes du système, on obtient $\displaystyle\sum_{j=1}^J\#A_j = \sum_{j=1}^J\hat{\alpha_j}\lambda$, \underline{i.e.} $\lambda = n$. En injectant ceci dans le précédent système, on obtient finalement ce qui était annoncé :
+
+$
+\begin{cases}
+\hat{\alpha_j} &= \displaystyle \frac{\#A_j}{n} \text{ } \forall j \in \llbracket 1,J \rrbracket \\
+\hat{\mu_j} &= \displaystyle\sum_{i\in A_j}\frac{x_i}{\#A_j} \text{ } \forall j \in \llbracket 1,J \rrbracket \\
+\hat{v_j} &= \displaystyle\sum_{i\in A_j} \frac{(x_i-\hat{\mu_j})^2}{\#A_j}  \text{ } \forall j \in \llbracket 1,J \rrbracket \\
+\end{cases}
+$
+\end{proof}
+
+
+%section 3
+\section{Une situation concordante à la réalité} % approche réelle // situation naturelle // concordance
+Nous nous placerons désormais dans un contexte tout autre que celui du paragraphe précédent, un contexte concordant davantage à la réalité. Dans ce qui suit, nous supperons que ne sont observées que les tailles des nids, les diverses espèces de mouettes les ayant construit étant en quelques sortes des données "cachées". Nous avons donc un échantillon $X_1,\cdots, X_n$ de même loi que la variable $X$ comme définie ci-dessus. \newline
+On définit $\mathcal{L}_{obs}$ la log-vraisemblance des observations, nous obtenons ainsi 
+
+\begin{defn} 
+La log-vraisemblance des observations s'écrit 
+\begin{center} $\mathcal{L}_{obs}(\theta, X_1, \cdots, X_n) := ln\left( \displaystyle\prod_{i=1}^n f_\theta(X_i) \right) = \displaystyle\sum_{i=1}^nln\left( \sum_{j=1}^J \alpha_j \gamma_{\mu_j, v_j}(X_i) \right)$ \end{center}
+\end{defn}
+
+Nous voyons dès lors que l'existence d'une expression analytique du maximum de la log-vraisemblance n'est pas assurée. Il est donc nécessaire de trouver un moyen d'approcher les valeurs des différents estimateurs. \newline
+Pour ce faire, on définit une log-vraisemblance des couples $(X_i,Z_i)$ sachant le vecteurs des observations $X_1, \cdots, X_n$.
+\begin{prop}[log-vraisemblance conditionnelle]
+On définit la log-vraisemblance $\lv_{c}(\theta, \thetat, X_1, \cdots, X_n) $ conditionnelle par
+\begin{center} $\lv_{c}(\theta, \thetat, X_1, \cdots, X_n) = \E_{\thetat}[\lv_\theta(X_1, \cdots, X_n, Z_1, \cdots, Z_n) | X_1, \cdots, X_n]$ \end{center}
+\end{prop}
+
+Nous allons maintenant travailler sur l'expression de la log-vraisemblance conditionnelle et en donner une expression simplifiée, qui nous sera fort utile ultérieurement, et une expression plus substancielle, qui nous sera immédiatement utile.
+
+\begin{prop}
+Nous avons
+\begin{center} $\lv_{c}(\theta, \thetat, X_1, \cdots, X_n) = \displaystyle\sum_{i=1}^n\sum_{j=1}^J ln(h_\theta(X_i ,j))  \prob_{\thetat}(Z = j|X = X_i)$ \end{center}
+\end{prop}
+
+\begin{proof}
+En effet
+\begin{align*}
+\lv_{c}(\theta, \thetat, X_1, \cdots, X_n) &= \E_{\thetat}[\lv_\theta(X_1, \cdots, X_n, Z_1, \cdots, X_n)|X_1, \cdots, X_n]\\
+&=  \E_{\thetat}\bigg[\displaystyle ln\left(\prod_{i=1}^n  h_\theta(X_i,Z_i)\right) |X_1, \cdots X_n \bigg]\\
+&= \displaystyle\sum_{i=1}^n  \E_{\thetat}[ln(h_\theta(X_i,Z_i))|X_1, \cdots, X_n]\\
+\end{align*}
+Or, les couples $(X_i,Z_i)$ sont indépendants, donc
+\begin{align*}
+\lv_{c}(\theta, \thetat, X_1, \cdots, X_n) &= \displaystyle\sum_{i=1}^n  \E_{\thetat}[ln(h_\theta(X_i,Z_i))|X_i ]\\
+&= \displaystyle\sum_{i=1}^n \sum_{j = 1}^J ln(h_\theta(X_i,j)) \prob_{\thetat} (Z = j|X = X_i)\\
+\end{align*}
+\end{proof}
+
+Nous nous appuierons sur l'expression suivante pour l'expression des estimateurs du maximum de vraisemblance :
+
+\begin{prop} La fonction $\lv_{c}(\theta, \thetat, X_1, \cdots, X_n)$ se réecrit sous la forme suivante : 
+\begin{align*}
+ \lv_{c}(\theta, \thetat, X_1, \cdots, X_n) &= -\frac{n}{2}log(2\pi)+\sum_{j=1}^J \left(\sum_{i = 1}^n \prob_{\thetat}(Z= j|X=X_i)\right) log(\alpha_j)\\
+&~~~-\frac{1}{2}\sum_{j=1}^J\left(\sum_{i=1}^n  \prob_{\thetat}(Z=j|X=X_i)\left(log(v_j)+\frac{(X_i-\mu_j)^2}{v_j}\right)\right)
+\end{align*}
+\end{prop}
+
+\begin{proof}
+Il suffit de partir de la forme précédente de la log-vraisemblance conditionnelle, on a ainsi : 
+
+\begin{align*}
+ \lv_{c}(\theta, \thetat, X_1, \cdots, X_n) &= \sum_{i=1}^n \sum_{j = 1}^J ln(h_\theta(X_i,j)) \prob_{\thetat} (Z = j|X = X_i)\\
+&= \sum_{i=1}^n \sum_{j = 1}^J ln(\alpha_j\gamma_{\mu_j,v_j}(X_i))\times \prob_{\thetat} (Z = j|X = X_i)\\
+&= \sum_{i=1}^n \sum_{j = 1}^J \left(ln(\alpha_j)+ln(\gamma_{\mu_j,v_j}(X_i))\right)\times \prob_{\thetat} (Z = j|X = X_i)\\
+&= \sum_{i=1}^n \sum_{j = 1}^J ln(\alpha_j)\prob_{\thetat} (Z = j|X = X_i)+\sum_{i=1}^n \sum_{j = 1}^J ln(\gamma_{\mu_j,v_j}(X_i))\prob_{\thetat} (Z = j|X = X_i)\\
+\end{align*}
+
+Traitons pour commencer la double somme 
+\begin{center} $\Delta := \displaystyle \sum_{i=1}^n \sum_{j = 1}^J ln(\gamma_{\mu_j,v_j}(X_i))\prob_{\thetat} (Z = j|X = X_i)$ \end{center}
+
+Nous avons :
+\begin{center}
+$\gamma_{\mu_j,v_j}(X_i) = \frac{1}{\sqrt{2 \pi v(j)}}e^{-\frac{1}{2}\frac{(X_i - \mu_j)^2}{v_j}}$
+\end{center}
+\begin{center}
+$\prob_{\thetat} (Z = j|X = X_i) = \displaystyle \frac{\alpha_j\gamma_{\mu_j,v_j}}{\displaystyle\sum_{i=1}^J \alpha_j\gamma_{\mu_i,v_i}}$
+\end{center}
+
+
+La double somme devient alors 
+\begin{align*}
+\Delta &= \sum_{i=1}^n \sum_{j = 1}^J ln\left(\frac{1}{\sqrt{2 \pi v_j}}e^{-\frac{1}{2}\frac{(X_i - \mu_j)^2}{v_j}}\right)\times\prob_{\thetat} (Z = j|X = X_i) \\
+&=\sum_{i=1}^n \sum_{j = 1}^J ln\left(\frac{1}{\sqrt{2 \pi v_j}}\right)\times\prob_{\thetat} (Z = j|X = X_i) -\frac{1}{2}\left(\frac{(X_i - \mu_j)^2}{v_j}\right)\times\prob_{\thetat} (Z = j|X = X_i)\\
+&=\sum_{i=1}^n \sum_{j = 1}^J -\frac{1}{2} ln(2\pi)\times \prob_{\thetat} (Z = j|X = X_i)-\frac{1}{2}ln(v_j)\times \prob_{\thetat} (Z = j|X = X_i) -\frac{1}{2}\left(\frac{(X_i - \mu_j)^2}{v_j}\right)\times\prob_{\thetat} (Z = j|X = X_i) \\
+&=-\frac{n}{2}ln(2\pi)  -\frac{1}{2} \sum_{i=1}^n \sum_{j = 1}^J \left(ln(v_j) + \frac{(X_i - \mu_j)^2}{v_j}\right)\times\prob_{\thetat} (Z = j|X = X_i) \\
+&=-\frac{n}{2}ln(2\pi)  -\frac{1}{2} \sum_{j=1}^J \left( \sum_{i = 1}^n \prob_{\thetat} (Z = j|X = X_i)\times \left(ln(v_j) + \frac{(X_i - \mu_j)^2}{v_j}\right)\right) \\
+\end{align*}
+
+On obtient de fait le résultat espéré :
+\begin{align*}
+ \lv_{c}(\theta, \thetat, X_1, \cdots, X_n) &= -\frac{n}{2}log(2\pi)+\sum_{j=1}^J \left(\sum_{i = 1}^n  \prob_{\thetat}(Z=j|X=X_i)\right) \times ln(\alpha_j)\\
+&~~~-\frac{1}{2}\sum_{j=1}^J\left(\sum_{i=1}^n \prob_{\thetat}(Z=j|X=X_i)\times\left(ln(v_j)+\frac{(X_i-\mu_j)^2}{v_j}\right)\right)
+\end{align*}
+\end{proof}
+
+Nous allons dès à présent énoncer une proposition vitale, celle de l'expression des estimateurs du maximum de vraisemblance de la log-vraisemblance conditionnelle. L'expression de ces derniers seront le pivot de l'algorithme EM, que nous présenterons dans le chapitre suivant.
+
+\begin{prop}La fonction $\theta \mapsto \lv_{c}(\theta,\thetat, X_1, \cdots, X_n)$ admet un unique maximum $\theta_M$ donné par : 
+\begin{center}
+$\hat{\alpha_j} = \displaystyle\frac{1}{n}\sum_{i=1}^n \prob_{\thetat}(Z=j|X=X_i)$
+\end{center}
+\begin{center}
+
+$\hat{\mu_j}= \displaystyle\frac{\displaystyle\sum_{i=1}^n X_i\prob_{\thetat}(Z=j|X=X_i)}{\displaystyle\sum_{i=1}^n \prob_{\thetat}(Z=j|X=X_i)}$
+\end{center}
+\begin{center}
+
+$\hat{v_j} = \displaystyle\frac{\displaystyle\sum_{i=1}^n (X_i -\mu_j)^2 \prob_{\thetat}(Z=j|X=X_i)}{\displaystyle\sum_{i=1}^n\prob_{\thetat}(Z=j|X=X_i)}$
+\end{center}
+\end{prop}
+
+\begin{proof}
+Soit $\theta = (\alpha_j, \mu_j, v_j)$. Il s'agit ici de maximiser la fonction $\theta \mapsto \lv_{c}(\theta,\thetat, X_1, \cdots, X_n)$
+
+Puisqu'il s'agit d'un problème d'optimisation, nous appliquons la même méthode que précédemment, en introduisant le Lagrangien du problème sous la contrainte $\displaystyle\sum_{i=1}^n\alpha(i) = 1$.
+
+Nous reprenons ici l'écriture de $\lv_c(\theta,\thetat,X_1, \cdots, X_n)$ donné dans la précédente proposition, nous obtenons ainsi l'expression suivante du Lagrangien
+\begin{align*}
+L(\theta,\lambda) = &-\frac{n}{2}log(2\pi)+\sum_{j=1}^J \left(\sum_{i = 1}^n  \prob_{\thetat}(Z=j|X=X_i)\right) log(\alpha_j)\\
+&-\frac{1}{2}\sum_{j=1}^J\left(\sum_{i=1}^n \prob_{\thetat}(Z=j|X=X_i)\left(log(v_j)+\frac{(X_i-\mu_j)^2}{v_j}\right)\right) - \lambda\left(\sum_{i=1}^n\alpha_i-1\right)
+\end{align*}
+Le Lagrangien admet un maximum sous la contrainte et ce maximum $\theta^*$vérifie le système suivant :
+
+$
+\begin{cases}
+\displaystyle\frac{\partial \lv}{\partial \alpha_j} (\theta^*) = \frac{\displaystyle\sum_{i=1}^n \prob_{\thetat}(Z=j|X=X_i)}{v_j} - \lambda &=0 \text{ } \forall j \in \llbracket 1,J \rrbracket \\
+\displaystyle\frac{\partial \lv}{\partial \mu_j} (\theta^*) = \displaystyle\sum_{i=1}^n \prob_{\thetat}(Z=j|X=X_i)(-2X_i+2\mu_j) &=0 \text{ } \forall j \in \llbracket 1,J \rrbracket \\
+\displaystyle\frac{\partial \lv}{\partial v_j} (\theta^*) = -\displaystyle\frac{1}{2v_j}\sum_{i=1}^n \prob_{\thetat}(Z=j|X=X_i) + \frac{1}{2v_j^2}\sum_{i=1}^n \prob_{\thetat}(Z=j|X=X_i)(X_i-\mu_j)^2 &=0 \text{ } \forall j \in \llbracket 1,J \rrbracket \\
+\displaystyle\frac{\partial \lv}{\partial \lambda} (\theta^*) = \sum_{i=1}^n\alpha_i-1 &=0 
+\end{cases}
+$
+
+Sous $\thetat$ fixé, et ce qui est bien le cas, on a $\prob_{\thetat}(Z=j|X=X_i)$ une constante.  {\color{red}???? POURQUOI ????}
+Le système devient alors :
+
+$
+\begin{cases}
+\alpha_j =\displaystyle \frac{\displaystyle\sum_{i=1}^n g_{\thetat}(j|X=X_i)}{\lambda} &\text{ } \forall j \in \llbracket 1,J \rrbracket \\
+\mu_j =\displaystyle \frac{\displaystyle\sum_{i=1}^n X_i\prob_{\thetat}(Z=j|X=X_i)}{\displaystyle\sum_{i=1}^n \prob_{\thetat}(Z=j|X=X_i)} &\text{ } \forall j \in \llbracket 1,J \rrbracket \\
+v_j = \displaystyle\frac{\displaystyle\sum_{i=1}^n (X_i -\mu_j)^2 \prob_{\thetat}(Z=j|X=X_i)}{\displaystyle\displaystyle\sum_{i=1}^n\prob_{\thetat}(Z=j|X=X_i)} &\text{ } \forall j \in \llbracket 1,J \rrbracket \\
+\displaystyle\sum_{i=1}^J\alpha_i =1 
+\end{cases}
+$
+
+Sous la contrainte $\displaystyle\sum_{i=1}^n\alpha_i =1$ et la première équation du système précedent on obtient l'égalité suivante : 
+
+\begin{align*}
+\sum_{i=1}^J\alpha_i &= \sum_{i=1}^J \left(\frac{\displaystyle\sum_{i=1}^n \prob_{\thetat}(Z=j|X=X_i)}{\lambda}\right)\\
+&=\displaystyle\frac{\displaystyle\sum_{i=1}^J \sum_{i=1}^n \prob_{\thetat}(Z=j|X=X_i)}{\lambda}\\
+&=\displaystyle\frac{\displaystyle\sum_{i=1}^n \sum_{i=1}^J \prob_{\thetat}(Z=j|X=X_i)}{\lambda}\\
+&=\displaystyle\frac{\displaystyle\sum_{i=1}^n 1}{\lambda}= 1\\
+\end{align*}
+
+On en déduit ainsi $\lambda = n$, ainsi que le résultat énoncé.
+\end{proof}
+
+
+Tous ces inesthétiques et fastidieux calculs n'ont pas été effectué en vain. Nous les avons réalisé suite à l'introduction d'une notion nouvelle, celle de la log-vraisemblance conditionnelle; qui elle même à été introduite faute de ne pouvoir obtenir une expression analytique de la log-vraisemblance des observations. Nous allons maintenant tâcher de mettre en exergue le rapport entre ces deux log-vraisemblances. \newline
+
+\pagebreak
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% chapitre 2
+\chapter{L'algorithme EM}
+
+Dans le présent chapitre, nous nous intéresserons A REMPLIR 
+
+
+\section{Présentation laconique et pseudo-code}
+
+{\color{red}  présentation textuelle rapide de l'algo: etape E, etape M etc...}
+
+Pour l'implémentation de cet algorithme, nous nous sommes appuyés sur le pseudo-code suivant.
+
+\begin{algorithm}
+	\caption{\textbf{L’algorithme EM (Dempster et al., 1977).}}
+	\begin{algorithmic}[1]
+		\REQUIRE{$N \in \mathbb{N}$, $\widehat{\theta_0} \in \Theta$, un jeu de données $x_1 \dots x_n$;}
+		\ENSURE
+		\STATE {$k:=1$;}
+		\WHILE {$K < N + 1$}
+		\STATE {$\text{\textbf{ETAPE E :} \textit{Calculer la fonction }} Q(\theta;\widehat{\theta}_{k-1}) = \frac{1}{n} \sum_{i=1}^{n} \mathbb{E}_{\widehat{\theta}_{k-1}} [log f(X_i,Z_i,\theta)|X_i = x_i]$;}
+		\STATE {$\text{\textbf{ETAPE M : }} \widehat{\theta}_k = argmax \hspace{1.5mm} Q(\theta;\widehat{\theta}_{k-1})$;}
+		\STATE {$k \leftarrow k+1$;}
+		\ENDWHILE
+		\RETURN {$\widehat{\theta}_N$;}
+	\end{algorithmic}
+\end{algorithm}
+
+Il n'existe pas de preuvre de convergence de l'algorithme EM; ce dernier peut en effet stagner dans des extremas locaux. Le choix de bons paramètres initiaux est de fait primordial. Nous verrons cela dans une prochaine section. Toutefois, nous sommes assurés que l'algorithme croît, en temoigne la section suivante.
+
+\newpage
+% section 2
+\section{Une preuve de la croissance}
+
+Dans cette concise partie, nous donnons une preuve de la croissance de la log-vraisemblance conditionnelle au fur et à mesure des itérations de l'algorithme EM.
+
+\begin{thm}
+Soit $(\theta_k)_{k\in \N}$ la suite de paramètres construite à l'aide de l'algorithme EM. La log-vraisemblance $\lv_{obs}$ des observations vérifie 
+\begin{center} $\lv_{obs}(\theta_{k+1}, X_1, \cdots, X_n) \geq \lv_{obs}(\theta_k, X_1, \cdots, X_n)$ \end{center}
+\end{thm}
+
+\begin{proof}
+
+Nous allons commencer cette preuve en donnant une autre forme de la log-vraisemblance, dépendant de $\lv_ {obs}(\theta, X_1, \cdots, X_n)$ et d'un terme $\kappa_{\theta,\theta_k}$. Nous avons :
+\begin{align*}
+\lv_c(\theta, \theta_k, X_1, \cdots, X_n) &=  \displaystyle\sum_{i=1}^n\sum_{j=1}^J ln(h_\theta(X_i ,j))  \prob_{\theta_k}(Z = j|X = X_i)\\
+&=  \displaystyle\sum_{i=1}^n\sum_{j=1}^J ln\big[f_\theta(X_i)\times \prob_\theta(Z = j|X=X_i)\big]\prob_{\theta_k}(Z = j|X = X_i)\\
+&=  \displaystyle\sum_{i=1}^n\sum_{j=1}^J ln(f_\theta(X_i))\prob_{\theta_k}(Z = j|X = X_i) + \sum_{i=1}^n\sum_{j=1}^J ln(\prob_\theta(Z = j|X=X_i))\prob_{\theta_k}(Z = j|X = X_i)\\
+&= \displaystyle\sum_{i=1}^n ln(f_\theta(X_i))\times\underbrace{\sum_{j=1}^J \prob_{\theta_k}(Z = j|X = X_i)}_{=1} + \sum_{i=1}^n\sum_{j=1}^J ln(\prob_\theta(Z = j|X = X_i))\prob_{\theta_k}(Z = j|X = X_i)\\
+&= \displaystyle\sum_{i=1}^n ln(f_\theta(X_i)) + \sum_{i=1}^n\sum_{j=1}^J ln(\prob_\theta(Z = j|X=X_i))\prob_{\theta_k}(Z = j|X = X_i) \\
+&= \lv_{obs}(\theta, X_1, \cdots, X_n) + \kappa_{\theta,\theta_k}
+\end{align*}
+
+Dès lors, on obtient
+\begin{align*}
+\lv_{obs}(\theta_{k+1}, X_1, \cdots, X_n) - \lv_{obs}(\theta_k, X_1, \cdots, X_n) &= \lv_c(\theta_{k+1}, \theta_k, X_1, \cdots, X_n) - \kappa_{\theta_{k+1}, \theta_k} -  \lv_c(\theta_k, \theta_k, X_1, \cdots, X_n) + \kappa_{\theta_{k}, \theta_k}
+\end{align*}
+
+Or, la quantité $\lv_c$ est maximisée en $\theta_{k+1}$ lors de l'étape $M$ de l'algorithme, donc
+\begin{center} $ \lv_c(\theta_{k+1}, \theta_k, X_1, \cdots, X_n) - \lv_c(\theta_k, \theta_k, X_1, \cdots, X_n) \geq 0$ \end{center}
+
+Il reste donc à prouver que 
+\begin{center} $\kappa_{\theta_{k}, \theta_k}-\kappa_{\theta_{k+1}, \theta_k} \geq 0$ \end{center}
+
+En effet, nous avons
+\begin{align*}
+\kappa_{\theta_{k}, \theta_k}-\kappa_{\theta_{k+1}, \theta_k} &= \sum_{i=1}^n\sum_{j=1}^J ln(\prob_{\theta_k}(Z = j|X=X_i))\prob_{\theta_k}(Z = j|X = X_i) \\
+&- \sum_{i=1}^n \sum_{j=1}^J ln(\prob_{\theta_{k+1}}(Z = j|X=X_i))\prob_{\theta_k}(Z = j|X = X_i) \\
+&= \sum_{i=1}^n \sum_{j=1}^J ln\left(\frac{\prob_{\theta_k}(Z = j|X=X_i)}{\prob_{\theta_{k+1}}(Z = j|X=X_i)}\right)\prob_{\theta_k}(Z = j|X = X_i)\\
+&= - \sum_{i=1}^n \sum_{j=1}^J ln\left(\frac{\prob_{\theta_{k+1}}(Z = j|X=X_i)}{\prob_{\theta_k}(Z = j|X=X_i)}\right)\prob_{\theta_k}(Z = j|X = X_i)\\
+&\geq - \sum_{i=1}^n ln\left(\sum_{j=1}^J \frac{\prob_{\theta_{k+1}}(Z = j|X=X_i)}{\prob_{\theta_k}(Z = j|X=X_i)}\prob_{\theta_k}(Z = j|X = X_i) \right)\\
+&\text{$\big[$Cette dernière inégalité est due à la convexité du $log$ et au fait que $\displaystyle\sum_{j=1}^J\prob_{\theta_k}(Z = j|X)=1\big]$}\\
+&= - \sum_{i=1}^n ln\left(\sum_{j=1}^J\prob_{\theta_{k+1}}(Z = j|X=X_i)\right)\\
+&=  - \sum_{i=1}^n ln(1)\\
+&= 0
+\end{align*}
+
+
+On obtient ainsi
+
+\begin{center} $\kappa_{\theta_{k}, \theta_k}-\kappa_{\theta_{k+1}, \theta_k} \geq 0$ \end{center}
+
+
+Et finalement
+\begin{center} $\lv_{obs}(\theta_{k+1}, X_1, \cdots, X_n) \geq \lv_{obs}(\theta_k, X_1, \cdots, X_n)$ \end{center}
+
+\end{proof}
+
+\newpage
+
+% section 3
+\section{A remplir - Le choix des valeurs initiales}
+
+% section 4 
+\section{A remplir - Implémentation en langage \textit{R}}
+
+
+%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter*{Bibliographie}
+\addcontentsline{toc}{part}{Bibliographie}
+ 
+Liens utiles
+
+\url{https://www.lpsm.paris/pageperso/rebafka/BookGraphes/algorithme-em.html} \newline
+\url{https://members.loria.fr/moberger/Enseignement/AVR/Exposes/algo-em.pdf} \newline
+\url{http://faculty.washington.edu/fxia/courses/LING572/EM_collins97.pdf}\newline
+\url{https://core.ac.uk/download/pdf/155777956.pdf}\newline
+\url{http://www.cmap.polytechnique.fr/~bansaye/CoursTD6.pdf}
+
+
+\pagebreak
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{appendices}
+\addcontentsline{toc}{chapter}{Annexes}
+% Annexe A
+\chapter{Le package \textit{mclust}}
+Nous avons, dans un élan d'audace, commencé par programmer à la main l'algorithme EM, en nous appuyant sur le pseudo-code explicité en première partie du chapitre II. \newline
+
+Cependant, il existe une librairie \textit{R} - la librairie \textit{mclust} - contenant une implémentation de l'algorithme EM. Notre algorithme étant fonctionnel, nous ne détaillerons pas ici le fonctionnement de ce Package. Il est néanmoins pertinent de l'expérimenter, voire de comparer ces résultats avec ceux notre algorithme.
+
+Pour commencer, installons et chargeons le Package \textit{mclust}.
+\begin{lstlisting}
+install.packages("mclust")
+library("mclust")
+\end{lstlisting}
+%
+Nous reprenons les données des nids d'oiseaux :
+\begin{lstlisting}
+bird_names = c("European Goldfinch", "Common Linnet", "Common Chaffinch",
+               "European Greenfinch", "Eurasian Bullfinch", "Hawfinch",
+               "Stonechat", "European Robin", "Whinchat", "Song Thrush",
+               "Common Blackbird", "Ring Ouzel", "Mistle Thrush")
+
+mean_volume = c(38.0, 60.9, 58.3, 74.5, 45.0, 71.6, 91.0, 68.4, 51.9, 288.9,
+                293.6, 298.6, 266.1)
+
+sd_volume = c(9.1,  20.8, 15.0,  12.2,  3.8,  12.9,  46.5, 29.8, 27.4, 55.9,
+              78.5,  125.1,  56.6)
+\end{lstlisting}
+%
+Puis, il suffit de construire des dataframe. Ici, nous considérerons deux mélanges; un mélange à deux lois et un autre à trois lois.
+\begin{lstlisting}
+df_2= data.frame(bird_names = c("European Goldfinch", "Ring Ouzel")
+                          ,proportion_alpha = c(0.3, 0.7), mean = c(38, 298.6),
+                          sd = c(9.1, 125.1))
+
+df_3= data.frame(bird_names = c("Common Linnet", "Common Chaffinch", "Hawfinch" )
+                          ,proportion_alpha = c(0.6, 0.3, 0.1), mean = c(60.9, 58.3, 71.6),
+                          sd = c(20.8, 15.0, 12.9))
+\end{lstlisting}
+%
+Nous reprenons ici notre propre fonction de simulation
+\begin{lstlisting}
+simulation = function(data_th, n=100)
+\end{lstlisting}
+%
+Les prérequis étant posés, nous simulons un échantillon $X2$ de deux espèces d'oiseaux et un autre $X3$ de trois espèces d'oiseaux :
+\begin{lstlisting}
+set.seed(1907)
+X2 <- simulation(df_2)
+X3 <- simulation(df_3)
+\end{lstlisting}
+%
+Le Package \textit{mclust} est des plus complet; les possibilités étant très vastes et hors du cadre de ce projet (notamment les fonctionnalités de clustering), nous regarderons uniquement la fonction qui nous intéresse, à savoir la fonction \textit{densityMclust}. \newline
+Cette dernière prend en argument des fonctionnalités pertinentes, comme le nombre de mélanges, mais non des valeurs initiales pour les paramètres à estimer.
+%
+
+%%%
+\section{Un exemple sur un mélange à deux lois}
+Commençons par un executer la fonction \textit{densityMclust} sur notre exemple de mélange à deux lois, contenu dans le dataframe $X2$:
+\begin{lstlisting}
+est_2 <- densityMclust(X2)
+\end{lstlisting}
+%
+Il est en premier lieu retourné le graphe de la densité du mélange de lois.
+\begin{center}\includegraphics[scale=0.75]{fig1.png}\end{center}
+Nous pouvons nettement distinguer les deux "pics", correspondant aux deux gaussiennes mélangées.
+Intéressons-nous maintenant à l'objet créé \textit{est$\_$2}.
+\begin{lstlisting}
+est_2
+\end{lstlisting}
+\begin{verbatim}
+'densityMclust' model object: (V,2) 
+
+Available components: 
+ [1] "call"           "data"           "modelName"      "n"              "d"             
+ [6] "G"              "BIC"            "loglik"         "df"             "bic"           
+[11] "icl"            "hypvol"         "parameters"     "z"              "classification"
+[16] "uncertainty"    "density"
+\end{verbatim}
+%
+Ici nous voulons les paramètres estimés, nous nous concentrerons donc que sur la treizième coordonnée de ce vecteur.\newline
+Rappelons que les divers paramètres de ce mélange sont : 0.3 et 0.7 en proportions; 38 et 298.6 pour les moyennes; et 9.1 et 125.1 en écart-types.
+\begin{lstlisting}
+print("Proportions estimées:")
+est_2[13]|\$|parameters|\$|pro
+print("Moyennes estimées:")
+est_2[13]|\$|parameters|\$|mean
+print("Ecart-types estimés:")
+(est_2[13]|\$|parameters|\$|variance|\$|sigmasq)^(1/2)
+\end{lstlisting}
+\begin{verbatim}
+[1] "Proportions estimées:"
+[1] 0.2612243 0.7387757
+[1] "Moyennes estimées:"
+        1         2 
+ 36.80898 301.97108 
+[1] "Ecart-types estimés:"
+[1]  12.16256 136.32256
+\end{verbatim}
+Ici, le nombre de mélange est exact. Les proportions sont très bien estimées, l'erreur la plus importante est de l'ordre de $12\%$. Il en va de même pour les moyennes, les erreurs sont d'ordres inférieures à $10\%$. Les variances sont elles aussi très bien estimées, les erreurs sont négligeables.
+\newpage
+%%%
+\section{Un exemple sur un mélange à trois lois}
+Regardons maintenant le cas d'un mélange de trois lois. Afin de mettre à rude épreuve l'algorithme, nous allons choisir les espèces telles que les moyennes et variances soient proches. Les proportions seront quant à elles bien distinctes, nous allons voir pourquoi.
+%
+\begin{lstlisting}
+est_3<- densityMclust(X3)
+\end{lstlisting}
+\begin{center}\includegraphics[scale=0.75]{fig2.png}\end{center}
+Nous obtenons ici quelque chose d'intéressant; la fonction de densité de ce mélange de trois lois paraît toute à fait gaussienne. Sans une exploration plus approfondie des données, nous commettrions une chagrinante erreur et des conclusions totalement faussées... \newline
+%
+Il est ici pertinent d'observer la structure des données; plus précisemment, nous allons effectuer un test de \textit{Shapiro}.
+\begin{lstlisting}
+shapiro.test(X3)
+\end{lstlisting}
+
+\begin{verbatim}
+	Shapiro-Wilk normality test
+
+data:  X3
+W = 0.97982, p-value = 0.1287
+\end{verbatim}
+La p-value est de 0.1287, ce qui est certes peu élevée, mais pas assez pour rejeter l'hypothèse $(H_0)$ de normalité. Nous sommes ici dans une situation ambiguë.\newline
+%
+
+Observons maintenant comment \textit{densityMclust} se défend fasse à cette situation. \newline
+Rappelons que les divers paramètres de ce mélange sont : 0.6, 0.3 et 0.1 en proportions; 60.9, 58.3 et 71.6 en moyenne; et 20.8, 15 et 12.9 en écart-types.
+\begin{lstlisting}
+print("Proportions estimées:")
+est_3[13]|\$|parameters|\$|pro
+print("Moyennes estimées:")
+est_3[13]|\$|parameters|\$|mean
+print("Ecart-types estimés:")
+(est_3[13]|\$|parameters|\$|variance|\$|sigmasq)^(1/2)
+\end{lstlisting}
+
+\begin{verbatim}
+[1] "Proportions estimées:"
+[1] 1
+[1] "Moyennes estimées:"
+[1] 63.20547
+[1] "Ecart-types estimés:"
+[1] 18.54033
+\end{verbatim}
+Le premier élément notable est que l'algorithme échoue à établir le nombre correct de lois. L'unique moyenne et écart-type estimés ne sont quant à eux pas absurde. \newline
+%
+Nous allons relancer la fonction sur le même jeu de données, en précisant cette fois-ci le nombre de lois.
+\begin{lstlisting}
+est_3b <- densityMclust(X3, G = 3)
+print("Proportions estimées:")
+est_3b[13]|\$|parameters|\$|pro
+print("Moyennes estimées:")
+est_3b[13]|\$|parameters|\$|mean
+print("Ecart-types estimés:")
+(est_3b[13]|\$|parameters|\$|variance|\$|sigmasq)^(1/2)
+\end{lstlisting}
+0.6, 0.3,  0.1 
+60.9, 58.3, 71.6 
+20.8, 15, 12.9
+\begin{verbatim}
+[1] "Proportions estimées:"
+[1] 0.2552686 0.5642272 0.1805042
+[1] "Moyennes estimées:"
+       1        2        3 
+56.63179 62.36268 75.13635 
+[1] "Ecart-types estimés:"
+[1] 17.51051
+\end{verbatim}
+
+Les proportions sont plutôt bien estimées, quoique légèrement surestimées pour deux d'entres elles, mais les erreurs restent faibles. Il en est étonnament de même pour les moyennes, qui sont très bien estimées. Ceci est surprenant au vue de l'allure de la densité. Cependant, il n'est estimé qu'un unique écart-type, ce qui n'est guère étonnant. Notons que celle ci est à peu près égale à la moyenne des écart-types des différentes lois. \newline
+
+Ce cas ambigüe met en exergue les limites de l'algorithme implémenté dans ce package.
+
+
+\end{appendices}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\end{document}

@@ -2,6 +2,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  
 \documentclass[frenchb]{report}
 %\usepackage{natbib}
+\usepackage[toc,page]{appendix}
 \usepackage[dvipsnames]{xcolor}
 \usepackage[french]{babel}
 \usepackage{url}
@@ -104,7 +105,7 @@
     
     
 \lstset{ language=R,
-  backgroundcolor=\color{MidnightBlue},   % choose the background color; you must add \usepackage{color} or \usepackage{xcolor}; should come as last argument
+  backgroundcolor=\color{lightgray},   % choose the background color; you must add \usepackage{color} or \usepackage{xcolor}; should come as last argument %MidnightBlue
    basicstyle=\small\ttfamily\color{white},        % the size of the fonts that are used for the code
   breakatwhitespace=false,         % sets if automatic breaks should only happen at whitespace
   breaklines=true,                 % sets automatic line breaking
@@ -176,6 +177,14 @@
 
 
 \begin{document}
+%%% Pour l'annexe
+\def\appendixpage{\vspace*{8cm}
+\begin{center}
+\Huge\textbf{Annexes}
+\end{center}
+}
+\def\appendixname{Annexe}%
+%%%
 
 %%% Page de garde %%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -212,7 +221,7 @@
 
 
 %%% Premier chapitre %%%
-\chapter{Modélisation du problème}
+\chapter{Modélisation du problème et liminaire mathématique}
 
 % section 1
 \section{Modélisation du problème}
@@ -573,9 +582,11 @@ Pour l'implémentation de cet algorithme, nous nous sommes appuyés sur le pseud
 	\end{algorithmic}
 \end{algorithm}
 
+Il n'existe pas de preuvre de convergence de l'algorithme EM; ce dernier peut en effet stagner dans des extremas locaux. Le choix de bons paramètres initiaux est de fait primordial. Nous verrons cela dans une prochaine section. Toutefois, nous sommes assurés que l'algorithme croît, en temoigne la section suivante.
+
 \newpage
 % section 2
-\section{Un théorème}
+\section{Une preuve de la croissance}
 
 Dans cette concise partie, nous donnons une preuve de la croissance de la log-vraisemblance conditionnelle au fur et à mesure des itérations de l'algorithme EM.
 
@@ -633,10 +644,13 @@ Et finalement
 
 \newpage
 
+% section 3
+\section{Le choix des valeurs initiaules}
 
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter*{Bibliographie}
 \addcontentsline{toc}{part}{Bibliographie}
  
@@ -651,9 +665,198 @@ Liens utiles
 
 \pagebreak
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{appendix}
-\chapter{Annexe}
 
-\end{appendix}
+
+\begin{appendices}
+\addcontentsline{toc}{chapter}{Annexes}
+% Annexe A
+\chapter{Le package \textit{mclust}}
+Nous avons, dans un élan d'audace, commencé par programmer à la main l'algorithme EM, en nous appuyant sur le pseudo-code explicité en première partie du chapitre II. \newline
+
+Cependant, il existe une librairie \textit{R} - la librairie \textit{mclust} - contenant une implémentation de l'algorithme EM. Notre algorithme étant fonctionnel, nous ne détaillerons pas ici le fonctionnement de ce Package. Il est néanmoins pertinent de l'expérimenter, voire de comparer ces résultats avec ceux notre algorithme.
+
+Pour commencer, installons et chargeons le Package \textit{mclust}.
+\begin{lstlisting}
+install.packages("mclust")
+library("mclust")
+\end{lstlisting}
+%
+Nous reprenons les données des nids d'oiseaux :
+\begin{lstlisting}
+bird_names = c("European Goldfinch", "Common Linnet", "Common Chaffinch",
+               "European Greenfinch", "Eurasian Bullfinch", "Hawfinch",
+               "Stonechat", "European Robin", "Whinchat", "Song Thrush",
+               "Common Blackbird", "Ring Ouzel", "Mistle Thrush")
+
+mean_volume = c(38.0, 60.9, 58.3, 74.5, 45.0, 71.6, 91.0, 68.4, 51.9, 288.9,
+                293.6, 298.6, 266.1)
+
+sd_volume = c(9.1,  20.8, 15.0,  12.2,  3.8,  12.9,  46.5, 29.8, 27.4, 55.9,
+              78.5,  125.1,  56.6)
+\end{lstlisting}
+%
+Puis, il suffit de construire des dataframe. Ici, nous considérerons deux mélanges; un mélange à deux lois et un autre à trois lois.
+\begin{lstlisting}
+df_2= data.frame(bird_names = c("European Goldfinch", "Ring Ouzel")
+                          ,proportion_alpha = c(0.3, 0.7), mean = c(38, 298.6),
+                          sd = c(9.1, 125.1))
+
+df_3= data.frame(bird_names = c("Common Linnet", "Common Chaffinch", "Hawfinch" )
+                          ,proportion_alpha = c(0.6, 0.3, 0.1), mean = c(60.9, 58.3, 71.6),
+                          sd = c(20.8, 15.0, 12.9))
+\end{lstlisting}
+%
+Nous reprenons ici notre propre fonction de simulation
+\begin{lstlisting}
+simulation = function(data_th, n=100)
+\end{lstlisting}
+%
+Les prérequis étant posés, nous simulons un échantillon $X2$ de deux espèces d'oiseaux et un autre $X3$ de trois espèces d'oiseaux :
+\begin{lstlisting}
+set.seed(1907)
+X2 <- simulation(df_2)
+X3 <- simulation(df_3)
+\end{lstlisting}
+%
+Le Package \textit{mclust} est des plus complet; les possibilités étant très vastes et hors du cadre de ce projet (notamment les fonctionnalités de clustering), nous regarderons uniquement la fonction qui nous intéresse, à savoir la fonction \textit{densityMclust}. \newline
+Cette dernière prend en argument des fonctionnalités pertinentes, comme le nombre de mélanges, mais non des valeurs initiales pour les paramètres à estimer.
+%
+
+%%%
+\section{Un exemple sur un mélange à deux lois}
+Commençons par un executer la fonction \textit{densityMclust} sur notre exemple de mélange à deux lois, contenu dans le dataframe $X2$:
+\begin{lstlisting}
+est_2 <- densityMclust(X2)
+\end{lstlisting}
+%
+Il est en premier lieu retourné le graphe de la densité du mélange de lois.
+\begin{center}\includegraphics[scale=0.75]{fig1.png}\end{center}
+Nous pouvons nettement distinguer les deux "pics", correspondant aux deux gaussiennes mélangées.
+Intéressons-nous maintenant à l'objet créé \textit{est$\_$2}.
+\begin{lstlisting}
+est_2
+\end{lstlisting}
+\begin{verbatim}
+'densityMclust' model object: (V,2) 
+
+Available components: 
+ [1] "call"           "data"           "modelName"      "n"              "d"             
+ [6] "G"              "BIC"            "loglik"         "df"             "bic"           
+[11] "icl"            "hypvol"         "parameters"     "z"              "classification"
+[16] "uncertainty"    "density"
+\end{verbatim}
+%
+Ici nous voulons les paramètres estimés, nous nous concentrerons donc que sur la treizième coordonnée de ce vecteur.\newline
+Rappelons que les divers paramètres de ce mélange sont : 0.3 et 0.7 en proportions; 38 et 298.6 pour les moyennes; et 9.1 et 125.1 en écart-types.
+\begin{lstlisting}
+print("Proportions estimées:")
+est_2[13]|\$|parameters|\$|pro
+print("Moyennes estimées:")
+est_2[13]|\$|parameters|\$|mean
+print("Ecart-types estimés:")
+(est_2[13]|\$|parameters|\$|variance|\$|sigmasq)^(1/2)
+\end{lstlisting}
+\begin{verbatim}
+[1] "Proportions estimées:"
+[1] 0.2612243 0.7387757
+[1] "Moyennes estimées:"
+        1         2 
+ 36.80898 301.97108 
+[1] "Ecart-types estimés:"
+[1]  12.16256 136.32256
+\end{verbatim}
+Ici, le nombre de mélange est exact. Les proportions sont très bien estimées, l'erreur la plus importante est de l'ordre de $12\%$. Il en va de même pour les moyennes, les erreurs sont d'ordres inférieures à $10\%$. Les variances sont elles aussi très bien estimées, les erreurs sont négligeables.
+\newpage
+%%%
+\section{Un exemple sur un mélange à trois lois}
+Regardons maintenant le cas d'un mélange de trois lois. Afin de mettre à rude épreuve l'algorithme, nous allons choisir les espèces telles que les moyennes et variances soient proches. Les proportions seront quant à elles bien distinctes, nous allons voir pourquoi.
+%
+\begin{lstlisting}
+est_3<- densityMclust(X3)
+\end{lstlisting}
+\begin{center}\includegraphics[scale=0.75]{fig2.png}\end{center}
+Nous obtenons ici quelque chose d'intéressant; la fonction de densité de ce mélange de trois lois paraît toute à fait gaussienne. Sans une exploration plus approfondie des données, nous commettrions une chagrinante erreur et des conclusions totalement faussées... \newline
+%
+Il est ici pertinent d'observer la structure des données; plus précisemment, nous allons effectuer un test de \textit{Shapiro}.
+\begin{lstlisting}
+shapiro.test(X3)
+\end{lstlisting}
+
+\begin{verbatim}
+	Shapiro-Wilk normality test
+
+data:  X3
+W = 0.97982, p-value = 0.1287
+\end{verbatim}
+La p-value est de 0.1287, ce qui est certes peu élevée, mais pas assez pour rejeter l'hypothèse $(H_0)$ de normalité. Nous sommes ici dans une situation ambiguë.\newline
+%
+
+Observons maintenant comment \textit{densityMclust} se défend fasse à cette situation. \newline
+Rappelons que les divers paramètres de ce mélange sont : 0.6, 0.3 et 0.1 en proportions; 60.9, 58.3 et 71.6 en moyenne; et 20.8, 15 et 12.9 en écart-types.
+\begin{lstlisting}
+print("Proportions estimées:")
+est_3[13]|\$|parameters|\$|pro
+print("Moyennes estimées:")
+est_3[13]|\$|parameters|\$|mean
+print("Ecart-types estimés:")
+(est_3[13]|\$|parameters|\$|variance|\$|sigmasq)^(1/2)
+\end{lstlisting}
+
+\begin{verbatim}
+[1] "Proportions estimées:"
+[1] 1
+[1] "Moyennes estimées:"
+[1] 63.20547
+[1] "Ecart-types estimés:"
+[1] 18.54033
+\end{verbatim}
+Le premier élément notable est que l'algorithme échoue à établir le nombre correct de lois. L'unique moyenne et écart-type estimés ne sont quant à eux pas absurde. \newline
+%
+Nous allons relancer la fonction sur le même jeu de données, en précisant cette fois-ci le nombre de lois.
+\begin{lstlisting}
+est_3b <- densityMclust(X3, G = 3)
+print("Proportions estimées:")
+est_3b[13]|\$|parameters|\$|pro
+print("Moyennes estimées:")
+est_3b[13]|\$|parameters|\$|mean
+print("Ecart-types estimés:")
+(est_3b[13]|\$|parameters|\$|variance|\$|sigmasq)^(1/2)
+\end{lstlisting}
+0.6, 0.3,  0.1 
+60.9, 58.3, 71.6 
+20.8, 15, 12.9
+\begin{verbatim}
+[1] "Proportions estimées:"
+[1] 0.2552686 0.5642272 0.1805042
+[1] "Moyennes estimées:"
+       1        2        3 
+56.63179 62.36268 75.13635 
+[1] "Ecart-types estimés:"
+[1] 17.51051
+\end{verbatim}
+
+Les proportions sont plutôt bien estimées, quoique légèrement surestimées pour deux d'entres elles, mais les erreurs restent faibles. Il en est étonnament de même pour les moyennes, qui sont très bien estimées. Ceci est surprenant au vue de l'allure de la densité. Cependant, il n'est estimé qu'un unique écart-type, ce qui n'est guère étonnant. Notons que celle ci est à peu près égale à la moyenne des écart-types des différentes lois. \newline
+
+Ce cas ambigüe met en exergue les limites de l'algorithme implémenté dans ce package.
+
+% Annexe B
+\chapter{Le code ?}
+
+
+\end{appendices}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 \end{document}

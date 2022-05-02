@@ -622,12 +622,12 @@ En effet, nous avons
 \begin{align*}
 \kappa_{\theta_{k}, \theta_k}-\kappa_{\theta_{k+1}, \theta_k} &= \sum_{i=1}^n\sum_{j=1}^J ln(\prob_{\theta_k}(Z = j|X=X_i))\prob_{\theta_k}(Z = j|X = X_i) \\
 &- \sum_{i=1}^n \sum_{j=1}^J ln(\prob_{\theta_{k+1}}(Z = j|X=X_i))\prob_{\theta_k}(Z = j|X = X_i) \\
-&= \sum_{i=1}^n \sum_{j=1}^J ln\left(\frac{\prob_{\theta_k}(Z = j|X=X_i)}{\prob_{\theta_{k+1}}(Z = j|X=X_i)}\right)\prob_{\theta_k}(Z = j|X = X_i)\\
-&= - \sum_{i=1}^n \sum_{j=1}^J ln\left(\frac{\prob_{\theta_{k+1}}(Z = j|X=X_i)}{\prob_{\theta_k}(Z = j|X=X_i)}\right)\prob_{\theta_k}(Z = j|X = X_i)\\
-&\geq - ln\left( \sum_{i=1}^n\sum_{j=1}^J \frac{\prob_{\theta_{k+1}}(Z = j|X=X_i)}{\prob_{\theta_k}(Z = j|X=X_i)}\prob_{\theta_k}(Z = j|X = X_i) \right)\\
-&\text{$\big[$Cette dernière inégalité est due à la convexité de $ln$ et au fait que $\displaystyle\sum_{i=1}^n\sum_{j=1}^J\prob_{\theta_k}(Z = j|X=X_i)=1\big]$}\\
-&= - ln\left( \sum_{i=1}^n\sum_{j=1}^J\prob_{\theta_{k+1}}(Z = j|X=X_i)\right)\\
-&=  -l n(1)\\
+&=\sum_{i=1}^n \sum_{j=1}^J ln\left(\frac{\prob_{\theta_k}(Z = j|X=X_i)}{\prob_{\theta_{k+1}}(Z = j|X=X_i)}\right)\prob_{\theta_k}(Z = j|X = X_i)\\
+&= - n\sum_{i=1}^n \sum_{j=1}^J ln\left(\frac{\prob_{\theta_{k+1}}(Z = j|X=X_i)}{\prob_{\theta_k}(Z = j|X=X_i)}\right)\prob_{\theta_k}(Z = j|X = X_i)\times\frac{1}{n}\\
+&\geq -n\times ln\left( \sum_{i=1}^n\sum_{j=1}^J \frac{\prob_{\theta_{k+1}}(Z = j|X=X_i)}{\prob_{\theta_k}(Z = j|X=X_i)}\prob_{\theta_k}(Z = j|X = X_i)\times\frac{1}{n} \right)\\
+&\text{$\big[$Cette dernière inégalité est due à la convexité de $ln$ et au fait que $\displaystyle\sum_{i=1}^n\sum_{j=1}^J\prob_{\theta_k}(Z = j|X=X_i)\times\frac{1}{n}=1\big]$}\\
+&= - n\times ln\left( \sum_{i=1}^n\sum_{j=1}^J\prob_{\theta_{k+1}}(Z = j|X=X_i)\times\frac{1}{n}\right)\\
+&=  -n\times ln(1)\\
 &= 0
 \end{align*}
 

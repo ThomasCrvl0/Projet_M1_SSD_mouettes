@@ -423,5 +423,3 @@ algo_EM(data_init4, X4, 30)
 # boxplot(df_monteCarlo_50[vecti, 4]) # \v_2
 # boxplot(df_monteCarlo_100[vecti, 4]) # \v_2
 # boxplot(df_monteCarlo_500[vecti, 4]) # \v_2
-
-

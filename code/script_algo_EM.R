@@ -1,16 +1,19 @@
 library(ggplot2)
 library(ggpubr)
 
-# Vecteur dans lequel on a stocké les noms des 13 espèces d'oiseaux présentent dans notre document
+# Vecteur dans lequel on a stocké les noms des 13 espèces d'oiseaux présentent 
+# dans notre document
 bird_names = c("European Goldfinch", "Common Linnet", "Common Chaffinch",
                "European Greenfinch", "Eurasian Bullfinch", "Hawfinch",
                "Stonechat", "European Robin", "Whinchat", "Song Thrush",
                "Common Blackbird", "Ring Ouzel", "Mistle Thrush")
 
-# Vecteur dans lequel on a stocké les moyennes respectives des volumes des nids des 13 espèces d'oiseaux
+# Vecteur dans lequel on a stocké les moyennes respectives des volumes des nids
+# des 13 espèces d'oiseaux
 mean_volume = c(38.0, 60.9, 58.3, 74.5, 45.0, 71.6, 91.0, 68.4, 51.9, 288.9,
                 293.6, 298.6, 266.1)
-# Vecteur dans lequel on a stocké les écarts-types respectifs des volumes des nids des 13 espèces d'oiseaux
+# Vecteur dans lequel on a stocké les écarts-types respectifs des volumes des
+# nids des 13 espèces d'oiseaux
 sd_volume = c(9.1,  20.8, 15.0,  12.2,  3.8,  12.9,  46.5, 29.8, 27.4, 55.9,
               78.5,  125.1,  56.6)
 
@@ -34,9 +37,12 @@ GetRealParam = function(list_Species){
 }
 
 
-# Cette fonction génère aléatoirement un échantillon de taille n issue d'un mélange gaussien
-# Les paramètres (alpha, mu et sigma) des différents mélanges gaussiens sont contenus dans data_th
-# La fonction prends en argument data_th (le dataframe contenant les paramètres alpha, mu et sigma)
+# Cette fonction génère aléatoirement un échantillon de taille n issue 
+# d'un mélange gaussien
+# Les paramètres (alpha, mu et sigma) des différents mélanges gaussiens 
+# sont contenus dans data_th
+# La fonction prends en argument data_th 
+# (le dataframe contenant les paramètres alpha, mu et sigma)
 # et n qui indique le nombre de valeurs que l'on souhaite générer aléatoirement
 # La fonction retourne un vecteur contenant les n valeurs du mélange gaussien
 # qui ont été generées aléatoirement
@@ -83,10 +89,12 @@ param_State_E = function(n, J){
 
 # Cette fonction est une implémentation de l'algorithme EM
 # Elle prend en argument data_init
-# (data_init est un dataframe contenant les paramètres (alpha, mu, sigma) initiaux choisis)
+# (data_init est un dataframe contenant les paramètres (alpha, mu, sigma)
+# initiaux choisis)
 # un vecteur X qui est l'échantillon de taille n
 # K le nombre d'itérations de l'algorithme EM
-# Cette fonction va retourner un dataframe contenant les valeurs des paramètres alpha, mu et sigma
+# Cette fonction va retourner un dataframe contenant les valeurs des
+# paramètres alpha, mu et sigma
 # qui ont été mises à jour après K itérations de l'algorithme EM
 
 algo_EM = function(data_init, X, K){
@@ -98,12 +106,13 @@ algo_EM = function(data_init, X, K){
     vect_alpha = data_init[,2] #de longueur J
     vect_mean = data_init[,3]
     vect_sd = data_init[,4]
-    v = rep(0,n) #vecteur contenant la somme des des numérateurs de P_thetat(j|X = X_i) 
-    #pour chaque valeur de l'echantillon 
+    # vecteur contenant la somme des des numérateurs de P_thetat(j|X = X_i)
+    # pour chaque valeur de l’échantillon 
+    v = rep(0,n) 
     
     # Etape E
     for(j in 1:J){
-      # On remplie le taleau param_State_E contenant P_thetat(j|X=X_i)
+      # On remplie le tableau param_State_E contenant P_thetat(j|X=X_i)
       data_stateE[,j] = vect_alpha[j]*dnorm(X,vect_mean[j],vect_sd[j])
       v = v+data_stateE[,j]
     }
@@ -140,9 +149,12 @@ algo_EM = function(data_init, X, K){
 # Cette fonction calcule l'erreur absolue de tous les paramètres alpha, mu et sigma
 # elle calcule la différence en valeur absolue entre la valeur du paramètre estimé
 # par l'algorithme EM et la valeur du paramètre théorique
-# Elle prend en paramètre data_th le dataframe contenant les paramètres alpha, mu et sigma théoriques
-# et Data_EM dataframe contenant les paramètres alpha, mu et sigma estimés par l'algorithme EM
-# Cette fonction retourne le dataframe contenant les erreurs absolues de chaque paramètre
+# Elle prend en paramètre data_th le dataframe contenant les 
+# paramètres alpha, mu et sigma théoriques
+# et Data_EM dataframe contenant les paramètres alpha, mu et sigma estimés 
+# par l'algorithme EM
+# Cette fonction retourne le dataframe contenant les erreurs absolues de chaque
+# paramètre
 
 calcul_error = function(data_th, data_EM){
   J = dim(data_th)[1]
@@ -155,10 +167,13 @@ calcul_error = function(data_th, data_EM){
 }
 
 
-# Cette fonction calcule l'erreur absolue entre les paramètres estimés par l'algo EM
+# Cette fonction calcule l'erreur absolue entre les paramètres estimés par
+# l'algo EM
 # et les paramètres théoriques pour k echantillons générés aléatoirement
-# Elle prend en argument data_th le dataframe contenant les paramètres alpha, mu et sigma théoriques
-# data_init le dataframe contenant les paramètres (alpha, mu, sigma) initiaux choisis
+# Elle prend en argument data_th le dataframe contenant les paramètres
+# alpha, mu et sigma théoriques
+# data_init le dataframe contenant les paramètres (alpha, mu, sigma)
+# initiaux choisis
 # k le nombre d'échantillons que l'on souhaite générer aléatoirement
 # n la taille des échantillons (les k échantillons seront de tailles n)
 # N le nombre d'iterations de l'algorithme EM
@@ -205,21 +220,32 @@ algo_EM(data_test_init,X,50)
 
 
 # Exemple avec 3 espèces ayant des variables bien séparées
-good_dfTestTh3 = data.frame(bird_names = c("European Goldfinch", "Stonechat", "Ring Ouzel")
-                    ,proportion_alpha = c(0.3,0.5,0.2),
-                    mean_th = c(38.0, 91.0, 298.6),
-                    sd_th = c(9.1, 46.5, 125.1))
+good_dfTestTh3 = data.frame(bird_names = c("European Goldfinch", "Stonechat",
+                                           "Ring Ouzel")
+                            ,proportion_alpha = c(0.3,0.5,0.2),
+                            mean_th = c(38.0, 91.0, 135),
+                            sd_th = c(9.1, 46.5, 125.1))
 
-good_dfTestInit3 = data.frame(bird_names = c("European Goldfinch", "Stonechat", "Ring Ouzel")
+good_dfTestInit3 = data.frame(bird_names = c("European Goldfinch", "Stonechat",
+                                             "Ring Ouzel")
                               ,proportion_alpha = c(0.35,0.57,0.13),
                               mean_th = c(44.4, 100, 278.3),
                               sd_th = c(10, 57, 130))
 
 
-# teste des fonctions simulation et algo_EM pour ce mélange de 3 gaussiennes avec forte séparation
-X3 = simulation(good_dfTestTh3, 100)
+# teste des fonctions simulation et algo_EM pour ce mélange de 3 gaussiennes 
+# avec forte séparation
+X3 = simulation(good_dfTestTh3, 500)
 print(good_dfTestTh3)
 algo_EM(good_dfTestInit3, X3, 30)
+
+# On affiche l'histogramme et la distribution pour le mélange avec
+# forte séparation
+dataGoodSample = data.frame(gaussian_mixture = X3)
+ggplot(dataGoodSample, aes(x=dataGoodSample[,'gaussian_mixture'])) + 
+geom_histogram(aes(y=..density..), colour="black", fill="white", bins = 100) +
+geom_density(alpha=.3, color = "aquamarine2", fill="red", size=1.5) + 
+ggtitle("Distribution d'un mélange gaussien à forte séparation")
 
 # on affiche les boxplots pour ce melange de gausiennes avec forte séparation
 
@@ -329,12 +355,14 @@ ggarrange(s1, s2, s3, s4, s5, s6, s7, s8, s9, ncol = 3, nrow = 3)
 
 
 # Exemple avec 3 espèces ayant des variables mal séparées
-bad_dfTestTh3 = data.frame(bird_names = c("European Greenfinch", "Hawfinch", "Common Chaffinch")
+bad_dfTestTh3 = data.frame(bird_names = c("European Greenfinch", "Hawfinch",
+                                          "Common Chaffinch")
                            ,proportion_alpha = c(0.28,0.12,0.6),
                            mean_th = c(74.5, 71.6, 58.3),
                            sd_th = c(12.2, 12.9, 15.0))
 
-bad_dfTestInit3 = data.frame(bird_names = c("European Greenfinch", "Hawfinch", "Common Chaffinch")
+bad_dfTestInit3 = data.frame(bird_names = c("European Greenfinch", "Hawfinch",
+                                            "Common Chaffinch")
                              ,proportion_alpha = c(0.3,0.2,0.5),
                              mean_th = c(78.3, 69.7, 60),
                              sd_th = c(11.8, 13.3, 17))
@@ -344,6 +372,14 @@ bad_dfTestInit3 = data.frame(bird_names = c("European Greenfinch", "Hawfinch", "
 X3_bad = simulation(bad_dfTestTh3, 100)
 print(bad_dfTestTh3)
 algo_EM(bad_dfTestInit3, X3_bad, 30)
+
+# On affiche l'histogramme et la distribution pour le mélange avec
+# faible séparation
+dataBadSample = data.frame(gaussian_mixture = X3_bad)
+ggplot(dataBadSample, aes(x=dataBadSample[,'gaussian_mixture'])) + 
+geom_histogram(aes(y=..density..), colour="black", fill="white", bins = 50)+
+geom_density(alpha=.3, color = "purple", fill="deepskyblue", size=1.5) +
+ggtitle("Distribution d'un mélange gaussien à faible séparation")
 
 # on affiche les boxplots pour ce melange de gausiennes avec faible séparation
 

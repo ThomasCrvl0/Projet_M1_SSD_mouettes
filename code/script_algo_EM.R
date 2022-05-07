@@ -1,3 +1,6 @@
+library(ggplot2)
+library(ggpubr)
+
 # Vecteur dans lequel on a stocké les noms des 13 espèces d'oiseaux présentent dans notre document
 bird_names = c("European Goldfinch", "Common Linnet", "Common Chaffinch",
                "European Greenfinch", "Eurasian Bullfinch", "Hawfinch",
@@ -218,72 +221,123 @@ X3 = simulation(good_dfTestTh3, 100)
 print(good_dfTestTh3)
 algo_EM(good_dfTestInit3, X3, 30)
 
-# on affiche les boxplots pour ce melange de " gausiennes avec forte séparation
-# Boxplots
+# on affiche les boxplots pour ce melange de gausiennes avec forte séparation
 
 vect1 <- seq(1, 298, by = 3) # vecteur 1
 vect2 <- seq(2, 299, by = 3) # vecteur 2
 vect3 <- seq(3, 300, by = 3) # vecteur 3
 
-
-
-# Pour les \alpha
 df_monteCarlo_50 = Monte_Carlo(good_dfTestTh3, good_dfTestInit3, 100, 50, 10)
 df_monteCarlo_100 = Monte_Carlo(good_dfTestTh3, good_dfTestInit3, 100, 100, 10)
 df_monteCarlo_500 = Monte_Carlo(good_dfTestTh3, good_dfTestInit3, 100, 500, 10)
-par(mfrow = c(3,3))
-boxplot(df_monteCarlo_50[vect1, 2]) # \alpha_1
-boxplot(df_monteCarlo_100[vect1, 2]) # \alpha_1
-boxplot(df_monteCarlo_500[vect1, 2]) # \alpha_1
-boxplot(df_monteCarlo_50[vect2, 2]) # \alpha_2
-boxplot(df_monteCarlo_100[vect2, 2]) # \alpha_2
-boxplot(df_monteCarlo_500[vect2, 2]) # \alpha_2
-boxplot(df_monteCarlo_50[vect3, 2]) # \alpha_3
-boxplot(df_monteCarlo_100[vect3, 2]) # \alpha_3
-boxplot(df_monteCarlo_500[vect3, 2]) # \alpha_3
 
+# Pour les \alpha
+
+a1 = ggplot(df_monteCarlo_50[vect1,], aes(y = df_monteCarlo_50[vect1, 2])) +
+  xlab("n = 50") + ylab("erreur absolue") + 
+  ggtitle("Boxplot pour alpha1") + geom_boxplot(fill="brown2")
+a2 = ggplot(df_monteCarlo_100[vect1,], aes(y = df_monteCarlo_100[vect1, 2])) +
+  xlab("n = 100") + ylab("erreur absolue") +
+  ggtitle("Boxplot pour alpha1") + geom_boxplot(fill="orange")
+a3 = ggplot(df_monteCarlo_500[vect1,], aes(y = df_monteCarlo_500[vect1, 2])) +
+  xlab("n = 500") + ylab("erreur absolue") + 
+  ggtitle("Boxplot pour alpha1") + geom_boxplot(fill="aquamarine")
+a4 = ggplot(df_monteCarlo_50[vect2,], aes(y = df_monteCarlo_50[vect2, 2])) +
+  xlab("n = 50") + ylab("erreur absolue") + 
+  ggtitle("Boxplot pour alpha2") + geom_boxplot(fill="brown2")
+a5 = ggplot(df_monteCarlo_100[vect2,], aes(y = df_monteCarlo_100[vect2, 2])) +
+  xlab("n = 100") + ylab("erreur absolue") +
+  ggtitle("Boxplot pour alpha2") + geom_boxplot(fill="orange")
+a6 = ggplot(df_monteCarlo_500[vect2,], aes(y = df_monteCarlo_500[vect2, 2])) +
+  xlab("n = 500") + ylab("erreur absolue") + 
+  ggtitle("Boxplot pour alpha2") + geom_boxplot(fill="aquamarine")
+a7 = ggplot(df_monteCarlo_50[vect3,], aes(y = df_monteCarlo_50[vect3, 2])) +
+  xlab("n = 50") + ylab("erreur absolue") + 
+  ggtitle("Boxplot pour alpha3") + geom_boxplot(fill="brown2")
+a8 = ggplot(df_monteCarlo_100[vect3,], aes(y = df_monteCarlo_100[vect3, 2])) +
+  xlab("n = 100") + ylab("erreur absolue") +
+  ggtitle("Boxplot pour alpha3") + geom_boxplot(fill="orange")
+a9 = ggplot(df_monteCarlo_500[vect3,], aes(y = df_monteCarlo_500[vect3, 2])) +
+  xlab("n = 500") + ylab("erreur absolue") + 
+  ggtitle("Boxplot pour alpha3") + geom_boxplot(fill="aquamarine")
+ggarrange(a1, a2, a3, a4, a5, a6, a7, a8, a9, ncol = 3, nrow = 3)
+# save with width = 800 and height = 1200
 
 
 # Pour les \mu
-df_monteCarlo_50 = Monte_Carlo(good_dfTestTh3, good_dfTestInit3, 100, 50, 10)
-df_monteCarlo_100 = Monte_Carlo(good_dfTestTh3, good_dfTestInit3, 100, 100, 10)
-df_monteCarlo_500 = Monte_Carlo(good_dfTestTh3, good_dfTestInit3, 100, 500, 10)
-par(mfrow = c(3,3))
-boxplot(df_monteCarlo_50[vect1, 3]) # \mu_1
-boxplot(df_monteCarlo_100[vect1, 3]) # \mu_1
-boxplot(df_monteCarlo_500[vect1, 3]) # \mu_1
-boxplot(df_monteCarlo_50[vect2, 3]) # \mu_2
-boxplot(df_monteCarlo_100[vect2, 3]) # \mu_2
-boxplot(df_monteCarlo_500[vect2, 3]) # \mu_2
-boxplot(df_monteCarlo_50[vect3, 3]) # \mu_3
-boxplot(df_monteCarlo_100[vect3, 3]) # \mu_3
-boxplot(df_monteCarlo_500[vect3, 3]) # \mu_3
+
+m1 = ggplot(df_monteCarlo_50[vect1,], aes(y = df_monteCarlo_50[vect1, 3])) +
+  xlab("n = 50") + ylab("erreur absolue") + 
+  ggtitle("Boxplot pour mu1") + geom_boxplot(fill="brown2")
+m2 = ggplot(df_monteCarlo_100[vect1,], aes(y = df_monteCarlo_100[vect1, 3])) +
+  xlab("n = 100") + ylab("erreur absolue") +
+  ggtitle("Boxplot pour mu1") + geom_boxplot(fill="orange")
+m3 = ggplot(df_monteCarlo_500[vect1,], aes(y = df_monteCarlo_500[vect1, 3])) +
+  xlab("n = 500") + ylab("erreur absolue") + 
+  ggtitle("Boxplot pour mu1") + geom_boxplot(fill="aquamarine")
+m4 = ggplot(df_monteCarlo_50[vect2,], aes(y = df_monteCarlo_50[vect2, 3])) +
+  xlab("n = 50") + ylab("erreur absolue") + 
+  ggtitle("Boxplot pour mu2") + geom_boxplot(fill="brown2")
+m5 = ggplot(df_monteCarlo_100[vect2,], aes(y = df_monteCarlo_100[vect2, 3])) +
+  xlab("n = 100") + ylab("erreur absolue") +
+  ggtitle("Boxplot pour mu2") + geom_boxplot(fill="orange")
+m6 = ggplot(df_monteCarlo_500[vect2,], aes(y = df_monteCarlo_500[vect2, 3])) +
+  xlab("n = 500") + ylab("erreur absolue") + 
+  ggtitle("Boxplot pour mu2") + geom_boxplot(fill="aquamarine")
+m7 = ggplot(df_monteCarlo_50[vect3,], aes(y = df_monteCarlo_50[vect3, 3])) +
+  xlab("n = 50") + ylab("erreur absolue") + 
+  ggtitle("Boxplot pour mu3") + geom_boxplot(fill="brown2")
+m8 = ggplot(df_monteCarlo_100[vect3,], aes(y = df_monteCarlo_100[vect3, 3])) +
+  xlab("n = 100") + ylab("erreur absolue") +
+  ggtitle("Boxplot pour mu3") + geom_boxplot(fill="orange")
+m9 = ggplot(df_monteCarlo_500[vect3,], aes(y = df_monteCarlo_500[vect3, 3])) +
+  xlab("n = 500") + ylab("erreur absolue") + 
+  ggtitle("Boxplot pour mu3") + geom_boxplot(fill="aquamarine")
+ggarrange(m1, m2, m3, m4, m5, m6, m7, m8, m9, ncol = 3, nrow = 3)
+# save with width = 800 and height = 1200
 
 # Pour les \sigma
-df_monteCarlo_50 = Monte_Carlo(good_dfTestTh3, good_dfTestInit3, 100, 50, 10)
-df_monteCarlo_100 = Monte_Carlo(good_dfTestTh3, good_dfTestInit3, 100, 100, 10)
-df_monteCarlo_500 = Monte_Carlo(good_dfTestTh3, good_dfTestInit3, 100, 500, 10)
-par(mfrow = c(3,3))
-boxplot(df_monteCarlo_50[vect1, 4]) # \sigma_1
-boxplot(df_monteCarlo_100[vect1, 4]) # \sigma_1
-boxplot(df_monteCarlo_500[vect1, 4]) # \sigma_1
-boxplot(df_monteCarlo_50[vect2, 4]) # \sigma_2
-boxplot(df_monteCarlo_100[vect2, 4]) # \sigma_2
-boxplot(df_monteCarlo_500[vect2, 4]) # \sigma_2
-boxplot(df_monteCarlo_50[vect3, 4]) # \sigma_3
-boxplot(df_monteCarlo_100[vect3, 4]) # \sigma_3
-boxplot(df_monteCarlo_500[vect3, 4]) # \sigma_3
+
+s1 = ggplot(df_monteCarlo_50[vect1,], aes(y = df_monteCarlo_50[vect1, 4])) +
+  xlab("n = 50") + ylab("erreur absolue") + 
+  ggtitle("Boxplot pour sigma1") + geom_boxplot(fill="brown2")
+s2 = ggplot(df_monteCarlo_100[vect1,], aes(y = df_monteCarlo_100[vect1, 4])) +
+  xlab("n = 100") + ylab("erreur absolue") +
+  ggtitle("Boxplot pour sigma1") + geom_boxplot(fill="orange")
+s3 = ggplot(df_monteCarlo_500[vect1,], aes(y = df_monteCarlo_500[vect1, 4])) +
+  xlab("n = 500") + ylab("erreur absolue") + 
+  ggtitle("Boxplot pour sigma1") + geom_boxplot(fill="aquamarine")
+s4 = ggplot(df_monteCarlo_50[vect2,], aes(y = df_monteCarlo_50[vect2, 4])) +
+  xlab("n = 50") + ylab("erreur absolue") + 
+  ggtitle("Boxplot pour sigma2") + geom_boxplot(fill="brown2")
+s5 = ggplot(df_monteCarlo_100[vect2,], aes(y = df_monteCarlo_100[vect2, 4])) +
+  xlab("n = 100") + ylab("erreur absolue") +
+  ggtitle("Boxplot pour sigma2") + geom_boxplot(fill="orange")
+s6 = ggplot(df_monteCarlo_500[vect2,], aes(y = df_monteCarlo_500[vect2, 4])) +
+  xlab("n = 500") + ylab("erreur absolue") + 
+  ggtitle("Boxplot pour sigma2") + geom_boxplot(fill="aquamarine")
+s7 = ggplot(df_monteCarlo_50[vect3,], aes(y = df_monteCarlo_50[vect3, 4])) +
+  xlab("n = 50") + ylab("erreur absolue") + 
+  ggtitle("Boxplot pour sigma3") + geom_boxplot(fill="brown2")
+s8 = ggplot(df_monteCarlo_100[vect3,], aes(y = df_monteCarlo_100[vect3, 4])) +
+  xlab("n = 100") + ylab("erreur absolue") +
+  ggtitle("Boxplot pour sigma3") + geom_boxplot(fill="orange")
+s9 = ggplot(df_monteCarlo_500[vect3,], aes(y = df_monteCarlo_500[vect3, 4])) +
+  xlab("n = 500") + ylab("erreur absolue") + 
+  ggtitle("Boxplot pour sigma3") + geom_boxplot(fill="aquamarine")
+ggarrange(s1, s2, s3, s4, s5, s6, s7, s8, s9, ncol = 3, nrow = 3)
+
 
 # Exemple avec 3 espèces ayant des variables mal séparées
 bad_dfTestTh3 = data.frame(bird_names = c("European Greenfinch", "Hawfinch", "Common Chaffinch")
-                            ,proportion_alpha = c(0.28,0.12,0.6),
-                            mean_th = c(74.5, 71.6, 58.3),
-                            sd_th = c(12.2, 12.9, 15.0))
+                           ,proportion_alpha = c(0.28,0.12,0.6),
+                           mean_th = c(74.5, 71.6, 58.3),
+                           sd_th = c(12.2, 12.9, 15.0))
 
 bad_dfTestInit3 = data.frame(bird_names = c("European Greenfinch", "Hawfinch", "Common Chaffinch")
-                              ,proportion_alpha = c(0.3,0.2,0.5),
-                              mean_th = c(78.3, 69.7, 60),
-                              sd_th = c(11.8, 13.3, 17))
+                             ,proportion_alpha = c(0.3,0.2,0.5),
+                             mean_th = c(78.3, 69.7, 60),
+                             sd_th = c(11.8, 13.3, 17))
 
 
 # teste des fonctions simulation et algo_EM pour ce mélange de 3 gaussiennes avec faible séparation
@@ -292,67 +346,114 @@ print(bad_dfTestTh3)
 algo_EM(bad_dfTestInit3, X3_bad, 30)
 
 # on affiche les boxplots pour ce melange de gausiennes avec faible séparation
-# Boxplots
 
 vect1 <- seq(1, 298, by = 3) # vecteur 1
 vect2 <- seq(2, 299, by = 3) # vecteur 2
 vect3 <- seq(3, 300, by = 3) # vecteur 3
 
-
+df_monteCarloBad_50 = Monte_Carlo(bad_dfTestTh3, bad_dfTestInit3, 100, 50, 10)
+df_monteCarloBad_100 = Monte_Carlo(bad_dfTestTh3, bad_dfTestInit3, 100, 100, 10)
+df_monteCarloBad_500 = Monte_Carlo(bad_dfTestTh3, bad_dfTestInit3, 100, 500, 10)
 
 # Pour les \alpha
-df_monteCarlo_50 = Monte_Carlo(bad_dfTestTh3, bad_dfTestInit3, 100, 50, 10)
-df_monteCarlo_100 = Monte_Carlo(bad_dfTestTh3, bad_dfTestInit3, 100, 100, 10)
-df_monteCarlo_500 = Monte_Carlo(bad_dfTestTh3, bad_dfTestInit3, 100, 500, 10)
-par(mfrow = c(3,3))
-boxplot(df_monteCarlo_50[vect1, 2]) # \alpha_1
-boxplot(df_monteCarlo_100[vect1, 2]) # \alpha_1
-boxplot(df_monteCarlo_500[vect1, 2]) # \alpha_1
-boxplot(df_monteCarlo_50[vect2, 2]) # \alpha_2
-boxplot(df_monteCarlo_100[vect2, 2]) # \alpha_2
-boxplot(df_monteCarlo_500[vect2, 2]) # \alpha_2
-boxplot(df_monteCarlo_50[vect3, 2]) # \alpha_3
-boxplot(df_monteCarlo_100[vect3, 2]) # \alpha_3
-boxplot(df_monteCarlo_500[vect3, 2]) # \alpha_3
 
+ab1 = ggplot(df_monteCarloBad_50[vect1,], aes(y = df_monteCarloBad_50[vect1, 2])) +
+  xlab("n = 50") + ylab("erreur absolue") + 
+  ggtitle("Boxplot pour alpha1") + geom_boxplot(fill="brown2")
+ab2 = ggplot(df_monteCarloBad_100[vect1,], aes(y = df_monteCarloBad_100[vect1, 2])) +
+  xlab("n = 100") + ylab("erreur absolue") +
+  ggtitle("Boxplot pour alpha1") + geom_boxplot(fill="orange")
+ab3 = ggplot(df_monteCarloBad_500[vect1,], aes(y = df_monteCarloBad_500[vect1, 2])) +
+  xlab("n = 500") + ylab("erreur absolue") + 
+  ggtitle("Boxplot pour alpha1") + geom_boxplot(fill="aquamarine")
+ab4 = ggplot(df_monteCarloBad_50[vect2,], aes(y = df_monteCarloBad_50[vect2, 2])) +
+  xlab("n = 50") + ylab("erreur absolue") + 
+  ggtitle("Boxplot pour alpha2") + geom_boxplot(fill="brown2")
+ab5 = ggplot(df_monteCarloBad_100[vect2,], aes(y = df_monteCarloBad_100[vect2, 2])) +
+  xlab("n = 100") + ylab("erreur absolue") +
+  ggtitle("Boxplot pour alpha2") + geom_boxplot(fill="orange")
+ab6 = ggplot(df_monteCarloBad_500[vect2,], aes(y = df_monteCarloBad_500[vect2, 2])) +
+  xlab("n = 500") + ylab("erreur absolue") + 
+  ggtitle("Boxplot pour alpha2") + geom_boxplot(fill="aquamarine")
+ab7 = ggplot(df_monteCarloBad_50[vect3,], aes(y = df_monteCarloBad_50[vect3, 2])) +
+  xlab("n = 50") + ylab("erreur absolue") + 
+  ggtitle("Boxplot pour alpha3") + geom_boxplot(fill="brown2")
+ab8 = ggplot(df_monteCarloBad_100[vect3,], aes(y = df_monteCarloBad_100[vect3, 2])) +
+  xlab("n = 100") + ylab("erreur absolue") +
+  ggtitle("Boxplot pour alpha3") + geom_boxplot(fill="orange")
+ab9 = ggplot(df_monteCarloBad_500[vect3,], aes(y = df_monteCarloBad_500[vect3, 2])) +
+  xlab("n = 500") + ylab("erreur absolue") + 
+  ggtitle("Boxplot pour alpha3") + geom_boxplot(fill="aquamarine")
+ggarrange(ab1, ab2, ab3, ab4, ab5, ab6, ab7, ab8, ab9, ncol = 3, nrow = 3)
 
 
 # Pour les \mu
-df_monteCarlo_50 = Monte_Carlo(bad_dfTestTh3, bad_dfTestInit3, 100, 50, 10)
-df_monteCarlo_100 = Monte_Carlo(bad_dfTestTh3, bad_dfTestInit3, 100, 100, 10)
-df_monteCarlo_500 = Monte_Carlo(bad_dfTestTh3, bad_dfTestInit3, 100, 500, 10)
-par(mfrow = c(3,3))
-boxplot(df_monteCarlo_50[vect1, 3]) # \mu_1
-boxplot(df_monteCarlo_100[vect1, 3]) # \mu_1
-boxplot(df_monteCarlo_500[vect1, 3]) # \mu_1
-boxplot(df_monteCarlo_50[vect2, 3]) # \mu_2
-boxplot(df_monteCarlo_100[vect2, 3]) # \mu_2
-boxplot(df_monteCarlo_500[vect2, 3]) # \mu_2
-boxplot(df_monteCarlo_50[vect3, 3]) # \mu_3
-boxplot(df_monteCarlo_100[vect3, 3]) # \mu_3
-boxplot(df_monteCarlo_500[vect3, 3]) # \mu_3
+
+mb1 = ggplot(df_monteCarloBad_50[vect1,], aes(y = df_monteCarloBad_50[vect1, 3])) +
+  xlab("n = 50") + ylab("erreur absolue") + 
+  ggtitle("Boxplot pour mu1") + geom_boxplot(fill="brown2")
+mb2 = ggplot(df_monteCarloBad_100[vect1,], aes(y = df_monteCarloBad_100[vect1, 3])) +
+  xlab("n = 100") + ylab("erreur absolue") +
+  ggtitle("Boxplot pour mu1") + geom_boxplot(fill="orange")
+mb3 = ggplot(df_monteCarloBad_500[vect1,], aes(y = df_monteCarloBad_500[vect1, 3])) +
+  xlab("n = 500") + ylab("erreur absolue") + 
+  ggtitle("Boxplot pour mu1") + geom_boxplot(fill="aquamarine")
+mb4 = ggplot(df_monteCarloBad_50[vect2,], aes(y = df_monteCarloBad_50[vect2, 3])) +
+  xlab("n = 50") + ylab("erreur absolue") + 
+  ggtitle("Boxplot pour mu2") + geom_boxplot(fill="brown2")
+mb5 = ggplot(df_monteCarloBad_100[vect2,], aes(y = df_monteCarloBad_100[vect2, 3])) +
+  xlab("n = 100") + ylab("erreur absolue") +
+  ggtitle("Boxplot pour mu2") + geom_boxplot(fill="orange")
+mb6 = ggplot(df_monteCarloBad_500[vect2,], aes(y = df_monteCarloBad_500[vect2, 3])) +
+  xlab("n = 500") + ylab("erreur absolue") + 
+  ggtitle("Boxplot pour mu2") + geom_boxplot(fill="aquamarine")
+mb7 = ggplot(df_monteCarloBad_50[vect3,], aes(y = df_monteCarloBad_50[vect3, 3])) +
+  xlab("n = 50") + ylab("erreur absolue") + 
+  ggtitle("Boxplot pour mu3") + geom_boxplot(fill="brown2")
+mb8 = ggplot(df_monteCarloBad_100[vect3,], aes(y = df_monteCarloBad_100[vect3, 3])) +
+  xlab("n = 100") + ylab("erreur absolue") +
+  ggtitle("Boxplot pour mu3") + geom_boxplot(fill="orange")
+mb9 = ggplot(df_monteCarloBad_500[vect3,], aes(y = df_monteCarloBad_500[vect3, 3])) +
+  xlab("n = 500") + ylab("erreur absolue") + 
+  ggtitle("Boxplot pour mu3") + geom_boxplot(fill="aquamarine")
+ggarrange(mb1, mb2, mb3, mb4, mb5, mb6, mb7, mb8, mb9, ncol = 3, nrow = 3)
+
 
 # Pour les \sigma
-df_monteCarlo_50 = Monte_Carlo(bad_dfTestTh3, bad_dfTestInit3, 100, 50, 10)
-df_monteCarlo_100 = Monte_Carlo(bad_dfTestTh3, bad_dfTestInit3, 100, 100, 10)
-df_monteCarlo_500 = Monte_Carlo(bad_dfTestTh3, bad_dfTestInit3, 100, 500, 10)
-par(mfrow = c(3,3))
-boxplot(df_monteCarlo_50[vect1, 4]) # \sigma_1
-boxplot(df_monteCarlo_100[vect1, 4]) # \sigma_1
-boxplot(df_monteCarlo_500[vect1, 4]) # \sigma_1
-boxplot(df_monteCarlo_50[vect2, 4]) # \sigma_2
-boxplot(df_monteCarlo_100[vect2, 4]) # \sigma_2
-boxplot(df_monteCarlo_500[vect2, 4]) # \sigma_2
-boxplot(df_monteCarlo_50[vect3, 4]) # \sigma_3
-boxplot(df_monteCarlo_100[vect3, 4]) # \sigma_3
-boxplot(df_monteCarlo_500[vect3, 4]) # \sigma_3
+
+sb1 = ggplot(df_monteCarloBad_50[vect1,], aes(y = df_monteCarloBad_50[vect1, 4])) +
+  xlab("n = 50") + ylab("erreur absolue") + 
+  ggtitle("Boxplot pour sigma1") + geom_boxplot(fill="brown2")
+sb2 = ggplot(df_monteCarloBad_100[vect1,], aes(y = df_monteCarloBad_100[vect1, 4])) +
+  xlab("n = 100") + ylab("erreur absolue") +
+  ggtitle("Boxplot pour sigma1") + geom_boxplot(fill="orange")
+sb3 = ggplot(df_monteCarloBad_500[vect1,], aes(y = df_monteCarloBad_500[vect1, 4])) +
+  xlab("n = 500") + ylab("erreur absolue") + 
+  ggtitle("Boxplot pour sigma1") + geom_boxplot(fill="aquamarine")
+sb4 = ggplot(df_monteCarloBad_50[vect2,], aes(y = df_monteCarloBad_50[vect2, 4])) +
+  xlab("n = 50") + ylab("erreur absolue") + 
+  ggtitle("Boxplot pour sigma2") + geom_boxplot(fill="brown2")
+sb5 = ggplot(df_monteCarloBad_100[vect2,], aes(y = df_monteCarloBad_100[vect2, 4])) +
+  xlab("n = 100") + ylab("erreur absolue") +
+  ggtitle("Boxplot pour sigma2") + geom_boxplot(fill="orange")
+sb6 = ggplot(df_monteCarloBad_500[vect2,], aes(y = df_monteCarloBad_500[vect2, 4])) +
+  xlab("n = 500") + ylab("erreur absolue") + 
+  ggtitle("Boxplot pour sigma2") + geom_boxplot(fill="aquamarine")
+sb7 = ggplot(df_monteCarloBad_50[vect3,], aes(y = df_monteCarloBad_50[vect3, 4])) +
+  xlab("n = 50") + ylab("erreur absolue") + 
+  ggtitle("Boxplot pour sigma3") + geom_boxplot(fill="brown2")
+sb8 = ggplot(df_monteCarloBad_100[vect3,], aes(y = df_monteCarloBad_100[vect3, 4])) +
+  xlab("n = 100") + ylab("erreur absolue") +
+  ggtitle("Boxplot pour sigma3") + geom_boxplot(fill="orange")
+sb9 = ggplot(df_monteCarloBad_500[vect3,], aes(y = df_monteCarloBad_500[vect3, 4])) +
+  xlab("n = 500") + ylab("erreur absolue") + 
+  ggtitle("Boxplot pour sigma3") + geom_boxplot(fill="aquamarine")
+ggarrange(sb1, sb2, sb3, sb4, sb5, sb6, sb7, sb8, sb9, ncol = 3, nrow = 3)
 
 # teste des fonctions simulation et algo_EM pour ce mélange de 4 gaussiennes
 X4 = simulation(df_th4, 100)
 print(df_th4)
 algo_EM(data_init4, X4, 30)
-
-
 
 
 # Boxplots

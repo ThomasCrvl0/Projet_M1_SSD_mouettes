@@ -24,6 +24,35 @@ sd_volume = c(9.1,  20.8, 15.0,  12.2,  3.8,  12.9,  46.5, 29.8, 27.4, 55.9,
 # l'ecart type des nids associées à cette espèce
 nest_data = data.frame(bird_names, mean_volume, sd_volume)
 
+# Cette fonction prend en argument df le dataframe regroupant toutes les données
+# c'est à dire les noms, les moyennes et les écart-types des nids des 13
+# espèces d'oiseaux
+# n le nombre d'espèces à tirer aléatoirement
+# cette fonction retourne un dataframe stockant les noms,
+# moyennes et écart-types des nids des n espèces d'oiseaux tirées aléatoirement
+random_species = function(df, n){
+  J = dim(df)[1]
+  index_species = sample(1:J, n, replace = FALSE)
+  random_prop = runif(n, 0, 1)
+  random_prop = random_prop/sum(random_prop)
+  random_df = df[index_species,]
+  random_df = cbind(proportion_alpha = random_prop, random_df)
+  random_df = random_df[,c(2,1,3,4)]
+  return(random_df)
+}
+
+# Cette fonction affiche graphiquement la distribution d'un mélange gaussien
+# Elle prend en argument df le dataframe contenant les données 
+# (noms, moyennes, ecarts-types) des nids des espèces d'oiseaux 
+# et X l’échantillon du mélange gaussien
+plot_distrib = function(df, X){
+  data_distrib = data.frame(gaussian_mixture = X)
+  ggplot(data_distrib, aes(x=data_distrib[,'gaussian_mixture'])) + 
+  geom_histogram(aes(y=..density..), colour="black", fill="white", bins = 100) +
+  geom_density(alpha=.3, color = "aquamarine2", fill="red", size=1.5) + 
+  ggtitle("Distribution d'un mélange gaussien")
+}
+
 # On crée le dataframe regroupant les moyennes et les écarts-types théoriques
 # associés aux espèces d'oiseaux choisies par l'utilisateur
 # Les espèces choisies sont stockées dans un vecteur pris en paramètre

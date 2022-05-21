@@ -223,6 +223,8 @@
 %%% Premier chapitre %%%
 \chapter{Modélisation du problème et liminaire mathématique}
 
+Le présent chapitre s'inspirera indifféremment des références [1], [2] et [3]
+
 % section 1
 \section{Modélisation du problème}
 
@@ -285,24 +287,30 @@ Introduisons une dernière densité et une dernière probabilité, qui nous sero
 
 \begin{prop} Nous avons les résultats suivant :
 \begin{enumerate}
-\item La densité du vecteur aléatoire $(X, Z)$ nous est donnée par :
+\item La loi du couple $(X,Z)$ est donnée par 
 \begin{align*} 
-h_\theta : &~\R\times \left\{1,\cdots,J\right\} \rightarrow \R_+\\
-&~(x,j) \mapsto \alpha_j\times\gamma_{\mu_j, v_j}(x) 
+\prob(X\leq x, Z = j) &= \displaystyle\int_{-\infty}^x f_\theta(u | Z = j)\times\prob(Z=j)du\\
+&= \displaystyle\int_{-\infty}^x  \underbrace{\gamma_{\mu_j, v_j}(u) \times \alpha_j }_{:= h_\theta(u,j)}du
 \end{align*}
-\item La probabilité de la loi de $Z$ sachant $X=x$ nous est donnée par:
-\begin{center} $\prob_\theta(Z = j | X = x)=\displaystyle \frac{\gamma_{\mu(z),v(z)}\times\alpha_z}{\sum_{i=1}^J \alpha_i \times \gamma_{\mu(i), v(i)}(x)}$ \end{center}
+\underline{où} $h_\theta(u,j)$ est la "sous-densité" de $X\times\1_{(Z=j)}$
+\item La probabilité de la loi de $Z$ sachant $X=x$ est donnée par:
+\begin{center} $\prob_\theta(Z = j | X = x)=\displaystyle \frac{\gamma_{\mu(z),v(z)}\times\alpha_z}{f_\theta(x)}$ \end{center}
+\underline{où} $f_\theta(x)$ est donnée par la proposition 1.
 \end{enumerate}
 \end{prop}
 
 \begin{proof}
-Par propriété des lois conditionnelles, nous avons que  
-\begin{center} $h_\theta(x,j) = f_\theta(x | Z = j)\times \prob_\theta(Z = j) = f_\theta(x)\times\prob_\theta(Z = j | X = x)$ \end{center}
-De ceci, nous déduisons aisément la densité de la loi du vecteur aléatoire $(X,Z)$ : 
-\begin{center} $h_\theta(x,j) = \alpha_j\times\gamma_{\mu_j, v_j}(x)$ \end{center}
-Puis la densité de la loi conditionnelle de $Z$ sachant $X = x$ :
+En effet, 
+\begin{align*}
+\prob(X\leq x, Z = j) = \displaystyle\int_{-\infty}^x \prob(Z = j | X = u) \times f_\theta(u) du
+\end{align*}
+On obtient dès lors
 \begin{center}
-$\prob_\theta(Z = j | X = x)=\displaystyle \frac{\gamma_{\mu(z),v(z)}\times\alpha_z}{\sum_{i=1}^J \alpha_i \times \gamma_{\mu(i), v(i)}(x)}$
+$\prob(Z = j | X = u)\times f_\theta(u) = \gamma_{\mu_j, v_j}(u) \times \alpha_j$
+\end{center}
+Soit
+\begin{center}
+$\prob(Z = j | X = u) = \displaystyle\frac{\gamma_{\mu_j, v_j}(u)\times\alpha_j}{f_\theta(u)} := \frac{h_\theta(u,j)}{f_\theta(u)}$
 \end{center}
 \end{proof}
 
@@ -670,11 +678,6 @@ Et finalement
 
 \newpage
 
-% section 3
-\section{A remplir - Le choix des valeurs initiales}
-
-% section 4 
-\section{A remplir - Implémentation en langage \textit{R}}
 
 
 %%%%%%%%%%%%%
@@ -682,14 +685,14 @@ Et finalement
 \chapter*{Bibliographie}
 \addcontentsline{toc}{part}{Bibliographie}
  
-Liens utiles
 
-\url{https://www.lpsm.paris/pageperso/rebafka/BookGraphes/algorithme-em.html} \newline
-\url{https://members.loria.fr/moberger/Enseignement/AVR/Exposes/algo-em.pdf} \newline
-\url{http://faculty.washington.edu/fxia/courses/LING572/EM_collins97.pdf}\newline
-\url{https://core.ac.uk/download/pdf/155777956.pdf}\newline
-\url{http://www.cmap.polytechnique.fr/~bansaye/CoursTD6.pdf}
+[1] Doc de Brunel ??? \newline
+[2] \url{https://members.loria.fr/moberger/Enseignement/AVR/Exposes/algo-em.pdf} \newline
+[3] \url{http://faculty.washington.edu/fxia/courses/LING572/EM_collins97.pdf} \newline
+[4] \url{https://core.ac.uk/download/pdf/155777956.pdf}\newline % doc des oiseaux
 
+%\url{http://www.cmap.polytechnique.fr/~bansaye/CoursTD6.pdf}
+%\url{https://www.lpsm.paris/pageperso/rebafka/BookGraphes/algorithme-em.html} \newline
 
 \pagebreak
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

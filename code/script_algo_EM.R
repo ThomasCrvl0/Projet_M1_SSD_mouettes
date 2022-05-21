@@ -77,7 +77,6 @@ GetRealParam = function(list_Species){
 # qui ont été generées aléatoirement
 simulation = function(data_th, n=100){
   X = rep(NA,n) #echantillon
-  J = dim(data_th)[1] #nb de mélange
   vect_alpha = data_th[,2]
   vect_mean = data_th[,3]
   vect_sd = data_th[,4]

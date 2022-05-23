@@ -294,7 +294,7 @@ Introduisons une dernière densité et une dernière probabilité, qui nous sero
 \end{align*}
 \underline{où} $h_\theta(u,j)$ est la "sous-densité" de $X\times\1_{(Z=j)}$
 \item La probabilité de la loi de $Z$ sachant $X=x$ est donnée par:
-\begin{center} $\prob_\theta(Z = j | X = x)=\displaystyle \frac{\gamma_{\mu(z),v(z)}\times\alpha_z}{f_\theta(x)}$ \end{center}
+\begin{center} $\prob_\theta(Z = j | X = x)=\displaystyle \frac{\gamma_{\mu_j, v_j}\times\alpha_j}{f_\theta(x)}$ \end{center}
 \underline{où} $f_\theta(x)$ est donnée par la proposition 1.
 \end{enumerate}
 \end{prop}
@@ -447,10 +447,10 @@ La log-vraisemblance des observations s'écrit
 
 Nous voyons dès lors que l'existence d'une expression analytique du maximum de la log-vraisemblance n'est pas assurée. Il est donc nécessaire de trouver un moyen d'approcher les valeurs des différents estimateurs. \newline
 Pour ce faire, on définit une log-vraisemblance des couples $(X_i,Z_i)$ sachant le vecteurs des observations $X_1, \cdots, X_n$.
-\begin{prop}[log-vraisemblance conditionnelle]
+\begin{defn}[log-vraisemblance conditionnelle]
 On définit la log-vraisemblance $\lv_{c}(\theta, \thetat, X_1, \cdots, X_n) $ conditionnelle par
 \begin{center} $\lv_{c}(\theta, \thetat, X_1, \cdots, X_n) = \E_{\thetat}[\lv_\theta(X_1, \cdots, X_n, Z_1, \cdots, Z_n) | X_1, \cdots, X_n]$ \end{center}
-\end{prop}
+\end{defn}
 
 Nous allons maintenant travailler sur l'expression de la log-vraisemblance conditionnelle et en donner une expression simplifiée, qui nous sera fort utile ultérieurement, et une expression plus substancielle, qui nous sera immédiatement utile.
 
@@ -500,10 +500,12 @@ Traitons pour commencer la double somme
 
 Nous avons :
 \begin{center}
-$\gamma_{\mu_j,v_j}(X_i) = \frac{1}{\sqrt{2 \pi v(j)}}e^{-\frac{1}{2}\frac{(X_i - \mu_j)^2}{v_j}}$
+$\gamma_{\mu_j,v_j}(X_i) = \frac{1}{\sqrt{2 \pi v_j
+}}e^{-\frac{1}{2}\frac{(X_i - \mu_j)^2}{v_j}}$
 \end{center}
+et
 \begin{center}
-$\prob_{\thetat} (Z = j|X = X_i) = \displaystyle \frac{\alpha_j\gamma_{\mu_j,v_j}}{\displaystyle\sum_{i=1}^J \alpha_j\gamma_{\mu_i,v_i}}$
+$\prob_{\thetat} (Z = j|X = X_i) = \displaystyle \frac{\alpha_j\gamma_{\mu_j,v_j}}{\displaystyle\sum_{k=1}^J \alpha_k\gamma_{\mu_k,v_k}}$
 \end{center}
 
 
@@ -527,15 +529,15 @@ Nous allons dès à présent énoncer une proposition vitale, celle de l'express
 
 \begin{prop}La fonction $\theta \mapsto \lv_{c}(\theta,\thetat, X_1, \cdots, X_n)$ admet un unique maximum $\theta_M$ donné par : 
 \begin{center}
-$\hat{\alpha_j} = \displaystyle\frac{1}{n}\sum_{i=1}^n \prob_{\thetat}(Z=j|X=X_i)$
+$\widehat{\alpha_j} = \displaystyle\frac{1}{n}\sum_{i=1}^n \prob_{\thetat}(Z=j|X=X_i)$
 \end{center}
 \begin{center}
 
-$\hat{\mu_j}= \displaystyle\frac{\displaystyle\sum_{i=1}^n X_i\prob_{\thetat}(Z=j|X=X_i)}{\displaystyle\sum_{i=1}^n \prob_{\thetat}(Z=j|X=X_i)}$
+$\widehat{\mu_j}= \displaystyle\frac{\displaystyle\sum_{i=1}^n X_i\prob_{\thetat}(Z=j|X=X_i)}{\displaystyle\sum_{i=1}^n \prob_{\thetat}(Z=j|X=X_i)}$
 \end{center}
 \begin{center}
 
-$\hat{v_j} = \displaystyle\frac{\displaystyle\sum_{i=1}^n (X_i -\mu_j)^2 \prob_{\thetat}(Z=j|X=X_i)}{\displaystyle\sum_{i=1}^n\prob_{\thetat}(Z=j|X=X_i)}$
+$\widehat{v_j} = \displaystyle\frac{\displaystyle\sum_{i=1}^n (X_i -\mu_j)^2 \prob_{\thetat}(Z=j|X=X_i)}{\displaystyle\sum_{i=1}^n\prob_{\thetat}(Z=j|X=X_i)}$
 \end{center}
 \end{prop}
 
@@ -572,7 +574,7 @@ v_j = \displaystyle\frac{\displaystyle\sum_{i=1}^n (X_i -\mu_j)^2 \prob_{\thetat
 \end{cases}
 $
 
-Sous la contrainte $\displaystyle\sum_{i=1}^n\alpha_i =1$ et la première équation du système précedent on obtient l'égalité suivante : 
+Sous la contrainte $\displaystyle\sum_{j=1}^J\alpha_j =1$ et la première équation du système précedent on obtient l'égalité suivante : 
 
 \begin{align*}
 \sum_{i=1}^J\alpha_i &= \sum_{i=1}^J \left(\frac{\displaystyle\sum_{i=1}^n \prob_{\thetat}(Z=j|X=X_i)}{\lambda}\right)\\

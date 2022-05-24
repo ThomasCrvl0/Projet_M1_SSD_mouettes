@@ -729,31 +729,40 @@ Nous pouvons dès lors générer l'échantillon, à l'aide de notre fonction \te
 \begin{lstlisting}
 data <- simulation(df, 500)
 \end{lstlisting}
-
-Nous devons maintenant déterminer les paramètres initiaux. \newline
-Notre première méthode sera basée sur des heuristiques utilisant la fonction de densité de l'échantillon. Commençons par tracer cette dernière :
+Le premier réflexe qui se présente est de tracer la fonction de densité associée à l'échantillon :
 \begin{center}
 \includegraphics[scale=0.8]{dens_1.pdf}
 \end{center}
-
-Nous distinguons ici nettement le mélange des deux gaussiennes; un premier pic est présent autour de la valeur $\mu_{1}=40$; et un second autour d'environ et $\mu_{2}=300$. Ces pics étant bien distinct, ils nous donnent de bonnes approximations quant aux valeurs initiales pour les moyennes. Ainsi, $\mu_{1_{init}} = 40$ et $\mu_{2_{init}} = 300$\newline
-Concernant l'écart type, nous utiliserons l'heuristique suivante qui est effroyablement approximative : \newline
-Nous savons que pour une variable aléatoire $X$ telle que $X\sim\mathcal{N}(\mu, \sigma^2)$, nous avons $\prob(X \in [\mu\pm\sigma]) \approxeq 0.7$. De ceci, nous pouvons extraire une estimation très approximative de l'écart-type.  \newline
-Nous allons donc tenter d'englober environ $70\%$ des données autour de la moyenne. Nous considèrerons et le diagramme en bâton et la densité pour cela. 
-\newline
-Nous traçons donc ici des droites verticales; à $\mu_{1_{init}} \pm 30$ et à $\mu_{2_{init}} \pm 13	0$. Le choix de ces valeurs s'est effectué à tâtons, de manière toute à fait approximative.	 
-
-\begin{center}
-\includegraphics[scale=0.8]{dens_1bis.pdf}
-\end{center}
-Nous englobons une proportion raisonnable des données autour de chaque pics; $\sigma_{1_{init}} = 30$ et $\sigma_{2_{init}} = 130$ seront ainsi nos valeurs initiales pour les écarts-types.\newline
-Concernant les proportions, nous les considérerons comme égales, de fait $\alpha_{1_{init}} = \alpha_{2_{init}} = 0.5$. \newline
-Nous avons donc tous les éléments nécessaire. Nous commençons par créer le dataframe avec les paramètres initiaux :
+Le mélange des deux lois se distingue au premier coup d'oeil; nous distinguons nettement deux pics. L'"étalement" des pics n'étant pas les mêmes, nous pouvons supposer que les variances des deux lois sont différentes. Il est cependant difficile d'émettre des hypothèses quant aux proportions.\newline
+Commençons l'étude rigoureuse. \newline
+Nous devons pour commencer déterminer les paramètres initiaux. Nous allons utiliser diverses méthodes suivant les paramètres.\newline
+Pour les deux moyennes initiales, nous allons utiliser les quantiles; et plus précisément le premier et le troisième. Travaillant sur \textit{R}, nous pouvons aisément obtenir ces derniers :
 
 \begin{lstlisting}
-param_init <- data.frame(bird_names = c("European Goldfinch", "Ring Ouzel"),
-                            alpha_init = c(0.5, 0.5), mean_init = c(40, 300),
-                            sd_init = c(30, 130))
+quantile(data)
+\end{lstlisting}
+\begin{verbatim}
+       0%       25%       50%       75%      100% 
+-89.38908  44.07317 236.24277 344.55731 736.45904
+\end{verbatim}
+Nous obtenons ainsi nos moyennes initiales : $\mu_{1_{init}} =  44.07317$ et $\mu_{2_{init}} = 344.55731$. \newline
+
+Pour l'initalisation des écarts-types, nous prendrons $\sigma_{1_{init}} = \sigma_{2_{init}} = \widehat{\sigma}$; où
+\begin{center}
+$\widehat{\sigma} := \sqrt{\displaystyle\frac{1}{n}\sum_{i=1}^n(X_i - \bar{X})}$
+\end{center}
+est l'écart-type empirique. Une fois de plus, \textit{R} nous permet de calculer cela aisément, grâce à la fonction \textit{sqrt(var(data))}. Nous obtenons
+\begin{verbatim}
+[1] 164.8838
+\end{verbatim}
+Ainsi, $\sigma_{1_{init}} = \sigma_{2_{init}} = 164.8838$. \newline
+Pour les proportions initiales, nous proposons de nouveau de les prendre égales, ainsi $ \alpha_{1_{init}} = \alpha_{2_{init}} = 0.5$
+On construit le dataframe des paramètres initiaux : 
+
+\begin{lstlisting}
+param_init = data.frame(bird_names = c("European Goldfinch", "Ring Ouzel"),
+                            alpha_init = c(0.5, 0.5), mean_init = c( 44.07317, 344.55731),
+                            sd_init = c(164.8838, 164.8838))
 \end{lstlisting}
 
 Enfin, nous pouvons lancer notre implémentation de l'algorithme EM. Comme nous l'avons vu dans le précédent chapitre, une dizaine d'itérations suffisent pour obtenir de bons résultats.
@@ -763,9 +772,9 @@ algo_EM(param_init, data, 10)
 \end{lstlisting}
 
 \begin{verbatim}
-          bird_names     alpha        mu      sigma
-1 European Goldfinch 0.2945556  37.36098   8.967584
-2         Ring Ouzel 0.7054444 291.64564 127.615227
+          bird_names     alpha        mu     sigma
+1 European Goldfinch 0.3322016  38.50204  16.76789
+2         Ring Ouzel 0.6677984 312.82254 124.46222
 \end{verbatim}
 
 Nous obtenons ainsi nos paramètres estimés; comparons le avec les vrais valeurs. Ces dernières sont contenues dans le dataframe \textit{df}.
@@ -776,9 +785,9 @@ Nous obtenons ainsi nos paramètres estimés; comparons le avec les vrais valeur
 12         Ring Ouzel        0.7121287      298.6     125.1
 \end{verbatim}
 
-Les proportions sont toutes deux très bien estimées, les erreurs sont de l'ordre de moins de $1\%$, ce qui est formidable.
-La moyenne de la première espèce présente elle aussi une erreur d'estimation de l'ordre de $1\%$, celle de la seconde une erreur d'estimation de l'ordre de $3\%$, ce qui est très satisfaisant. Il en est de même pour les variances. \newline
-Pour ce premier exemple d'un mélange de deux lois, nous obtenons de très bonne approximations.
+Les proportions sont toutes deux très bien estimées, les erreurs sont de l'ordre de $5\%$, ce qui est formidable.
+La moyenne de la première espèce est presque égale à la moyenne théorique, l'erreur est inférieure à $0.5\%$. Celle de la seconde est un peu moins bien estimée, mais l'erreur d'estimation est de l'ordre de $3\%$, ce qui est très satisfaisant. Concernant les variances, la première présente une erreur d'estimation de l'ordre de $7\%$, ce qui est plutôt bon. La seconde variance est elle très bien estimée, avec une erreur presque nulle. \newline
+Pour ce premier exemple de mélange de lois, nous obtenons de très bonne approximations.
 
 % section 3
 \section{Etude d'un mélange à trois lois}

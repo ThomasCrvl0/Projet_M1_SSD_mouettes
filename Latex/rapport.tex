@@ -194,7 +194,7 @@
 \hfill
 \includegraphics[scale=0.35]{fds_logo.png}\\[3cm]
 \linespread{1.2}\huge {\bfseries Projet Master 1 SSD }\\[0.5cm]
-\linespread{1.2}\LARGE {\bfseries Un modèle pour les nids de mouettes}\\[1.5cm]
+\linespread{1.2}\LARGE {\bfseries Un modèle pour les nids d'oiseaux}\\[1.5cm]
 \linespread{1}
 
 {\large Rédigé par\\}
@@ -214,7 +214,15 @@
 
 \chapter*{Introduction}
 \addcontentsline{toc}{part}{Introduction}
+L’observation est une composante essentielle en sciences appliquées, et tout particulièrement pour nous, futur statisticiens. Ces dernières nous permettent d’élaborer des modèles, et dans le cadre de l’estimation paramétrique, de construire des estimateurs.
 
+Dans la situation où les données sont correctement observées, cadre idéal , la statistique inférentielle nous permet d’obtenir d’agréables expressions analytiques des estimateurs, notamment par la méthode du maximum de vraisemblance, qui est d'une redoutable efficacité. Toujours est-il que ces situations sont peu courantes ; nous sommes souvent confrontés à des situation présentant des données « cachées » ou manquantes. Dans ce dernier cas, nous verrons que les méthodes analytiques exactes ne suffisent plus, et qu’il est nécessaire d’introduire de nouvelles méthodes, basées sur le principe du maximum de vraisemblancen, pour tenter d’estimer les paramètres.
+
+Nous étudierons dans le présent projet l’une de ces méthodes, conçue par Dempster et al. (1977), l’algorithme Expectation-Maximization.  
+
+Nous nous appuierons ici un exemple extrait de l’ornithologie ; les données observées seront celles de la taille des nids d’oiseaux, et les données manquantes seront l’espèce qui l’a construit.
+
+Dans une première partie, nous modéliserons mathématiquement le problème et poserons les bases théoriques nécessaires à l’étude; nous verrons brièvement le cas des données complètes, puis étudierons le cas des observations manquantes. Une seconde partie sera consacrée à une implémentation en langage R de l’algorithme EM et aux performances des résultats ce dernier. Nous détaillerons notre implémentation, et étudierons son risque d'erreur. Dans une troisième et dernière partie, nous nous proposons de nous mettre en conditions réelles et de réaliser une étude de cas à l'aide des outils que nous aurons implémenté.
 
 \pagebreak
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -222,8 +230,10 @@
 
 %%% Premier chapitre %%%
 \chapter{Modélisation du problème et liminaire mathématique}
+Dans ce premier chapitre, nous introduirons les outils nécessaires pour modéliser mathématiquement le problème. Puis, nous présenterons successivement les deux situations existantes dans le cadre du recueil de données des nids d'oiseaux : celle dans laquelle et l'espèce et la taille du nid ont été observées; et celle dans laquelle seule la taille a pu être observée.
+Nous verrons et ce qui diffère entre ces deux situations, et les raisons qui ont incité à la création de l’algorithme EM, l’objet de notre projet. 
 
-Le présent chapitre s'inspirera indifféremment des références [1], [2] et [3]
+Ce chapitre s'inspirera indifféremment des références [1], [2] et [3]
 
 % section 1
 \section{Modélisation du problème}
@@ -241,7 +251,7 @@ Afin de modéliser commodément le problème, nous introduisons les variables al
 
 \begin{itemize}[label=\adfflowerleft]
 	\item La variable aléatoire $X$, modélisant la taille des nids, de densité $f$
-	\item $Z$, la variable aléatoire discrète et à valeurs dans $\llbracket 1,J\rrbracket$, représentant l'espèce de mouette qui a construit le nid
+	\item $Z$, la variable aléatoire discrète et à valeurs dans $\llbracket 1,J\rrbracket$, représentant l'espèce d'oiseau qui a construit le nid
 \end{itemize}
 
 Enfin, nous nous placerons sous les hypothèses suivantes:
@@ -258,12 +268,12 @@ Soit $\Theta := \{ \theta = (\alpha_j,\mu_j, v_j)_{1 \leq j \leq J} \text{ tels 
 \begin{rem}
 La variable $Z$ est discrète et à valeur dans un sous-ensemble fini de $\N$, elle suit donc une loi 
 \begin{center} $\displaystyle \sum_{j=1}^J \alpha_j\delta_j$ \end{center}
-\underline{où} $J$ représente le nombre d'espèce de mouettes considéré et les $\alpha_j$ sont des réels, positifs stricts, représentant la proportion de nids de l'espèce $j$, tels que $\displaystyle\sum_{i=1}^J \alpha_j = 1$.
+\underline{où} $J$ représente le nombre d'espèce de d'oiseaux considéré et les $\alpha_j$ sont des réels, positifs stricts, représentant la proportion de nids de l'espèce $j$, tels que $\displaystyle\sum_{i=1}^J \alpha_j = 1$.
 \end{rem}
 
 Il s'ensuit la proposition suivante, qui sera essentielle dans la suite.
 \begin{prop}
-La distribution de la taille des nids de mouettes, \underline{i.e.} $X$, admet pour densité ,au point $x$ et par rapport à la mesure de Lebesgue sur $\R$, la fonction $f_ \theta$ définie comme suit
+La distribution de la taille des nids des oiseaux, \underline{i.e.} $X$, admet pour densité ,au point $x$ et par rapport à la mesure de Lebesgue sur $\R$, la fonction $f_ \theta$ définie comme suit
 \begin{center} $f_\theta(x) = \displaystyle\sum_{j=1}^J \alpha_j \gamma_{\mu_j, v_j}(x) $ \end{center}
 \end{prop}
 
@@ -327,8 +337,8 @@ Nous allons dès à présent nous intéresser à l'estimation de ces paramètres
 % Section 2
 \section{Une approche idéaliste}
 
-Regardons dans un premier temps un cas simplifié, un cas ne décrivant pas la réalité des observations mais qui a le mérite de constituer une agréable entrée en matière. \newline
-Nous supposerons ici qu'ont été relevés simultanément et les mesures des tailles des nids et l'espèce de mouette qui l'a construit. Les observations considérées ici sont donc composées des couples $(X_i, Z_i)$, $i \in \llbracket1,n \rrbracket$. On considérera dès lors la fonction de densité $h_\theta(x,z)$, donnée par laproposition 2. \newline
+Regardons dans un premier temps un cas simplifié, un cas ne décrivant pas la réalité des observations mais qui constitue une agréable entrée en matière. \newline
+Nous supposerons ici qu'ont été relevés simultanément et les mesures des tailles des nids et l'espèce d'oiseau qui l'a construit. Les observations considérées ici sont donc composées des couples $(X_i, Z_i)$, $i \in \llbracket1,n \rrbracket$. On considérera dès lors la fonction de densité $h_\theta(x,z)$, donnée par la proposition 2. \newline
 L'estimation des divers paramètres est alors élémentaire, en témoigne les propositions suivantes :
 \begin{prop}[Fonction de Log-vraisemblance]
 La Log-vraisemblance du modèle s'écrit
@@ -437,14 +447,9 @@ $
 
 %section 3
 \section{Une situation concordante à la réalité} % approche réelle // situation naturelle // concordance
-Nous nous placerons désormais dans un contexte tout autre que celui du paragraphe précédent, un contexte concordant davantage à la réalité. Dans ce qui suit, nous supposerons que ne sont observées que les tailles des nids, les diverses espèces de mouettes les ayant construit étant en quelque sorte des données inobservées ou "cachées". Nous avons donc un échantillon $X_1,\cdots, X_n$ de même loi que la variable $X$ comme définie ci-dessus. \newline
-On définit $\mathcal{L}_{obs}$ la log-vraisemblance des observations, nous obtenons ainsi 
-
-\begin{defn} 
-La log-vraisemblance des observations s'écrit 
+Nous nous placerons désormais dans un contexte tout autre que celui du paragraphe précédent, un contexte concordant davantage à la réalité. Dans ce qui suit, nous supposerons que ne sont observées que les tailles des nids, les diverses espèces d'oiseaux les ayant construit étant en quelque sorte des données inobservées ou "cachées". Nous avons donc un échantillon $X_1,\cdots, X_n$ de même loi que la variable $X$ comme définie ci-dessus. \newline
+La log-vraisemblance des observations $\mathcal{L}_{obs}$ s'obtient aisément : 
 \begin{center} $\mathcal{L}_{obs}(\theta, X_1, \cdots, X_n) := ln\left( \displaystyle\prod_{i=1}^n f_\theta(X_i) \right) = \displaystyle\sum_{i=1}^nln\left( \sum_{j=1}^J \alpha_j \gamma_{\mu_j, v_j}(X_i) \right)$ \end{center}
-\end{defn}
-
 Nous voyons dès lors que l'existence d'une expression analytique du maximum de la log-vraisemblance n'est pas assurée. Il est donc nécessaire de trouver un moyen d'approcher les valeurs des différents estimateurs. \newline
 Pour ce faire, on définit une log-vraisemblance des couples $(X_i,Z_i)$ sachant le vecteurs des observations $X_1, \cdots, X_n$.
 \begin{defn}[log-vraisemblance conditionnelle]
@@ -484,7 +489,7 @@ Nous nous appuierons sur l'expression suivante pour l'expression des estimateurs
 &~~~-\frac{1}{2}\sum_{j=1}^J\left(\sum_{i=1}^n  \prob_{\thetat}(Z=j|X=X_i)\left(log(v_j)+\frac{(X_i-\mu_j)^2}{v_j}\right)\right)
 \end{align*}
 \end{prop}
-
+\newpage
 \begin{proof}
 Il suffit de partir de la forme précédente de la log-vraisemblance conditionnelle, on a ainsi : 
 
@@ -687,7 +692,7 @@ Et finalement
 
 \chapter{Des études de cas}
 
-Dans ce troisième et dernier chapitre, nous nous proposons de mettre en oeuvre ce que nous avons développé dans les précédents chapitres. Nous allons nous placer en situation réelle, et étudier un jeu de données correspondant à un mélange de gaussiennes. Notre thématique ne changera pas, il sera toujours question de nids d'oiseaux. 
+Dans ce troisième et dernier chapitre, nous nous proposons de mettre en oeuvre ce que nous avons développé dans les précédents chapitres. Nous allons nous placer en situation réelle, et étudier un jeu de données correspondant à un mélange de lois gaussiennes. Notre thématique ne changera pas, il sera toujours question de nids d'oiseaux. 
 
 % section 1
 \section{Préambule}
@@ -743,6 +748,9 @@ Nous partons, pour ainsi dire, à l'aveugle, mais il sera gardé en mémoire les
 [2] \url{https://members.loria.fr/moberger/Enseignement/AVR/Exposes/algo-em.pdf} \newline
 [3] \url{http://faculty.washington.edu/fxia/courses/LING572/EM_collins97.pdf} \newline
 [4] \url{https://core.ac.uk/download/pdf/155777956.pdf}\newline % doc des oiseaux
+[5] \url{https://cran.r-project.org/web/packages/mclust/mclust.pdf} \newline
+[6] \url{https://rstudio-pubs-static.s3.amazonaws.com/154174_78c021bc71ab42f8add0b2966938a3b8.html}
+
 
 %\url{http://www.cmap.polytechnique.fr/~bansaye/CoursTD6.pdf}
 %\url{https://www.lpsm.paris/pageperso/rebafka/BookGraphes/algorithme-em.html} \newline
@@ -757,7 +765,7 @@ Nous partons, pour ainsi dire, à l'aveugle, mais il sera gardé en mémoire les
 \chapter{Le package \textit{mclust}}
 Nous avons, dans un élan d'audace, commencé par programmer à la main l'algorithme EM, en nous appuyant sur le pseudo-code explicité en première partie du chapitre II. \newline
 
-Cependant, il existe une librairie \textit{R} - la librairie \textit{mclust} - contenant une implémentation de l'algorithme EM. Notre algorithme étant fonctionnel, nous ne détaillerons pas ici le fonctionnement de ce Package. Il est néanmoins pertinent de l'expérimenter, voire de comparer ces résultats avec ceux notre algorithme.
+Cependant, il existe une librairie \textit{R} - la librairie \textit{mclust} - contenant une implémentation de l'algorithme EM. Notre algorithme étant fonctionnel, nous ne détaillerons pas ici le fonctionnement de ce Package. Il est néanmoins pertinent de l'expérimenter, voire de comparer ces résultats avec ceux notre algorithme. Nous nous somme appuyer sur [5] et [6] afin d'obtenir les éléments nécessaire à l'utilisation de ce package.
 
 Pour commencer, installons et chargeons le Package \textit{mclust}.
 \begin{lstlisting}

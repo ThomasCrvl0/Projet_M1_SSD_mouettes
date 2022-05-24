@@ -170,6 +170,7 @@ algo_EM = function(data_init, X, K){
     }
   }
   new_df = data_init
+  colnames(new_df) = c('bird_names', 'alpha', 'mu', 'sigma')
   return(new_df)
 }
 
@@ -520,71 +521,41 @@ print(df_th4)
 algo_EM(data_init4, X4, 30)
 
 
-# Boxplots
 
-# vect1 <- seq(1, 298, by = 3) # vecteur 1
-# vect2 <- seq(2, 299, by = 3) # vecteur 2
-# vect3 <- seq(3, 300, by = 3) # vecteur 3
+# Chapitre III, étude d'un mélange de deux lois
 
 
 
-# Pour les \alpha
-# df_monteCarlo_50 = Monte_Carlo(df_th3, data_init3, 100, 50, 10)
-# df_monteCarlo_100 = Monte_Carlo(df_th3, data_init3, 100, 100, 10)
-# df_monteCarlo_500 = Monte_Carlo(df_th3, data_init3, 100, 500, 10)
-# par(mfrow = c(3,3))
-# boxplot(df_monteCarlo_50[vect1, 2]) # \alpha_1
-# boxplot(df_monteCarlo_100[vect1, 2]) # \alpha_1
-# boxplot(df_monteCarlo_500[vect1, 2]) # \alpha_1
-# boxplot(df_monteCarlo_50[vect2, 2]) # \alpha_2
-# boxplot(df_monteCarlo_100[vect2, 2]) # \alpha_2
-# boxplot(df_monteCarlo_500[vect2, 2]) # \alpha_2
-# boxplot(df_monteCarlo_50[vect3, 2]) # \alpha_3
-# boxplot(df_monteCarlo_100[vect3, 2]) # \alpha_3
-# boxplot(df_monteCarlo_500[vect3, 2]) # \alpha_3
+
+bird_names2 = c("European Goldfinch", "Ring Ouzel")
+mean_volume = c(38.0, 298.6)
+sd_volume = c(9.1, 125.1)
+nest_data2 = data.frame(bird_names2, mean_volume, sd_volume)
+df <- random_species(nest_data2, 2)
+df[,2] <- c(0.2878713, 0.7121287 )
+df
+data <- simulation(df, 500)
+data
+
+ggplot(data.frame(data), aes(x=data)) + 
+  geom_histogram(aes(y=..density..), colour="black", fill="white", bins = 100) +
+  geom_density(alpha=.3, color = "purple", fill="darkcyan", size=1.5) +
+  xlab('X') +
+  ylab('Densité') +
+  geom_vline(aes(xintercept = 40), col = "darkgreen", size = 1)+
+  geom_vline(aes(xintercept = 300), col = "darkgreen", size = 1)+
+  geom_vline(aes(xintercept = 10), col = "firebrick") + 
+  geom_vline(aes(xintercept = 70), col = "firebrick") +
+  geom_vline(aes(xintercept = 430), col = "firebrick") + 
+  geom_vline(aes(xintercept = 170), col = "firebrick")
 
 
-
-# Pour les \mu
-# df_monteCarlo_50 = Monte_Carlo(df_th3, data_init3, 100, 50, 10)
-# df_monteCarlo_100 = Monte_Carlo(df_th3, data_init3, 100, 100, 10)
-# df_monteCarlo_500 = Monte_Carlo(df_th3, data_init3, 100, 500, 10)
-# par(mfrow = c(3,3))
-# boxplot(df_monteCarlo_50[vect1, 3]) # \mu_1
-# boxplot(df_monteCarlo_100[vect1, 3]) # \mu_1
-# boxplot(df_monteCarlo_500[vect1, 3]) # \mu_1
-# boxplot(df_monteCarlo_50[vect2, 3]) # \mu_2
-# boxplot(df_monteCarlo_100[vect2, 3]) # \mu_2
-# boxplot(df_monteCarlo_500[vect2, 3]) # \mu_2
-# boxplot(df_monteCarlo_50[vect3, 3]) # \mu_3
-# boxplot(df_monteCarlo_100[vect3, 3]) # \mu_3
-# boxplot(df_monteCarlo_500[vect3, 3]) # \mu_3
-
-# Pour les \sigma
-# df_monteCarlo_50 = Monte_Carlo(df_th3, data_init3, 100, 50, 10)
-# df_monteCarlo_100 = Monte_Carlo(df_th3, data_init3, 100, 100, 10)
-# df_monteCarlo_500 = Monte_Carlo(df_th3, data_init3, 100, 500, 10)
-# par(mfrow = c(3,3))
-# boxplot(df_monteCarlo_50[vect1, 4]) # \sigma_1
-# boxplot(df_monteCarlo_100[vect1, 4]) # \sigma_1
-# boxplot(df_monteCarlo_500[vect1, 4]) # \sigma_1
-# boxplot(df_monteCarlo_50[vect2, 4]) # \sigma_2
-# boxplot(df_monteCarlo_100[vect2, 4]) # \sigma_2
-# boxplot(df_monteCarlo_500[vect2, 4]) # \sigma_2
-# boxplot(df_monteCarlo_50[vect3, 4]) # \sigma_3
-# boxplot(df_monteCarlo_100[vect3, 4]) # \sigma_3
-# boxplot(df_monteCarlo_500[vect3, 4]) # \sigma_3
+data_save <- data
 
 
+param_init = data.frame(bird_names = c("European Goldfinch", "Ring Ouzel"),
+                            alpha_init = c(0.5, 0.5), mean_init = c(40, 300),
+                            sd_init = c(30, 130))
 
-# Pour les \v_j
-# df_monteCarlo_50 = Monte_Carlo(data_test_th, data_test_init, 100, 50, 10)
-# df_monteCarlo_100 = Monte_Carlo(data_test_th, data_test_init, 100, 100, 10)
-# df_monteCarlo_500 = Monte_Carlo(data_test_th, data_test_init, 100, 500, 10)
-# par(mfrow = c(2,3))
-# boxplot(df_monteCarlo_50[vectp, 4]) # \v_1
-# boxplot(df_monteCarlo_100[vectp, 4]) # \v_1
-# boxplot(df_monteCarlo_500[vectp, 4]) # \v_1
-# boxplot(df_monteCarlo_50[vecti, 4]) # \v_2
-# boxplot(df_monteCarlo_100[vecti, 4]) # \v_2
-# boxplot(df_monteCarlo_500[vecti, 4]) # \v_2
+
+algo_EM(param_init, data, 10)

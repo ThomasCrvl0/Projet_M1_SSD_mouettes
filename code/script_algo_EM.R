@@ -559,3 +559,136 @@ param_init = data.frame(bird_names = c("European Goldfinch", "Ring Ouzel"),
 
 
 algo_EM(param_init, data, 10)
+
+df_monteCarlo_100 = Monte_Carlo(good_dfTestTh3, good_dfTestInit3, 100, 100, 10)
+df_monteCarlo_250 = Monte_Carlo(good_dfTestTh3, good_dfTestInit3, 100, 250, 10)
+df_monteCarlo_500 = Monte_Carlo(good_dfTestTh3, good_dfTestInit3, 100, 500, 10)
+
+
+# Pour les \alpha
+#alpha1
+df_Good1 = rbind(df_monteCarlo_100[vect1,], df_monteCarlo_250[vect1,],
+                      df_monteCarlo_500[vect1,])
+
+df_Good1[,1] = c(rep("100", dim(df_monteCarlo_100[vect1,])[1]),
+                      rep("250", dim(df_monteCarlo_250[vect1,])[1]),
+                      rep("500", dim(df_monteCarlo_500[vect1,])[1]))
+colnames(df_Good)[1] = "taille_echantillon"
+
+
+a1 = qplot(df_Good1[,1], df_Good1[,2], data = df_Good1, 
+      geom= "boxplot", fill="blue") + xlab("n") + ylab("erreur absolue") +
+theme(legend.position = "none")
+
+#alpha2
+df_Good2 = rbind(df_monteCarlo_100[vect2,], df_monteCarlo_250[vect2,],
+                 df_monteCarlo_500[vect2,])
+df_Good2[,1] = c(rep("100", dim(df_monteCarlo_100[vect2,])[1]),
+                 rep("250", dim(df_monteCarlo_250[vect2,])[1]),
+                 rep("500", dim(df_monteCarlo_500[vect2,])[1]))
+colnames(df_Good2)[1] = "taille_echantillon"
+
+
+a2 = qplot(df_Good2[,1], df_Good2[,2], data = df_Good2, colour = "orange",
+      geom= "boxplot") + xlab("n") + ylab("erreur absolue") +
+  theme(legend.position = "none")
+
+#alpha3
+df_Good3 = rbind(df_monteCarlo_100[vect3,], df_monteCarlo_250[vect3,],
+                 df_monteCarlo_500[vect3,])
+df_Good3[,1] = c(rep("100", dim(df_monteCarlo_100[vect3,])[1]),
+                 rep("250", dim(df_monteCarlo_250[vect3,])[1]),
+                 rep("500", dim(df_monteCarlo_500[vect3,])[1]))
+colnames(df_Good3)[1] = "taille_echantillon"
+
+
+a3 = qplot(df_Good3[,1], df_Good3[,2], data = df_Good3, colour = "orange",
+      geom= "boxplot") + xlab("n") + ylab("erreur absolue") +
+  theme(legend.position = "none")
+ggarrange(a1,a2,a3, ncol = 1, nrow = 3)
+# save with width = 800 and height = 1200
+
+
+# Pour les \mu
+# pour mu1
+df_Good1 = rbind(df_monteCarlo_100[vect1,], df_monteCarlo_250[vect1,],
+                 df_monteCarlo_500[vect1,])
+
+df_Good1[,1] = c(rep("100", dim(df_monteCarlo_100[vect1,])[1]),
+                 rep("250", dim(df_monteCarlo_250[vect1,])[1]),
+                 rep("500", dim(df_monteCarlo_500[vect1,])[1]))
+colnames(df_Good)[1] = "taille_echantillon"
+
+
+qplot(df_Good1[,1], df_Good1[,3], data = df_Good1, 
+      geom= "boxplot", fill="blue") + xlab("n") + ylab("erreur absolue") +
+  theme(legend.position = "none")
+
+#mu2
+df_Good2 = rbind(df_monteCarlo_100[vect2,], df_monteCarlo_250[vect2,],
+                 df_monteCarlo_500[vect2,])
+df_Good2[,1] = c(rep("100", dim(df_monteCarlo_100[vect2,])[1]),
+                 rep("250", dim(df_monteCarlo_250[vect2,])[1]),
+                 rep("500", dim(df_monteCarlo_500[vect2,])[1]))
+colnames(df_Good2)[1] = "taille_echantillon"
+
+
+qplot(df_Good2[,1], df_Good2[,3], data = df_Good2, colour = "orange",
+      geom= "boxplot") + xlab("n") + ylab("erreur absolue") +
+  theme(legend.position = "none")
+
+#mu3
+df_Good3 = rbind(df_monteCarlo_100[vect3,], df_monteCarlo_250[vect3,],
+                 df_monteCarlo_500[vect3,])
+df_Good3[,1] = c(rep("100", dim(df_monteCarlo_100[vect3,])[1]),
+                 rep("250", dim(df_monteCarlo_250[vect3,])[1]),
+                 rep("500", dim(df_monteCarlo_500[vect3,])[1]))
+colnames(df_Good3)[1] = "taille_echantillon"
+
+
+qplot(df_Good3[,1], df_Good3[,3], data = df_Good3, colour = "orange",
+      geom= "boxplot") + xlab("n") + ylab("erreur absolue") +
+  theme(legend.position = "none")
+
+# save with width = 800 and height = 1200
+
+# Pour les \sigma
+# pour sigma1
+df_Good1 = rbind(df_monteCarlo_100[vect1,], df_monteCarlo_250[vect1,],
+                 df_monteCarlo_500[vect1,])
+
+df_Good1[,1] = c(rep("100", dim(df_monteCarlo_100[vect1,])[1]),
+                 rep("250", dim(df_monteCarlo_250[vect1,])[1]),
+                 rep("500", dim(df_monteCarlo_500[vect1,])[1]))
+colnames(df_Good)[1] = "taille_echantillon"
+
+
+qplot(df_Good1[,1], df_Good1[,4], data = df_Good1, 
+      geom= "boxplot", fill="blue") + xlab("n") + ylab("erreur absolue") +
+  theme(legend.position = "none")
+
+# Pour sigma2
+df_Good2 = rbind(df_monteCarlo_100[vect2,], df_monteCarlo_250[vect2,],
+                 df_monteCarlo_500[vect2,])
+df_Good2[,1] = c(rep("100", dim(df_monteCarlo_100[vect2,])[1]),
+                 rep("250", dim(df_monteCarlo_250[vect2,])[1]),
+                 rep("500", dim(df_monteCarlo_500[vect2,])[1]))
+colnames(df_Good2)[1] = "taille_echantillon"
+
+
+qplot(df_Good2[,1], df_Good2[,4], data = df_Good2, colour = "orange",
+      geom= "boxplot") + xlab("n") + ylab("erreur absolue") +
+  theme(legend.position = "none")
+
+# Pour sigma3
+df_Good3 = rbind(df_monteCarlo_100[vect3,], df_monteCarlo_250[vect3,],
+                 df_monteCarlo_500[vect3,])
+df_Good3[,1] = c(rep("100", dim(df_monteCarlo_100[vect3,])[1]),
+                 rep("250", dim(df_monteCarlo_250[vect3,])[1]),
+                 rep("500", dim(df_monteCarlo_500[vect3,])[1]))
+colnames(df_Good3)[1] = "taille_echantillon"
+
+
+qplot(df_Good3[,1], df_Good3[,4], data = df_Good3, colour = "orange",
+      geom= "boxplot") + xlab("n") + ylab("erreur absolue") +
+  theme(legend.position = "none")

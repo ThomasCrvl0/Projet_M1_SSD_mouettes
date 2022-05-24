@@ -611,14 +611,14 @@ Pour l'implémentation de cet algorithme, nous nous sommes appuyés sur le pseud
 \begin{algorithm}
 	\caption{\textbf{L’algorithme EM (Dempster et al., 1977).}}
 	\begin{algorithmic}[1]
-		\REQUIRE{$N \in \mathbb{N}$, $\widehat{\theta_0} \in \Theta$, un jeu de données $x_1 \dots x_n$;}
+		\REQUIRE{$K \in \mathbb{N}$, $\widehat{\theta_0} \in \Theta$, un jeu de données $x_1 \dots x_n$;}
 		\ENSURE
 		\STATE {$k:=1$;}
-		\WHILE {$K < N + 1$}
-		\STATE {$\text{\textbf{ETAPE E :} \textit{Calculer la fonction }} Q(\theta;\widehat{\theta}_{k-1}) = \frac{1}{n} \sum_{i=1}^{n} \mathbb{E}_{\widehat{\theta}_{k-1}} [log f(X_i,Z_i,\theta)|X_i = x_i]$;}
-		\STATE {$\text{\textbf{ETAPE M : }} \widehat{\theta}_k = argmax \hspace{1.5mm} Q(\theta;\widehat{\theta}_{k-1})$;}
+		\FOR {$k $ de $1$ à $K$}
+		\STATE {$\text{\textbf{ETAPE E :} \textit{Calculer la fonction }} Q(\theta;\widehat{\theta}_{k-1}) = \displaystyle\frac{1}{n} \sum_{i=1}^{n} \mathbb{E}_{\widehat{\theta}_{k-1}}[\mathcal{L}_c(\theta_k-1, \theta_{k}, X_1, \cdots, X_n)]$;}
+		\STATE {$\text{\textbf{ETAPE M : }} \widehat{\theta}_k = \underset{\theta}{\text{argmax}} \hspace{1.5mm} Q(\theta;\widehat{\theta}_{k-1})$;}
 		\STATE {$k \leftarrow k+1$;}
-		\ENDWHILE
+		\ENDFOR
 		\RETURN {$\widehat{\theta}_N$;}
 	\end{algorithmic}
 \end{algorithm}
@@ -779,9 +779,10 @@ Nous obtenons ainsi nos paramètres estimés; comparons le avec les vrais valeur
 Les proportions sont toutes deux très bien estimées, les erreurs sont de l'ordre de moins de $1\%$, ce qui est formidable.
 La moyenne de la première espèce présente elle aussi une erreur d'estimation de l'ordre de $1\%$, celle de la seconde une erreur d'estimation de l'ordre de $3\%$, ce qui est très satisfaisant. Il en est de même pour les variances. \newline
 Pour ce premier exemple d'un mélange de deux lois, nous obtenons de très bonne approximations.
+
 % section 3
 \section{Etude d'un mélange à trois lois}
-
+Dans cette section, nous étudierons le cas d'un mélange à trois lois.
 
 
 

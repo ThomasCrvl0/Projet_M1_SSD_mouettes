@@ -233,7 +233,7 @@ Dans une première partie, nous modéliserons mathématiquement le problème et 
 Dans ce premier chapitre, nous introduirons les outils nécessaires pour modéliser mathématiquement le problème. Puis, nous présenterons successivement les deux situations existantes dans le cadre du recueil de données des nids d'oiseaux : celle dans laquelle et l'espèce et la taille du nid ont été observées; et celle dans laquelle seule la taille a pu être observée.
 Nous verrons et ce qui diffère entre ces deux situations, et les raisons qui ont incité à la création de l’algorithme EM, l’objet de notre projet. 
 
-Ce chapitre s'inspirera indifféremment des références [1], [2] et [3]
+Ce chapitre s'inspirera des références [1], [2] et [3]
 
 % section 1
 \section{Modélisation du problème}
@@ -599,8 +599,6 @@ Tous ces inesthétiques et fastidieux calculs n'ont pas été effectué en vain.
 % chapitre 2
 \chapter{L'algorithme EM}
 
-Dans le présent chapitre, nous nous intéresserons A REMPLIR 
-
 
 \section{Présentation laconique et pseudo-code}
 
@@ -612,48 +610,6 @@ La phase E consiste à calculer la log-vraisemblance conditionnelle $\displaysty
 \subsection{L'étape M (Maximization)}
 La phase M consiste à maximiser la vraisemblance trouvée à l'étape E. Ce maximum sera atteint en $\theta_M = (\widehat{\alpha_j}, \widehat{\mu_j}, \widehat{\sigma_j})$ et ces trois paramètres seront calculalés à l'aide maximiseur établis à la proposition 7. Une fois qu'ils auront étés déterminés, ce sont ces trois paramètres qui seront utilisés dans l'itération suivante pour mettre à jour la log-vraisemblance conditionnelle lors de l'étape M.
 
-\subsection{La fonction simulation}
-Afin de pouvoir lancer l'algorithme EM, nous avons besoin d'un échantillon issue d'un mélange gaussien. Dans le cadre de ce projet, nous disposons uniquement de données répertoriant les moyennes et les écarts-types des volumes des nids de treize espèces d'oiseaux différentes. En partant de ces données (moyennes et écart-types des volumes des nids) et de la commande $rnorm(\mu, \sigma)$ de $R$, nous avons implémenté la fonction \textit{simulation}, qui a pour mission de générer aléatoirement un échantillon d'un mélange Gaussien. Il s'agit d'une des plus importante fonction de ce projet, nous allons donc la décrire.
-\begin{lstlisting}
-	simulation = function(data_th, n=100){
-		X = rep(NA,n) #echantillon
-		vect_alpha = data_th[,2]
-		vect_mean = data_th[,3]
-		vect_sd = data_th[,4]
-		for(i in 1:n){
-			Z = runif(1)
-			if (Z <= vect_alpha[1]){
-				X[i] = rnorm(1, vect_mean[1], vect_sd[1])
-			}else{
-				k = 1
-				l = 2
-				Bool = FALSE
-				cumul_alpha = cumsum(vect_alpha)
-				while(Bool == FALSE){
-					if((cumul_alpha[k]<=Z) & (cumul_alpha[l]>=Z)){
-						Bool = TRUE
-						param_index = l
-					}
-					k = k+1
-					l = l+1
-				}
-				X[i] = rnorm(1, vect_mean[param_index], vect_sd[param_index])
-			}
-		}
-		return(X)
-	}
-\end{lstlisting}
-La fonction prend en argument $data\_th$ (le dataframe contenant les paramètres $\alpha$, $\mu$ et $\sigma$) et $n$, qui indique la taille de l'échantillon à générer aléatoirement. \\
-La fonction retourne le vecteur du mélange gaussien de taille n qui a été généré aléatoirement. \\
-La plus partie la plus importante et subtile de ce script est celle dans laquelle nous distribuons aléatoirement les lois des différents $(X_i)_{i \in \{1, \dots, n\}}$ de l'échantillon, de sorte à avoir un bon mélange gaussien. \\
-Pour simplifier les choses nous allons prendre un exemple dans lequel nous voulons générer un mélange de trois gaussiennes, ayant pour paramètres respectifs $\theta_1 = (\alpha_1, \mu_1, \sigma_1)$, $\theta_2 = (\alpha_2, \mu_2, \sigma_2)$ et $\theta_3 = (\alpha_3, \mu_3, \sigma_3)$. On rappelle que  $\displaystyle\sum_{j=1}^{3} \alpha_j = 1$. Nous procédons de la manière suivante: \\
-Nous génèrons une variable aléatoire $Z$ de loi uniforme à l'aide de la commande $runif$ de $R$; puis :
-\begin{itemize}
-	\item Si $Z < \alpha_1$ alors $X \sim N(\mu_1, \sigma_1)$ \\
-	\item Sinon si $\alpha_1 \leq Z \leq \alpha_1 + \alpha_2$ alors $Z \sim N(\mu_2, \sigma_2)$ \\
-	\item Sinon si  $\alpha_1 + \alpha_2 \leq Z \leq \alpha_1 + \alpha_2 + \alpha_3$ alors $Z \sim N(\mu_3, \sigma_3)$
-\end{itemize}
-Notre implémentation fonctionne dans le cas général d'un mélange de $J$ gaussiennes avec $J \in \mathbb{N^*}$ et repose exactement sur le même principe que celui précédemment expliqué.
 
 \subsection{Pseudo-code de l'algorithme EM}
 Pour l'implémentation de cet algorithme, nous nous sommes appuyés sur le pseudo-code suivant.
@@ -737,31 +693,52 @@ Et finalement
 %%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\chapter{Une mise en situation}
+\chapter{Etude de simulations}
 
-Dans ce troisième et dernier chapitre, nous nous proposons de mettre en oeuvre ce que nous avons développé dans les précédents chapitres. Nous allons nous placer en situation réelle, et étudier un jeu de données correspondant à un mélange de lois gaussiennes. Notre thématique ne changera pas, il sera toujours question de nids d'oiseaux. 
+\section{La fonction simulation}
+Afin de pouvoir lancer l'algorithme EM, nous avons besoin d'un échantillon issue d'un mélange gaussien. Dans le cadre de ce projet, nous disposons uniquement de données répertoriant les moyennes et les écarts-types des volumes des nids de treize espèces d'oiseaux différentes. En partant de ces données (moyennes et écart-types des volumes des nids) et de la commande $rnorm(\mu, \sigma)$ de $R$, nous avons implémenté la fonction \textit{simulation}, qui a pour mission de générer aléatoirement un échantillon d'un mélange Gaussien. Il s'agit d'une des plus importante fonction de ce projet, nous allons donc la décrire.
+\begin{lstlisting}
+	simulation = function(data_th, n=100){
+		X = rep(NA,n) #echantillon
+		vect_alpha = data_th[,2]
+		vect_mean = data_th[,3]
+		vect_sd = data_th[,4]
+		for(i in 1:n){
+			Z = runif(1)
+			if (Z <= vect_alpha[1]){
+				X[i] = rnorm(1, vect_mean[1], vect_sd[1])
+			}else{
+				k = 1
+				l = 2
+				Bool = FALSE
+				cumul_alpha = cumsum(vect_alpha)
+				while(Bool == FALSE){
+					if((cumul_alpha[k]<=Z) & (cumul_alpha[l]>=Z)){
+						Bool = TRUE
+						param_index = l
+					}
+					k = k+1
+					l = l+1
+				}
+				X[i] = rnorm(1, vect_mean[param_index], vect_sd[param_index])
+			}
+		}
+		return(X)
+	}
+\end{lstlisting}
+La fonction prend en argument $data\_th$ (le dataframe contenant les paramètres $\alpha$, $\mu$ et $\sigma$) et $n$, qui indique la taille de l'échantillon à générer aléatoirement. \\
+La fonction retourne le vecteur du mélange gaussien de taille n qui a été généré aléatoirement. \\
+La plus partie la plus importante et subtile de ce script est celle dans laquelle nous distribuons aléatoirement les lois des différents $(X_i)_{i \in \{1, \dots, n\}}$ de l'échantillon, de sorte à avoir un bon mélange gaussien. \\
+Pour simplifier les choses nous allons prendre un exemple dans lequel nous voulons générer un mélange de trois gaussiennes, ayant pour paramètres respectifs $\theta_1 = (\alpha_1, \mu_1, \sigma_1)$, $\theta_2 = (\alpha_2, \mu_2, \sigma_2)$ et $\theta_3 = (\alpha_3, \mu_3, \sigma_3)$. On rappelle que  $\displaystyle\sum_{j=1}^{3} \alpha_j = 1$. Nous procédons de la manière suivante: \\
+Nous génèrons une variable aléatoire $Z$ de loi uniforme à l'aide de la commande $runif$ de $R$; puis :
+\begin{itemize}
+	\item Si $Z < \alpha_1$ alors $X \sim N(\mu_1, \sigma_1)$ \\
+	\item Sinon si $\alpha_1 \leq Z \leq \alpha_1 + \alpha_2$ alors $Z \sim N(\mu_2, \sigma_2)$ \\
+	\item Sinon si  $\alpha_1 + \alpha_2 \leq Z \leq \alpha_1 + \alpha_2 + \alpha_3$ alors $Z \sim N(\mu_3, \sigma_3)$
+\end{itemize}
+Notre implémentation fonctionne dans le cas général d'un mélange de $J$ gaussiennes avec $J \in \mathbb{N^*}$ et repose exactement sur le même principe que celui précédemment expliqué.
 
-% section 1
-\section{Préambule}
 
-Nous n'avons hélas pu trouver des jeux de données sur la taille de nids d'oiseaux en libre accès. Toutefois, nous avons récupéré sur le site de l'\textit{Université de Lincoln (Royaume-Uni)} l'article de recherche [4], contenant des informations fortes utiles sur une douzaine d'espèces d'oiseaux.
-En voici un extrait :
-\begin{center}
-\includegraphics[scale = 0.5]{tab_oiseaux.png}
-\end{center}
-
-Parmi elles ce trouve des volumes moyens de nids ainsi que la variance associée. \newline
-
-
-Afin de se conformer aux hypothèses que nous avons précédemment mentionné, nous supposerons ici que les volumes des nids suivent une loi normale. Nous ferons une dernière hypothèse; nous supposerons le nombre de lois est connu lors de l'observation. \newline
-
-Plaçons nous dès à présent dans le cadre d'une étude. Pour ce faire, commençons par établir une méthodologie. 
-Il sera en premier lieu choisi, aléatoirement, plusieurs espèces d'oiseaux parmi celles que nous avons à disposition. Nous allons générer, avec \textit{R}, les données dont nous avons besoin. Cet $n$-échantillon sera créé grâce à notre fonction de simulation [A DECRIRE ??]. Notre jeu de données étant prêt, nous pourrons commencer l'étude. \newline
-
-Le premier problème qui se posera sera celui du choix des paramètres initiaux, notre algorithme nécessitant des valeurs initiales. Nous avons diverses solutions à notre portée. La première est de faire une exploration des données; via une représentation graphique de la densité de l'échantillon. Si des pics bien distincts se présentent, cela nous permettra de régler judicieusement les paramètres initiaux. Une autre solution est d'utiliser notre fonction de détermination des paramètres, qui comme nous l'avons vu au précédent chapitre est basée sur ???. Une fois cela fait, nous pouvons exécuter notre algorithme et obtenir son estimation des paramètres. Nous pourrons dès lors émettre les conclusions appropriées.\newline
-Nous partons, pour ainsi dire, à l'aveugle, mais il sera gardé en mémoire les vraies valeurs, afin de vérifier si nous avons abouti aux bonnes conclusions.
-
-Nous avons, à partir du tableau de données sus-mentionné, construit le data-frame \textit{nest$\_$data} reprenant les noms des espèces, ainsi que les volumes moyens et variances associées. Ce dernier nous servira à créer les échantillons
 
 \section{Étude de simulations}
 Les différentes sections ci-dessous auront vocations à présenter plusieurs simulations dans le but de tester l'efficacité de notre implémentation de l'algorithme EM.
@@ -851,6 +828,35 @@ Les boites à moustaches (boxplot) ci-dessous, modélisent l'erreur absolue entr
 \end{figure}
 Même dans le cas d'un mélange à variables faiblement séparées, on constate que plus on augmente la taille de l'échantillons et plus l'erreur absolue diminue, ce qui est rassurant.
 
+
+
+\chapter{Un modèle pour les nids d'oiseaux}
+
+Dans ce quatrième et dernier chapitre, nous nous proposons de mettre en oeuvre ce que nous avons développé dans les précédents chapitres. Nous allons nous placer en situation réelle, et étudier un jeu de données correspondant à un mélange de lois gaussiennes. Notre thématique ne changera pas, il sera toujours question de nids d'oiseaux. 
+
+% section 1
+\section{Préambule}
+
+Nous n'avons hélas pu trouver des jeux de données sur la taille de nids d'oiseaux en libre accès. Toutefois, nous avons récupéré sur le site de l'\textit{Université de Lincoln (Royaume-Uni)} l'article de recherche [4], contenant des informations fortes utiles sur une douzaine d'espèces d'oiseaux.
+En voici un extrait :
+\begin{center}
+\includegraphics[scale = 0.5]{tab_oiseaux.png}
+\end{center}
+
+Parmi elles ce trouve des volumes moyens de nids ainsi que la variance associée. \newline
+
+
+Afin de se conformer aux hypothèses que nous avons précédemment mentionné, nous supposerons ici que les volumes des nids suivent une loi normale. Nous ferons une dernière hypothèse; nous supposerons le nombre de lois est connu lors de l'observation. \newline
+
+Plaçons nous dès à présent dans le cadre d'une étude. Pour ce faire, commençons par établir une méthodologie. 
+Il sera en premier lieu choisi, aléatoirement, plusieurs espèces d'oiseaux parmi celles que nous avons à disposition. Nous allons générer, avec \textit{R}, les données dont nous avons besoin. Cet $n$-échantillon sera créé grâce à notre fonction de simulation [A DECRIRE ??]. Notre jeu de données étant prêt, nous pourrons commencer l'étude. \newline
+
+Le premier problème qui se posera sera celui du choix des paramètres initiaux, notre algorithme nécessitant des valeurs initiales. Nous avons diverses solutions à notre portée. La première est de faire une exploration des données; via une représentation graphique de la densité de l'échantillon. Si des pics bien distincts se présentent, cela nous permettra de régler judicieusement les paramètres initiaux. Une autre solution est d'utiliser notre fonction de détermination des paramètres, qui comme nous l'avons vu au précédent chapitre est basée sur ???. Une fois cela fait, nous pouvons exécuter notre algorithme et obtenir son estimation des paramètres. Nous pourrons dès lors émettre les conclusions appropriées.\newline
+Nous partons, pour ainsi dire, à l'aveugle, mais il sera gardé en mémoire les vraies valeurs, afin de vérifier si nous avons abouti aux bonnes conclusions.
+
+Nous avons, à partir du tableau de données sus-mentionné, construit le data-frame \textit{nest$\_$data} reprenant les noms des espèces, ainsi que les volumes moyens et variances associées. Ce dernier nous servira à créer les échantillons
+
+
 % section 2
 \section{Étude de cas avec les vrais données}
 \subsection{Cas d'un mélange à deux lois avec des vrais données}
@@ -865,7 +871,7 @@ Nous pouvons dès lors générer l'échantillon, à l'aide de notre fonction \te
 \begin{lstlisting}
 data <- simulation(df, 500)
 \end{lstlisting}
-Le premier réflexe qui se présente est de tracer la fonction de densité associée à l'échantillon :
+Le premier réflexe qui se présente est de tracer une esa fonction de densité associée à l'échantillon :
 \begin{center}
 \includegraphics[scale=0.8]{dens_1.pdf}
 \end{center}
@@ -885,7 +891,7 @@ Nous obtenons ainsi nos moyennes initiales : $\mu_{1_{init}} =  44.07317$ et $\m
 
 Pour l'initalisation des écarts-types, nous prendrons $\sigma_{1_{init}} = \sigma_{2_{init}} = \widehat{\sigma}$; où
 \begin{center}
-$\widehat{\sigma} := \sqrt{\displaystyle\frac{1}{n}\sum_{i=1}^n(X_i - \bar{X})}$
+$\widehat{\sigma} := \sqrt{\displaystyle\frac{1}{n}\sum_{i=1}^n(X_i - \bar{X})^2}$
 \end{center}
 est l'écart-type empirique. Une fois de plus, \textit{R} nous permet de calculer cela aisément, grâce à la fonction \textit{sqrt(var(data))}. Nous obtenons
 \begin{verbatim}
@@ -926,7 +932,7 @@ La moyenne de la première espèce est presque égale à la moyenne théorique, 
 Pour ce premier exemple de mélange de lois, nous obtenons de très bonne approximations.
 
 % section 3
-\section{Cas d'un mélange à trois lois avec des vrais données}
+\subsection{Cas d'un mélange à trois lois avec des vrais données}
 Dans cette section, nous étudierons le cas d'un mélange à trois lois.
 
 

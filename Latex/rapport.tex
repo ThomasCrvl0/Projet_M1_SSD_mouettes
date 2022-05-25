@@ -785,7 +785,38 @@ Nous avons lancé l'algorithme EM en choisissant un nombre d'itération $k = 10$
 	\caption{Paramètres théoriques VS paramètres estimés}
 \end{figure}
 
-Nous allons maintenant regarder si l'augmentation de la taille de l'échantillon du mélange gaussien généré aléatoirement aura pour effet de diminuer l'erreur absolue entre les paramètres estimés par l'algorithme EM et les valeurs théoriques dans le cas d'un mélange à forte séparation. Pour cela nous allons utiliser notre fonction \textit{Monte-Carlo}. \\
+Nous allons maintenant regarder si l'augmentation de la taille de l'échantillon du mélange gaussien généré aléatoirement aura pour effet de diminuer l'erreur absolue entre les paramètres estimés par l'algorithme EM et les valeurs théoriques dans le cas d'un mélange à forte séparation. Pour cela nous allons utiliser notre fonction \textit{Monte-Carlo}.
+
+\begin{lstlisting}
+	Monte_Carlo = function(data_th, data_init, k, n, N){
+		J = dim(data_th)[1]
+		df_MonteCarlo = data.frame()
+		iteration = c()
+		for(i in 1:k){
+			X = simulation(data_th, n)
+			data_EM = algo_EM(data_init, X, N)
+			df_error = calcul_error(data_th, data_EM)
+			df_MonteCarlo = rbind((df_MonteCarlo), df_error)
+			v_iter = rep(paste("itération",i,sep="_"), J)
+			iteration = append(iteration, v_iter)
+		}
+		df_MonteCarlo = cbind(iteration, df_MonteCarlo)
+		return(df_MonteCarlo)
+	}
+\end{lstlisting}
+
+\textbf{\underline{Décrivons brièvement ce que fait cette fonction de \textit{Monte-Carlo}.}}\\
+Cette dernière calcule l'erreur absolue entre les paramètres estimés par
+l'algorithme EM et les paramètres théoriques pour k échantillons générés aléatoirement. Elle prend en argument :
+\begin{itemize}
+	\item data\_th le dataframe contenant les paramètres $\alpha$, $\mu$ et $\sigma$ théoriques \\
+	\item data\_init le dataframe contenant les paramètres ($\alpha$, $\mu$, $\sigma$) initiaux choisis \\
+	\item k le nombre d'échantillons que l'on souhaite générer aléatoirement \\
+	\item n la taille des échantillons (les k échantillons seront de tailles n) \\
+	\item N le nombre d'itérations de l'algorithme EM
+\end{itemize}
+
+Elle retourne un dataframe contenant les erreurs absolues de chaque paramètre des k échantillons de Monte Carlo.
 Nous avons effectué 100 itérations de Monte-Carlo pour les différentes taille d'échantillon suivante:
 \begin{itemize}
 	\item $n = 100$ \\

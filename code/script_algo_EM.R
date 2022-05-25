@@ -569,8 +569,6 @@ df_monteCarlo_100 = Monte_Carlo(good_dfTestTh3, good_dfTestInit3, 100, 100, 10)
 df_monteCarlo_250 = Monte_Carlo(good_dfTestTh3, good_dfTestInit3, 100, 250, 10)
 df_monteCarlo_500 = Monte_Carlo(good_dfTestTh3, good_dfTestInit3, 100, 500, 10)
 
-
-
 # Pour les \alpha
 #alpha1
 df_Good1 = rbind(df_monteCarlo_100[vect1,],
@@ -590,7 +588,9 @@ a1 = qplot(df_Good1[,1],
            fill = I("brown2")) + 
   xlab("n") + 
   ylab("erreur absolue") +
-  theme(legend.position = "none")
+  ggtitle(expression(paste("Boxplot des erreurs pour ", alpha[1])))
+  
+  
 
 #alpha2
 df_Good2 = rbind(df_monteCarlo_100[vect2,], 
@@ -611,7 +611,7 @@ a2 = qplot(df_Good2[,1],
            geom= "boxplot") + 
   xlab("n") +
   ylab("erreur absolue") +
-  theme(legend.position = "none")
+  ggtitle(expression(paste("Boxplot des erreurs pour ", alpha[2])))
 
 #alpha3
 df_Good3 = rbind(df_monteCarlo_100[vect3,],
@@ -632,7 +632,7 @@ a3 = qplot(df_Good3[,1],
            geom= "boxplot") + 
   xlab("n") + 
   ylab("erreur absolue") +
-  theme(legend.position = "none")
+  ggtitle(expression(paste("Boxplot des erreurs pour ", alpha[3])))
 
 # save with width = 800 and height = 1200
 
@@ -651,13 +651,13 @@ colnames(df_Good1)[1] = "taille_echantillon"
 
 
 m1 = qplot(df_Good1[,1],
-      df_Good1[,3],
-      data = df_Good1, 
-      geom= "boxplot",
-      fill = I("brown2")) + 
+           df_Good1[,3],
+           data = df_Good1, 
+           geom= "boxplot",
+           fill = I("brown2")) + 
   xlab("n") + 
   ylab("erreur absolue") +
-  theme(legend.position = "none")
+  ggtitle(expression(paste("Boxplot des erreurs pour ", mu[1])))
 
 #mu2
 df_Good2 = rbind(df_monteCarlo_100[vect2,], 
@@ -672,13 +672,13 @@ colnames(df_Good2)[1] = "taille_echantillon"
 
 
 m2 = qplot(df_Good2[,1],
-      df_Good2[,3],
-      data = df_Good2,
-      fill = I("orange"),
-      geom= "boxplot") + 
+           df_Good2[,3],
+           data = df_Good2,
+           fill = I("orange"),
+           geom= "boxplot") + 
   xlab("n") + 
   ylab("erreur absolue") +
-  theme(legend.position = "none")
+  ggtitle(expression(paste("Boxplot des erreurs pour ", mu[2])))
 
 #mu3
 df_Good3 = rbind(df_monteCarlo_100[vect3,],
@@ -692,13 +692,13 @@ df_Good3[,1] = c(rep("100", dim(df_monteCarlo_100[vect3,])[1]),
 colnames(df_Good3)[1] = "taille_echantillon"
 
 m3 = qplot(df_Good3[,1], 
-      df_Good3[,3], 
-      data = df_Good3,
-      fill = I("aquamarine"),
-      geom= "boxplot")+
+           df_Good3[,3], 
+           data = df_Good3,
+           fill = I("aquamarine"),
+           geom= "boxplot")+
   xlab("n") + 
   ylab("erreur absolue") +
-  theme(legend.position = "none")
+  ggtitle(expression(paste("Boxplot des erreurs pour ", mu[3])))
 
 # save with width = 800 and height = 1200
 
@@ -716,12 +716,12 @@ df_Good1[,1] = c(rep("100", dim(df_monteCarlo_100[vect1,])[1]),
 colnames(df_Good)[1] = "taille_echantillon"
 
 s1 = qplot(df_Good1[,1], 
-      df_Good1[,4],
-      data = df_Good1, 
-      geom= "boxplot", 
-      fill = I("brown2")) + 
+           df_Good1[,4],
+           data = df_Good1, 
+           geom= "boxplot", 
+           fill = I("brown2")) + 
   xlab("n") + ylab("erreur absolue") +
-  theme(legend.position = "none")
+  ggtitle(expression(paste("Boxplot des erreurs pour ", sigma[1])))
 
 # Pour sigma2
 df_Good2 = rbind(df_monteCarlo_100[vect2,],
@@ -736,13 +736,13 @@ colnames(df_Good2)[1] = "taille_echantillon"
 
 
 s2 = qplot(df_Good2[,1],
-      df_Good2[,4], 
-      data = df_Good2, 
-      fill = I("orange"),
-      geom= "boxplot") + 
+           df_Good2[,4], 
+           data = df_Good2, 
+           fill = I("orange"),
+           geom= "boxplot") + 
   xlab("n") + 
   ylab("erreur absolue") +
-  theme(legend.position = "none")
+  ggtitle(expression(paste("Boxplot des erreurs pour ", sigma[2])))
 
 # Pour sigma3
 df_Good3 = rbind(df_monteCarlo_100[vect3,], 
@@ -756,13 +756,212 @@ df_Good3[,1] = c(rep("100", dim(df_monteCarlo_100[vect3,])[1]),
 colnames(df_Good3)[1] = "taille_echantillon"
 
 s3 = qplot(df_Good3[,1], 
-      df_Good3[,4], 
-      data = df_Good3, 
-      fill = I("aquamarine"),
-      geom= "boxplot") + 
+           df_Good3[,4], 
+           data = df_Good3, 
+           fill = I("aquamarine"),
+           geom= "boxplot") + 
   xlab("n") + 
   ylab("erreur absolue") +
-  theme(legend.position = "none")
+  ggtitle(expression(paste("Boxplot des erreurs pour ", sigma[3])))
+
+
+ggarrange(a1,a2,a3, ncol = 1, nrow = 3)
+ggarrange(m1,m2,m3, ncol = 1, nrow = 3)
+ggarrange(s1,s2,s3, ncol = 1, nrow = 3)
+
+########################################################################
+# Pour les \alpha
+#alpha1
+df_Bad1 = rbind(df_monteCarlo_100[vect1,],
+                df_monteCarlo_250[vect1,],
+                df_monteCarlo_500[vect1,])
+
+df_Bad1[,1] = c(rep("100", dim(df_monteCarlo_100[vect1,])[1]),
+                rep("250", dim(df_monteCarlo_250[vect1,])[1]),
+                rep("500", dim(df_monteCarlo_500[vect1,])[1]))
+
+colnames(df_Bad1)[1] = "taille_echantillon"
+
+a1 = qplot(df_Bad1[,1], 
+           df_Bad1[,2], 
+           data = df_Bad1, 
+           geom= "boxplot",
+           fill = I("brown2")) + 
+  xlab("n") + 
+  ylab("erreur absolue") +
+  ggtitle(expression(paste("Boxplot des erreurs pour ", alpha[1])))
+
+#alpha2
+df_Bad2 = rbind(df_monteCarlo_100[vect2,], 
+                df_monteCarlo_250[vect2,],
+                df_monteCarlo_500[vect2,])
+
+df_Bad2[,1] = c(rep("100", dim(df_monteCarlo_100[vect2,])[1]),
+                rep("250", dim(df_monteCarlo_250[vect2,])[1]),
+                rep("500", dim(df_monteCarlo_500[vect2,])[1]))
+
+colnames(df_Bad2)[1] = "taille_echantillon"
+
+
+a2 = qplot(df_Bad2[,1],
+           df_Bad2[,2],
+           data = df_Bad2,
+           fill = I("orange"),
+           geom= "boxplot") + 
+  xlab("n") +
+  ylab("erreur absolue") +
+  ggtitle(expression(paste("Boxplot des erreurs pour ", alpha[2])))
+
+#alpha3
+df_Bad3 = rbind(df_monteCarlo_100[vect3,],
+                df_monteCarlo_250[vect3,],
+                df_monteCarlo_500[vect3,])
+
+df_Bad3[,1] = c(rep("100", dim(df_monteCarlo_100[vect3,])[1]),
+                rep("250", dim(df_monteCarlo_250[vect3,])[1]),
+                rep("500", dim(df_monteCarlo_500[vect3,])[1]))
+
+colnames(df_Bad3)[1] = "taille_echantillon"
+
+
+a3 = qplot(df_Bad3[,1],
+           df_Bad3[,2],
+           data = df_Bad3,
+           fill = I("aquamarine"),
+           geom= "boxplot") + 
+  xlab("n") + 
+  ylab("erreur absolue") +
+  ggtitle(expression(paste("Boxplot des erreurs pour ", alpha[3])))
+
+# save with width = 800 and height = 1200
+
+
+# Pour les \mu
+# pour mu1
+df_Bad1 = rbind(df_monteCarlo_100[vect1,],
+                df_monteCarlo_250[vect1,],
+                df_monteCarlo_500[vect1,])
+
+df_Bad1[,1] = c(rep("100", dim(df_monteCarlo_100[vect1,])[1]),
+                rep("250", dim(df_monteCarlo_250[vect1,])[1]),
+                rep("500", dim(df_monteCarlo_500[vect1,])[1]))
+
+colnames(df_Bad1)[1] = "taille_echantillon"
+
+
+m1 = qplot(df_Bad1[,1],
+           df_Bad1[,3],
+           data = df_Bad1, 
+           geom= "boxplot",
+           fill = I("brown2")) + 
+  xlab("n") + 
+  ylab("erreur absolue") +
+  ggtitle(expression(paste("Boxplot des erreurs pour ", mu[1])))
+
+#mu2
+df_Bad2 = rbind(df_monteCarlo_100[vect2,], 
+                df_monteCarlo_250[vect2,],
+                df_monteCarlo_500[vect2,])
+
+df_Bad2[,1] = c(rep("100", dim(df_monteCarlo_100[vect2,])[1]),
+                rep("250", dim(df_monteCarlo_250[vect2,])[1]),
+                rep("500", dim(df_monteCarlo_500[vect2,])[1]))
+
+colnames(df_Bad2)[1] = "taille_echantillon"
+
+
+m2 = qplot(df_Bad2[,1],
+           df_Bad2[,3],
+           data = df_Bad2,
+           fill = I("orange"),
+           geom= "boxplot") + 
+  xlab("n") + 
+  ylab("erreur absolue") +
+  ggtitle(expression(paste("Boxplot des erreurs pour ", mu[2])))
+
+#mu3
+df_Bad3 = rbind(df_monteCarlo_100[vect3,],
+                df_monteCarlo_250[vect3,],
+                df_monteCarlo_500[vect3,])
+
+df_Bad3[,1] = c(rep("100", dim(df_monteCarlo_100[vect3,])[1]),
+                rep("250", dim(df_monteCarlo_250[vect3,])[1]),
+                rep("500", dim(df_monteCarlo_500[vect3,])[1]))
+
+colnames(df_Bad3)[1] = "taille_echantillon"
+
+m3 = qplot(df_Bad3[,1], 
+           df_Bad3[,3], 
+           data = df_Bad3,
+           fill = I("aquamarine"),
+           geom= "boxplot")+
+  xlab("n") + 
+  ylab("erreur absolue") +
+  ggtitle(expression(paste("Boxplot des erreurs pour ", mu[3])))
+
+# save with width = 800 and height = 1200
+
+
+# Pour les \sigma
+# pour sigma1
+df_Bad1 = rbind(df_monteCarlo_100[vect1,],
+                df_monteCarlo_250[vect1,],
+                df_monteCarlo_500[vect1,])
+
+df_Bad1[,1] = c(rep("100", dim(df_monteCarlo_100[vect1,])[1]),
+                rep("250", dim(df_monteCarlo_250[vect1,])[1]),
+                rep("500", dim(df_monteCarlo_500[vect1,])[1]))
+
+colnames(df_Bad1)[1] = "taille_echantillon"
+
+s1 = qplot(df_Bad1[,1], 
+           df_Bad1[,4],
+           data = df_Bad1, 
+           geom= "boxplot", 
+           fill = I("brown2")) + 
+  xlab("n") + ylab("erreur absolue") +
+  ggtitle(expression(paste("Boxplot des erreurs pour ", sigma[1])))
+
+# Pour sigma2
+df_Bad2 = rbind(df_monteCarlo_100[vect2,],
+                df_monteCarlo_250[vect2,],
+                df_monteCarlo_500[vect2,])
+
+df_Bad2[,1] = c(rep("100", dim(df_monteCarlo_100[vect2,])[1]),
+                rep("250", dim(df_monteCarlo_250[vect2,])[1]),
+                rep("500", dim(df_monteCarlo_500[vect2,])[1]))
+
+colnames(df_Bad2)[1] = "taille_echantillon"
+
+
+s2 = qplot(df_Bad2[,1],
+           df_Bad2[,4], 
+           data = df_Bad2, 
+           fill = I("orange"),
+           geom= "boxplot") + 
+  xlab("n") + 
+  ylab("erreur absolue") +
+  ggtitle(expression(paste("Boxplot des erreurs pour ", sigma[2])))
+
+# Pour sigma3
+df_Bad3 = rbind(df_monteCarlo_100[vect3,], 
+                df_monteCarlo_250[vect3,],
+                df_monteCarlo_500[vect3,])
+
+df_Bad3[,1] = c(rep("100", dim(df_monteCarlo_100[vect3,])[1]),
+                rep("250", dim(df_monteCarlo_250[vect3,])[1]),
+                rep("500", dim(df_monteCarlo_500[vect3,])[1]))
+
+colnames(df_Bad3)[1] = "taille_echantillon"
+
+s3 = qplot(df_Bad3[,1], 
+           df_Bad3[,4], 
+           data = df_Bad3, 
+           fill = I("aquamarine"),
+           geom= "boxplot") + 
+  xlab("n") + 
+  ylab("erreur absolue") +
+  ggtitle(expression(paste("Boxplot des erreurs pour ", sigma[3])))
 
 
 ggarrange(a1,a2,a3, ncol = 1, nrow = 3)

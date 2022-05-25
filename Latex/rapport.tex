@@ -628,7 +628,6 @@ Pour l'implémentation de cet algorithme, nous nous sommes appuyés sur le pseud
 
 Il n'existe pas de preuvre de convergence de l'algorithme EM; ce dernier peut en effet stagner dans des extremas locaux. Le choix de bons paramètres initiaux est de fait primordial. Nous verrons cela dans une prochaine section. Toutefois, nous sommes assurés que l'algorithme croît, en temoigne la section suivante.
 
-\newpage
 % section 2
 \section{Une preuve de la croissance}
 
@@ -696,7 +695,7 @@ Et finalement
 \chapter{Etude de simulations}
 
 \section{La fonction simulation}
-Afin de pouvoir lancer l'algorithme EM, nous avons besoin d'un échantillon issue d'un mélange gaussien. Dans le cadre de ce projet, nous disposons uniquement de données répertoriant les moyennes et les écarts-types des volumes des nids de treize espèces d'oiseaux différentes. En partant de ces données (moyennes et écart-types des volumes des nids) et de la commande $rnorm(\mu, \sigma)$ de $R$, nous avons implémenté la fonction \textit{simulation}, qui a pour mission de générer aléatoirement un échantillon d'un mélange Gaussien. Il s'agit d'une des plus importante fonction de ce projet, nous allons donc la décrire.
+Afin de pouvoir lancer l'algorithme EM, nous avons besoin d'un échantillon issue d'un mélange gaussien. Comme nous le verrons dans le chapitre 4, nous disposons dans le cadre de ce projet uniquement de données répertoriant les moyennes et les écarts-types des volumes des nids de treize espèces d'oiseaux différentes. Grâce à ces données et à la commande $rnorm(\mu, \sigma)$ de $R$, nous avons implémenté la fonction \textit{simulation}, qui a pour mission de générer aléatoirement un échantillon d'un mélange Gaussien. Il s'agit d'une des plus importante fonction de ce projet, nous allons donc la décrire.
 \begin{lstlisting}
 	simulation = function(data_th, n=100){
 		X = rep(NA,n) #echantillon
@@ -727,21 +726,21 @@ Afin de pouvoir lancer l'algorithme EM, nous avons besoin d'un échantillon issu
 	}
 \end{lstlisting}
 La fonction prend en argument $data\_th$ (le dataframe contenant les paramètres $\alpha$, $\mu$ et $\sigma$) et $n$, qui indique la taille de l'échantillon à générer aléatoirement. \\
-La fonction retourne le vecteur du mélange gaussien de taille n qui a été généré aléatoirement. \\
+La fonction retourne le vecteur du mélange gaussien de taille $n$ qui a été généré aléatoirement. \\
 La plus partie la plus importante et subtile de ce script est celle dans laquelle nous distribuons aléatoirement les lois des différents $(X_i)_{i \in \{1, \dots, n\}}$ de l'échantillon, de sorte à avoir un bon mélange gaussien. \\
-Pour simplifier les choses nous allons prendre un exemple dans lequel nous voulons générer un mélange de trois gaussiennes, ayant pour paramètres respectifs $\theta_1 = (\alpha_1, \mu_1, \sigma_1)$, $\theta_2 = (\alpha_2, \mu_2, \sigma_2)$ et $\theta_3 = (\alpha_3, \mu_3, \sigma_3)$. On rappelle que  $\displaystyle\sum_{j=1}^{3} \alpha_j = 1$. Nous procédons de la manière suivante: \\
+Pour simplifier les choses nous allons prendre un exemple dans lequel nous voulons générer un mélange de trois gaussiennes, ayant pour paramètres respectifs $\theta_1 = (\alpha_1, \mu_1, \sigma_1)$, $\theta_2 = (\alpha_2, \mu_2, \sigma_2)$ et $\theta_3 = (\alpha_3, \mu_3, \sigma_3)$. Nous rappelons une fois de plus que  $\displaystyle\sum_{j=1}^{3} \alpha_j = 1$. Nous procédons de la manière suivante: \\
 Nous génèrons une variable aléatoire $Z$ de loi uniforme à l'aide de la commande $runif$ de $R$; puis :
 \begin{itemize}
-	\item Si $Z < \alpha_1$ alors $X \sim N(\mu_1, \sigma_1)$ \\
-	\item Sinon si $\alpha_1 \leq Z \leq \alpha_1 + \alpha_2$ alors $Z \sim N(\mu_2, \sigma_2)$ \\
-	\item Sinon si  $\alpha_1 + \alpha_2 \leq Z \leq \alpha_1 + \alpha_2 + \alpha_3$ alors $Z \sim N(\mu_3, \sigma_3)$
+	\item Si $Z < \alpha_1$ alors $X \sim \mathcal{N}(\mu_1, \sigma_1)$ \\
+	\item Sinon si $\alpha_1 \leq Z \leq \alpha_1 + \alpha_2$, alors $Z \sim \mathcal{N}(\mu_2, \sigma_2)$ \\
+	\item Sinon si  $\alpha_1 + \alpha_2 \leq Z \leq \alpha_1 + \alpha_2 + \alpha_3$, alors $Z \sim \mathcal{N}(\mu_3, \sigma_3)$
 \end{itemize}
-Notre implémentation fonctionne dans le cas général d'un mélange de $J$ gaussiennes avec $J \in \mathbb{N^*}$ et repose exactement sur le même principe que celui précédemment expliqué.
+Notre implémentation fonctionne dans le cas général d'un mélange de $J$ gaussiennes, $J \in \mathbb{N^*}$, et repose exactement sur le même principe que celui précédemment expliqué.
 
 
 
 \section{Étude de simulations}
-Les différentes sections ci-dessous auront vocations à présenter plusieurs simulations dans le but de tester l'efficacité de notre implémentation de l'algorithme EM.
+Les différentes sections ci-dessous auront pour vocations de présenter plusieurs simulations, dans le but de tester l'efficacité de notre implémentation de l'algorithme EM.
 \subsection{Étude d'un mélange gaussien à forte séparations}
 Dans cette partie, nous nous intéresserons à un mélange de trois lois gaussiennes, ayant comme lois respectives $\mathcal{N}(\mu_1, \sigma_1)$, $\mathcal{N}(\mu_2, \sigma_2)$ et $\mathcal{N}(\mu_3, \sigma_3)$ bien séparées, c'est à dire avec des paramètres bien différents les uns des autres (\underline{i.e. }$|\alpha_i$ - $\alpha_j|_{i \neq j}$; $|\mu_i$ - $\mu_j|_{i \neq j}$; $|\sigma_i$ - $\sigma_j|_{i \neq j}$ assez grands). Nous avons généré un échantillon d'un mélange de trois gaussiennes à fortes séparations de taille $n = 500$. Les trois lois du mélange sont les suivantes:
 \begin{itemize}
@@ -783,16 +782,16 @@ Nous allons maintenant regarder si l'augmentation de la taille de l'échantillon
 \end{lstlisting}
 
 Le principe de fonctionnement de cette dernière est le suivant: \\
-Pour une taille d'échantillon n fixée, nous avons exécuté k fois l'algorithme EM pour des échantillons différents. À partir de cela, nous avons calculé les $3 \times 3 \times K$ erreurs absolues entre les paramètres estimés par l'algorithme EM et les paramètres théoriques. Elle prend en argument :
+Pour une taille d'échantillon $n$ fixée, nous exécutons $k$ fois l'algorithme EM pour des échantillons différents. À partir de cela, nous calculons les $3 \times 3 \times K$ erreurs absolues entre les paramètres estimés par l'algorithme EM et les paramètres théoriques. Cette fonction prend donc en arguments :
 \begin{itemize}
-	\item data\_th le dataframe contenant les paramètres $\alpha$, $\mu$ et $\sigma$ théoriques \\
-	\item data\_init le dataframe contenant les paramètres ($\alpha$, $\mu$, $\sigma$) initiaux choisis \\
-	\item k le nombre d'échantillons que l'on souhaite générer aléatoirement \\
-	\item n la taille des échantillons (les k échantillons seront de tailles n) \\
-	\item N le nombre d'itérations de l'algorithme EM
+	\item data\_t,h le dataframe contenant les paramètres $\alpha$, $\mu$ et $\sigma$ théoriques \\
+	\item data\_init, le dataframe contenant les paramètres ($\alpha$, $\mu$, $\sigma$) initialement choisis \\
+	\item $k$, le nombre d'échantillons que l'on souhaite générer aléatoirement \\
+	\item $n$ la taille des échantillons (les k échantillons seront de tailles n), et \\
+	\item $N$, le nombre d'itérations de l'algorithme EM
 \end{itemize}
 
-Elle retourne un dataframe contenant les erreurs absolues de chaque paramètres des k échantillons de Monte Carlo.
+Elle retourne un dataframe contenant les erreurs absolues de chaque paramètres des $k$ échantillons de Monte Carlo.
 
 Nous avons effectué 100 itérations de Monte-Carlo pour les différentes tailles d'échantillons suivantes:
 \begin{itemize}
@@ -801,7 +800,7 @@ Nous avons effectué 100 itérations de Monte-Carlo pour les différentes taille
 	\item $n = 500$
 \end{itemize}
 
-Les boites à moustaches (boxplot) ci-dessous, modélisent l'erreur absolue entre les paramètres estimés par l'algorithme Em et ceux théoriques.
+Les boites à moustaches (boxplot) ci-dessous, représentent l'erreur absolue entre les paramètres estimés par l'algorithme EM et ceux théoriques.
 
 \begin{figure}[H]
 	\centering
@@ -814,11 +813,11 @@ Les boites à moustaches (boxplot) ci-dessous, modélisent l'erreur absolue entr
 	\includegraphics[scale=0.5]{images/good_mu.png}
 	\caption{Boxplot des erreurs absolues pour $\mu_1$, $\mu_2$ et $\mu_3$}
 \end{figure}
-D'après les boites à moustaches, nous constatons que plus la taille de l'échantillons du mélange gaussien est grande, et plus l'erreur absolue entre les paramètre estimés par l'algorithme EM et ceux théoriques, diminuent.
+D'après les boites à moustaches, nous constatons que plus la taille de l'échantillons du mélange gaussien est grande, plus l'erreur absolue entre les paramètre estimés par l'algorithme EM et ceux théoriques diminuent.
 
 
 \subsection{Étude d'un mélange gaussien à faible séparations}
-Dans cette partie, nous nous intéresserons à un mélange de trois gaussiennes ayant comme loi respectives $\mathcal{N}(\mu_1, \sigma_1)$, $\mathcal{N}(\mu_2, \sigma_2)$ et $\mathcal{N}(\mu_3, \sigma_3)$ faiblement séparées, c'est à dire avec des paramètres assez proches les uns des autres (\underline{i.e.} $|\alpha_i$ - $\alpha_j|_{i \neq j}$; $|\mu_i$ - $\mu_j|_{i \neq j}$; $|\sigma_i$ - $\sigma_j|_{i \neq j}$ assez petits).
+Dans cette partie, nous nous intéresserons à un mélange de trois lois gaussiennes ayant comme loi respectives $\mathcal{N}(\mu_1, \sigma_1)$, $\mathcal{N}(\mu_2, \sigma_2)$ et $\mathcal{N}(\mu_3, \sigma_3)$ faiblement séparées, c'est à dire avec des paramètres assez proches les uns des autres (\underline{i.e.} $|\alpha_i$ - $\alpha_j|_{i \neq j}$; $|\mu_i$ - $\mu_j|_{i \neq j}$; $|\sigma_i$ - $\sigma_j|_{i \neq j}$ assez petits).
 De même que pour la première étude, nous avons généré un échantillon d'un mélange de trois lois gaussiennes de taille 500, cette fois-ci avec faible séparation. Les trois lois du mélange sont les suivantes:
 \begin{itemize}
 	\item $\mathcal{N}(5, 1)$
@@ -846,7 +845,7 @@ Nous avons effectué 100 itérations de Monte-Carlo pour les différentes taille
 	\item $n = 250$ \\
 	\item $n = 500$
 \end{itemize}
-Les boites à moustaches (boxplot) ci-dessous, modélisent l'erreur absolue entre les paramètres estimés par l'algorithme Em et ceux théoriques dans le cas d'une faible séparation.
+Les boites à moustaches (boxplot) ci-dessous, modélisent l'erreur absolue entre les paramètres estimés par l'algorithme EM et ceux théoriques dans le cas d'une faible séparation.
 \begin{figure}[H]
 	\centering
 	\includegraphics[scale=0.5]{images/bad_alpha.png}
@@ -878,7 +877,7 @@ En voici un extrait :
 Parmi elles ce trouve des volumes moyens de nids ainsi que la variance associée. \newline
 
 
-Afin de se conformer aux hypothèses que nous avons précédemment mentionné, nous supposerons ici que les volumes des nids suivent une loi normale. Nous ferons une dernière hypothèse; nous supposerons le nombre de lois connu lors de l'observation. \newline
+Afin de se conformer aux hypothèses que nous avons précédemment mentionné, nous supposerons ici que les volumes des nids suivent une loi normale. Nous ferons une dernière hypothèse; nous supposerons le nombre de lois connu lors des observations. \newline
 
 Plaçons nous dès à présent dans le cadre d'une étude. Pour ce faire, commençons par établir une méthodologie. 
 Il sera en premier lieu choisi, aléatoirement, plusieurs espèces d'oiseaux parmi celles que nous avons à disposition. Puis nous allons générer, avec \textit{R}, les données dont nous avons besoin. Cet $n$-échantillon sera créé grâce à notre fonction de simulation. Notre jeu de données étant prêt, nous pourrons commencer l'étude. \newline
@@ -889,16 +888,16 @@ Le premier problème qui se posera sera celui du choix des paramètres initiaux,
 
 \begin{center}
 $
-\widehat{f_n}(x) = \displaystyle \frac{1}{nh} \sum_{i=1}^n K\Big(\frac{x - X_i}{h}\Big)
+\widehat{f_n}(x) = \displaystyle \frac{1}{n\times h} \sum_{i=1}^n K\Big(\frac{x - X_i}{h}\Big)
 $
 \end{center}
 \underline{où} $h$ est la taille de la fenêtre et $n$ la taille de l'échantillon. Il s'agit, en quelque sorte, d'une moyenne "locale" en $x$ avec les points de l'échantillon $X_i$ qui appartiennent à la fenêtre $[x-h, x+h]$. $K$ est une fonction de noyau. Souvent, elle est choisie comme une densité gaussienne centrée réduite.
 
 Nous pourrons dès lors récupérer des informations bien utiles; si des pics bien distincts se présentent, cela nous permettra de régler judicieusement les moyennes et variances initiales. Nous détaillerons ceci ultérieurement. \newline
-\item Une seconde solution est d'utiliser est d'utiliser les quantiles pour l'estimation des moyennes, et l'écart-type empirique pour les variances initiales. 
+\item Une seconde solution est d'utiliser est d'utiliser les quantiles pour l'estimation des moyennes, et l'écart-type empirique pour les variances initiales. Nous détaillerons également cela lors de l'étude.
 \end{itemize}
 
-Une fois cela fait, nous pouvons exécuter notre algorithme et obtenir son estimation des paramètres. Nous pourrons dès lors émettre les conclusions appropriées.\newline
+Une fois cela fait, nous pourrons exécuter notre algorithme et obtenir son estimation des paramètres. Nous pourrons dès lors émettre les conclusions appropriées.\newline
 Nous partons, pour ainsi dire, à l'aveugle, mais il sera gardé en mémoire les vraies valeurs, afin de vérifier si nous avons abouti aux bonnes conclusions. \newline
 Nous avons, à partir du tableau de données sus-mentionné, construit le data-frame \textit{nest$\_$data} reprenant les noms des espèces, ainsi que les volumes moyens et variances associées. Ce dernier nous servira à créer les échantillons.
 \newpage
@@ -920,8 +919,8 @@ Nous commençons par tracer la courbe de densité associée à l'échantillon.
 \begin{center}
 \includegraphics[scale=0.8]{dens_1.pdf}
 \end{center}
-Le mélange des deux lois se distingue au premier coup d'oeil; nous distinguons nettement deux pics. L'"étalement" des pics n'étant pas les mêmes, nous pouvons supposer que les variances des deux lois sont différentes. Il est cependant difficile d'émettre des hypothèses quant aux proportions.\newline
-Cette section sera composée de deux sous-sections. Dans la première, nous déterminerons les paramètres initiaux via la première méthode décrite précedemment. Nous pourrons dès lors réaliser une première exécution de notre implémentation de l'algorithme EM.
+Le mélange des deux lois se distingue au premier coup d'oeil; nous distinguons nettement deux pics. L'"étalement" des pics n'étant pas les mêmes, nous pouvons supposer sans craintes que les variances des deux lois sont différentes. Il est cependant difficile d'émettre des hypothèses quant aux proportions.\newline
+Nous proposon dans ce qui suit deux sous-sections. Dans la première, nous déterminerons les paramètres initiaux via la première méthode décrite précedemment. Nous pourrons dès lors réaliser une première exécution de notre implémentation de l'algorithme EM.
 Dans la seconde section, nous ferons de même, en considérant cette fois-ci la seconde méthode de détermination des paramètres initiaux.
 
 \subsection{Première réalisation de l'étude}
@@ -975,7 +974,7 @@ Nous obtenons ainsi nos paramètres estimés; comparons les avec les valeurs th�
 12         Ring Ouzel        0.7121287      298.6     125.1
 \end{verbatim}
 
-Les proportions sont toutes deux très bien estimées, les erreurs sont de l'ordre de $1\%$.Il en est de même pour les moyennes, les erreurs d'estimations sont de l'ordre de $1\%$, , ce qui est plus que satisfaisante. Les variances sont de mêmes très bien estimées.
+Les proportions sont toutes deux très bien estimées, les erreurs sont de l'ordre de $1\%$.Il en est de même pour les moyennes, les erreurs d'estimations sont de l'ordre de $1\%$, ce qui est plus que satisfaisant. Les variances sont de mêmes très bien estimées.
 
 
 \subsection{Seconde réalisation de l'étude}
@@ -998,16 +997,16 @@ Nous obtenons ainsi nos moyennes initiales :
 $\mu_{1_{init}} =  45.15146$ et $\mu_{2_{init}} = 352.69611$. 
 \end{center}
 
-Pour l'initalisation des écarts-types, nous prendrons 
-\begin{center}
-$\sigma_{1_{init}} = \sigma_{2_{init}} = \widehat{\sigma}$
-\end{center}
-où
-
+Concernant les écarts-types, nous prendrons des valeurs d'initialisations égales; et nous utiliserons l'écart-type empirique  
 \begin{center}
 $\widehat{\sigma} := \displaystyle\frac{1}{J}\sqrt{\displaystyle\frac{1}{n}\sum_{i=1}^n(X_i - \bar{X})^2}$
 \end{center}
-est l'écart-type empirique; avec $J$ le nombre de mélanges et $n$ la taille de l'échantillon. \newline
+pour déterminer cette valeur. $J$ est le nombre de mélanges et $n$ la taille de l'échantillon. \newline
+Ainsi, 
+\begin{center}
+$\sigma_{1_{init}} = \sigma_{2_{init}} = \widehat{\sigma}$
+\end{center}
+
 Une fois de plus, \textit{R} nous permet de calculer cela aisément: 
 
 \begin{lstlisting}
@@ -1021,8 +1020,11 @@ Ainsi,
 \begin{center}
 $\sigma_{1_{init}} = \sigma_{2_{init}} = 80.29425$. \newline
 \end{center}
-Pour les proportions initiales, nous proposons de nouveau de les prendre égales, ainsi $ \alpha_{1_{init}} = \alpha_{2_{init}} = 0.5$
-Nous construisons le dataframe des paramètres initiaux : 
+Pour les proportions initiales, nous proposons de nouveau de les prendre égales, ainsi 
+\begin{center}
+$\alpha_{1_{init}} = \alpha_{2_{init}} = 0.5$
+\end{center}
+Par suite, nous construisons le dataframe des paramètres initiaux : 
 \begin{lstlisting}
 param_init_2 = data.frame(bird_names = c("European Goldfinch", "Ring Ouzel"),
                           alpha_init = c(0.5, 0.5),
@@ -1044,7 +1046,7 @@ algo_EM(param_init_2, data, 10)
 2         Ring Ouzel 0.7063798 303.45499 125.198078
 \end{verbatim}
 
-Comme pour le cas précédent, comparons les avec les valeurs théoriques. Nous rappelons une fois de plus les paramètres théoriques :
+Comme pour le cas précédent, comparons les avec les valeurs théoriques. Nous rappelons une fois de plus ces derniers:
 \begin{verbatim}
          bird_names2 proportion_alpha mean_volume sd_volume
 1 European Goldfinch         0.2878713       38.0       9.1

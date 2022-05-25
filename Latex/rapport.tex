@@ -610,10 +610,10 @@ Dans cette partie, nous allons faire le lien entre les outils développés dans 
 La phase E consiste à calculer la log-vraisemblance conditionnelle $\displaystyle\frac{1}{n} \sum_{i=1}^{n} \mathbb{E}_{\widehat{\theta}_{k-1}}[\mathcal{L}_c(\theta_{k-1}, \theta_{k}, X_1, \cdots, X_n)]$. Son calcul sera rendu possible grâce à la formule établie dans la proposition 6 et grâce à l'utilisation des paramètres $\alpha_j, \mu_j, \sigma_j$ calculés à l'itération précédente lors de l'étape M. À l'itération zéro, il est donc indispensable de renseigner des paramètres initiaux. Leur détermination occupera donc une place centrale dans notre projet et nous en discuterons dans une section ultérieure.
 
 \subsection{L'étape M (Maximization)}
-La phase M consiste à maximiser la vraisemblance trouvée à l'étape E. Ce maximum sera atteint en $\theta_M = (\widehat{\alpha_j}, \widehat{\mu_j}, \widehat{\sigma_j})$ et ces trois paramètres seront calculables via les formules issues de la proposition 7. Une fois qu'ils auront étés déterminés, ce sont ces trois paramètres qui seront utilisés dans l'itération suivant pour mettre à jour la log-vraisemblance conditionnelle lors de l'étape M.
+La phase M consiste à maximiser la vraisemblance trouvée à l'étape E. Ce maximum sera atteint en $\theta_M = (\widehat{\alpha_j}, \widehat{\mu_j}, \widehat{\sigma_j})$ et ces trois paramètres seront calculalés à l'aide maximiseur établis à la proposition 7. Une fois qu'ils auront étés déterminés, ce sont ces trois paramètres qui seront utilisés dans l'itération suivante pour mettre à jour la log-vraisemblance conditionnelle lors de l'étape M.
 
 \subsection{La fonction simulation}
-Afin de pouvoir lancer l'algorithme EM, nous avons besoin d'un échantillon issue d'un mélange gaussien. Dans le cadre de ce projet, nous ne disposons uniquement que de données répertoriant les moyennes et les écarts-types des volumes des nids de treize espèces d'oiseaux différentes. En partant de ces données (moyennes et écart-types des volumes des nids) et de la commande $rnorm(\mu, \sigma)$ de R, nous avons implémenté la fonction \textit{simulation} qui a pour mission de générer aléatoirement un échantillon d'un mélange Gaussien. Il s'agit d'une des plus importante fonction de ce projet, nous allons donc la décrire.
+Afin de pouvoir lancer l'algorithme EM, nous avons besoin d'un échantillon issue d'un mélange gaussien. Dans le cadre de ce projet, nous disposons uniquement de données répertoriant les moyennes et les écarts-types des volumes des nids de treize espèces d'oiseaux différentes. En partant de ces données (moyennes et écart-types des volumes des nids) et de la commande $rnorm(\mu, \sigma)$ de $R$, nous avons implémenté la fonction \textit{simulation}, qui a pour mission de générer aléatoirement un échantillon d'un mélange Gaussien. Il s'agit d'une des plus importante fonction de ce projet, nous allons donc la décrire.
 \begin{lstlisting}
 	simulation = function(data_th, n=100){
 		X = rep(NA,n) #echantillon
@@ -643,17 +643,17 @@ Afin de pouvoir lancer l'algorithme EM, nous avons besoin d'un échantillon issu
 		return(X)
 	}
 \end{lstlisting}
-La fonction prend en argument data\_th (le dataframe contenant les paramètres $\alpha$, $\mu$ et $\sigma$) et n qui indique la taille de l'échantillon à générer aléatoirement. \\
+La fonction prend en argument $data\_th$ (le dataframe contenant les paramètres $\alpha$, $\mu$ et $\sigma$) et $n$, qui indique la taille de l'échantillon à générer aléatoirement. \\
 La fonction retourne le vecteur du mélange gaussien de taille n qui a été généré aléatoirement. \\
-La plus partie la plus importante et subtile de ce script est celle dans laquelle nous distribuons aléatoirement les lois des différents $(x_i)_{i \in \{1, \dots, n\}}$ de l'échantillon de sorte à avoir un bon mélange gaussien. \\
-Pour simplifier les choses nous allons prendre un exemple dans lequel nous voulons générer un mélange de trois gaussiennes ayant pour paramètres respectifs $\theta_1 = (\alpha_1, \mu_1, \sigma_1)$, $\theta_2 = (\alpha_2, \mu_2, \sigma_2)$ et $\theta_3 = (\alpha_3, \mu_3, \sigma_3)$. On rappel que  $\sum_{i=1}^{3} \alpha_i = 1$. Nous procédons de la manière suivante: \\
-On génère une variable aléatoire $Z$ de loi uniforme à l'aide de la commande $runif$ de R et on regarde :
+La plus partie la plus importante et subtile de ce script est celle dans laquelle nous distribuons aléatoirement les lois des différents $(X_i)_{i \in \{1, \dots, n\}}$ de l'échantillon, de sorte à avoir un bon mélange gaussien. \\
+Pour simplifier les choses nous allons prendre un exemple dans lequel nous voulons générer un mélange de trois gaussiennes, ayant pour paramètres respectifs $\theta_1 = (\alpha_1, \mu_1, \sigma_1)$, $\theta_2 = (\alpha_2, \mu_2, \sigma_2)$ et $\theta_3 = (\alpha_3, \mu_3, \sigma_3)$. On rappelle que  $\displaystyle\sum_{j=1}^{3} \alpha_j = 1$. Nous procédons de la manière suivante: \\
+Nous génèrons une variable aléatoire $Z$ de loi uniforme à l'aide de la commande $runif$ de $R$; puis :
 \begin{itemize}
 	\item Si $Z < \alpha_1$ alors $X \sim N(\mu_1, \sigma_1)$ \\
 	\item Sinon si $\alpha_1 \leq Z \leq \alpha_1 + \alpha_2$ alors $Z \sim N(\mu_2, \sigma_2)$ \\
 	\item Sinon si  $\alpha_1 + \alpha_2 \leq Z \leq \alpha_1 + \alpha_2 + \alpha_3$ alors $Z \sim N(\mu_3, \sigma_3)$
 \end{itemize}
-Notre implémentation fonctionne dans le cas générale d'un mélange de $J$ gaussienne avec $J \in \mathbb{N}$ et repose exactement sur le même principe que celui expliqué précédemment.
+Notre implémentation fonctionne dans le cas général d'un mélange de $J$ gaussiennes avec $J \in \mathbb{N^*}$ et repose exactement sur le même principe que celui précédemment expliqué.
 
 \subsection{Pseudo-code de l'algorithme EM}
 Pour l'implémentation de cet algorithme, nous nous sommes appuyés sur le pseudo-code suivant.
@@ -766,11 +766,11 @@ Nous avons, à partir du tableau de données sus-mentionné, construit le data-f
 \section{Étude de simulations}
 Les différentes sections ci-dessous auront vocations à présenter plusieurs simulations dans le but de tester l'efficacité de notre implémentation de l'algorithme EM.
 \subsection{Étude d'un mélange gaussien à forte séparations}
-Dans cette partie, nous nous intéresserons à un mélange de trois gaussiennes ayant des loi respectives $N(\mu1, \sigma_1)$, $N(\mu_2, \sigma_2)$ et $N(\mu_3, \sigma_3)$ bien séparées, c'est à dire avec des paramètres bien différents les un des autres ($|\alpha_i$ - $\alpha_j|_{i \neq j}$; $|\mu_i$ - $\mu_j|_{i \neq j}$; $|\sigma_i$ - $\sigma_j|_{i \neq j}$) assez grand. Nous avons généré un échantillon d'un mélange de trois gaussiennes à fortes séparations qui est de taille $n = 500$. Les trois lois du mélange sont les suivantes:
+Dans cette partie, nous nous intéresserons à un mélange de trois lois gaussiennes, ayant comme lois respectives $\mathcal{N}(\mu_1, \sigma_1)$, $\mathcal{N}(\mu_2, \sigma_2)$ et $\mathcal{N}(\mu_3, \sigma_3)$ bien séparées, c'est à dire avec des paramètres bien différents les uns des autres (\underline{i.e. }$|\alpha_i$ - $\alpha_j|_{i \neq j}$; $|\mu_i$ - $\mu_j|_{i \neq j}$; $|\sigma_i$ - $\sigma_j|_{i \neq j}$ assez grands). Nous avons généré un échantillon d'un mélange de trois gaussiennes à fortes séparations de taille $n = 500$. Les trois lois du mélange sont les suivantes:
 \begin{itemize}
-	\item $N(11, 1)$
-	\item $N(49, 10)$
-	\item $N(92, 3)$
+	\item $\mathcal{N}(11, 1)$
+	\item $\mathcal{N}(49, 10)$
+	\item $\mathcal{N}(92, 3)$
 \end{itemize}
 La figure ci-dessous représente la distribution du mélange
 \begin{figure}[H]
@@ -778,46 +778,15 @@ La figure ci-dessous représente la distribution du mélange
 	\includegraphics[scale=0.7]{images/good_distrib.png}
 	\caption{Mélange gaussien à forte séparation}
 \end{figure}
-Nous avons lancé l'algorithme EM en choisissant un nombre d'itération $k = 10$. Comme on peut le voir sur la capture d'écran ci-dessous, les paramètres estimés par l'algorithme EM sont assez proche de ceux théorique.
+Nous avons lancé l'algorithme EM en choisissant un nombre d'itération $k = 10$. Comme on peut le voir sur la capture d'écran ci-dessous, les paramètres estimés par l'algorithme EM sont assez proche de ceux théoriques.
 \begin{figure}[H]
 	\centering
 	\includegraphics[scale=0.7]{images/EM_good.png}
 	\caption{Paramètres théoriques VS paramètres estimés}
 \end{figure}
 
-Nous allons maintenant regarder si l'augmentation de la taille de l'échantillon du mélange gaussien généré aléatoirement aura pour effet de diminuer l'erreur absolue entre les paramètres estimés par l'algorithme EM et les valeurs théoriques dans le cas d'un mélange à forte séparation. Pour cela nous allons utiliser notre fonction \textit{Monte-Carlo}.
-
-\begin{lstlisting}
-	Monte_Carlo = function(data_th, data_init, k, n, N){
-		J = dim(data_th)[1]
-		df_MonteCarlo = data.frame()
-		iteration = c()
-		for(i in 1:k){
-			X = simulation(data_th, n)
-			data_EM = algo_EM(data_init, X, N)
-			df_error = calcul_error(data_th, data_EM)
-			df_MonteCarlo = rbind((df_MonteCarlo), df_error)
-			v_iter = rep(paste("itération",i,sep="_"), J)
-			iteration = append(iteration, v_iter)
-		}
-		df_MonteCarlo = cbind(iteration, df_MonteCarlo)
-		return(df_MonteCarlo)
-	}
-\end{lstlisting}
-
-\textbf{\underline{Décrivons brièvement ce que fait cette fonction de \textit{Monte-Carlo}.}}\\
-Cette dernière calcule l'erreur absolue entre les paramètres estimés par
-l'algorithme EM et les paramètres théoriques pour k échantillons générés aléatoirement. Elle prend en argument :
-\begin{itemize}
-	\item data\_th le dataframe contenant les paramètres $\alpha$, $\mu$ et $\sigma$ théoriques \\
-	\item data\_init le dataframe contenant les paramètres ($\alpha$, $\mu$, $\sigma$) initiaux choisis \\
-	\item k le nombre d'échantillons que l'on souhaite générer aléatoirement \\
-	\item n la taille des échantillons (les k échantillons seront de tailles n) \\
-	\item N le nombre d'itérations de l'algorithme EM
-\end{itemize}
-
-Elle retourne un dataframe contenant les erreurs absolues de chaque paramètre des k échantillons de Monte Carlo.
-Nous avons effectué 100 itérations de Monte-Carlo pour les différentes taille d'échantillon suivante:
+Nous allons maintenant regarder si l'augmentation de la taille de l'échantillon du mélange gaussien généré aléatoirement aura pour effet de diminuer et l'erreur absolue entre les paramètres estimés par l'algorithme EM, et les valeurs théoriques dans le cas d'un mélange à forte séparation. Pour cela nous allons utiliser notre fonction \textit{Monte-Carlo}. \\
+Nous avons effectué 100 itérations de Monte-Carlo pour les taille d'échantillon suivante:
 \begin{itemize}
 	\item $n = 100$ \\
 	\item $n = 250$ \\
@@ -836,33 +805,33 @@ Les boites à moustaches (boxplot) ci-dessous, modélisent l'erreur absolue entr
 	\includegraphics[scale=0.5]{images/good_mu.png}
 	\caption{Boxplot des erreurs absolues pour $\mu_1$, $\mu_2$ et $\mu_3$}
 \end{figure}
-D'après les boites à moustaches, on constate que plus on augmente la taille de l'échantillons du mélange gaussien et plus l'erreur absolue entre les paramètre estimés par l'algorithme EM et ceux théoriques, diminuent.
+D'après les boites à moustaches, nous constatons que plus la taille de l'échantillons du mélange gaussien est grande, et plus l'erreur absolue entre les paramètre estimés par l'algorithme EM et ceux théoriques, diminuent.
 
 
 \subsection{Étude d'un mélange gaussien à faible séparations}
-Dans cette partie, nous nous intéresserons à un mélange de trois gaussiennes ayant des loi respectives $N(\mu1, \sigma_1)$, $N(\mu_2, \sigma_2)$ et $N(\mu_3, \sigma_3)$ faiblement séparées, c'est à dire avec des paramètres assez proches les un des autres ($|\alpha_i$ - $\alpha_j|_{i \neq j}$; $|\mu_i$ - $\mu_j|_{i \neq j}$; $|\sigma_i$ - $\sigma_j|_{i \neq j}$) assez petit.
-De même que pour la première étude, nous avons généré un échantillon de d'un mélange de trois gaussiennes de taille 500, cette fois-ci avec faible séparation. Les trois lois du mélange sont les suivantes:
+Dans cette partie, nous nous intéresserons à un mélange de trois gaussiennes ayant comme loi respectives $\mathcal{N}(\mu_1, \sigma_1)$, $\mathcal{N}(\mu_2, \sigma_2)$ et $\mathcal{N}(\mu_3, \sigma_3)$ faiblement séparées, c'est à dire avec des paramètres assez proches les uns des autres (\underline{i.e.} $|\alpha_i$ - $\alpha_j|_{i \neq j}$; $|\mu_i$ - $\mu_j|_{i \neq j}$; $|\sigma_i$ - $\sigma_j|_{i \neq j}$ assez petits).
+De même que pour la première étude, nous avons généré un échantillon d'un mélange de trois lois gaussiennes de taille 500, cette fois-ci avec faible séparation. Les trois lois du mélange sont les suivantes:
 \begin{itemize}
-	\item $N(5, 1)$
-	\item $N(13.6, 11)$
-	\item $N(15.3, 6)$
+	\item $\mathcal{N}(5, 1)$
+	\item $\mathcal{N}(13.6, 11)$
+	\item $\mathcal{N}(15.3, 6)$
 \end{itemize}
-La figure ci-dessous représente la distribution du mélange à faible séparation;
+La figure ci-dessous représente la distribution du mélange à faibles séparations;
 
 \begin{figure}[H]
 	\centering
 	\includegraphics[scale=0.7]{images/bad_distrib.png}
-	\caption{Mélange gaussien à faible séparation}
+	\caption{Mélange gaussien à faibles séparations}
 \end{figure}
-Ici aussi, nous avons lancé l'algorithme EM en choisissant un nombre d'itération $k = 10$. Comme on peut le voir sur la capture d'écran ci-dessous, même avec un mélange à faible séparation, les paramètres estimés par l'algorithme EM sont assez proche de ceux théorique.
-\begin{figure}[H]
+Ici aussi, nous avons lancé l'algorithme EM en choisissant un nombre d'itération $k = 10$. Comme nous pouvons le voir sur la capture d'écran ci-dessous, même avec un mélange à faibles séparations, les paramètres estimés par l'algorithme EM sont assez proches de ceux théorique.
+\begin{figure}[H]%
 	\centering
 	\includegraphics[scale=0.7]{images/EM_bad.png}
 	\caption{Paramètres théoriques VS paramètres estimés}
 \end{figure}
 
-De même que pour l'étude précèdente, nous allons maintenant regarder si l'augmentation de la taille de l'échantillon du mélange gaussien généré aléatoirement aura pour effet de diminuer l'erreur absolue entre les paramètres estimés par l'algorithme EM et les valeurs théoriques dans le cas d'un mélange à faible séparation. Pour cela nous allons utiliser notre fonction \textit{Monte-Carlo}. \\
-Nous avons effectué 100 itérations de Monte-Carlo pour les différentes taille d'échantillon suivante:
+De même que pour l'étude précèdente, nous allons maintenant regarder si l'augmentation de la taille de l'échantillon du mélange gaussien généré aléatoirement aura pour effet de diminuer l'erreur absolue entre les paramètres estimés par l'algorithme EM et les valeurs théoriques dans le cas d'un mélange à faibles séparations. Pour cela nous allons utiliser notre fonction \textit{Monte-Carlo}. \\
+Nous avons effectué 100 itérations de Monte-Carlo pour les différentes tailles d'échantillons suivantes:
 \begin{itemize}
 	\item $n = 100$ \\
 	\item $n = 250$ \\
@@ -880,7 +849,7 @@ Les boites à moustaches (boxplot) ci-dessous, modélisent l'erreur absolue entr
 	\includegraphics[scale=0.5]{images/bad_mu.png}
 	\caption{Boxplot des erreurs absolues pour $\mu_1$, $\mu_2$ et $\mu_3$}
 \end{figure}
-Même dans le cas d'un mélange à variables faiblement séparées, on constate que plus on augmente la taille de l'échantillons et plus l'erreur absolue diminuent, ce qui est rassurant.
+Même dans le cas d'un mélange à variables faiblement séparées, on constate que plus on augmente la taille de l'échantillons et plus l'erreur absolue diminue, ce qui est rassurant.
 
 % section 2
 \section{Étude de cas avec les vrais données}

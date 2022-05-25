@@ -604,22 +604,69 @@ Dans le présent chapitre, nous nous intéresserons A REMPLIR
 
 \section{Présentation laconique et pseudo-code}
 
-{\color{red}  présentation textuelle rapide de l'algo: etape E, etape M etc...}
+Dans cette partie, nous allons faire le lien entre les outils développés dans le chapitre précédent, et expliciter en quels sens ils apportent une solution à notre problématique. Rappelons que cette dernière consiste en l'estimation de paramètres d'une log-vraisemblance des observations impossible à maximiser analytiquement. Comme mentionné lors de l'introduction, nous allons présenter l'algorithme EM. Il s'agit d'une méthode itérative, constituée de deux étapes; à savoir une étape "Expectation" et une étape "Maximization". Dans la suite de ce chapitre, nous verrons que cet algorithme nous permet de calculer une suite de paramètres qui auront la particularité de faire croître la log-vraisemblance des observations à chaque itération.
 
+\subsection{L'étape E (Expectation)}
+La phase E consiste à calculer la log-vraisemblance conditionnelle $\displaystyle\frac{1}{n} \sum_{i=1}^{n} \mathbb{E}_{\widehat{\theta}_{k-1}}[\mathcal{L}_c(\theta_{k-1}, \theta_{k}, X_1, \cdots, X_n)]$. Son calcul sera rendu possible grâce à la formule établie dans la proposition 6 et grâce à l'utilisation des paramètres $\alpha_j, \mu_j, \sigma_j$ calculés à l'itération précédente lors de l'étape M. À l'itération zéro, il est donc indispensable de renseigner des paramètres initiaux. Leur détermination occupera donc une place centrale dans notre projet et nous en discuterons dans une section ultérieure.
+
+\subsection{L'étape M (Maximization)}
+La phase M consiste à maximiser la vraisemblance trouvée à l'étape E. Ce maximum sera atteint en $\theta_M = (\widehat{\alpha_j}, \widehat{\mu_j}, \widehat{\sigma_j})$ et ces trois paramètres seront calculables via les formules issues de la proposition 7. Une fois qu'ils auront étés déterminés, ce sont ces trois paramètres qui seront utilisés dans l'itération suivant pour mettre à jour la log-vraisemblance conditionnelle lors de l'étape M.
+
+\subsection{La fonction simulation}
+Afin de pouvoir lancer l'algorithme EM, nous avons besoin d'un échantillon issue d'un mélange gaussien. Dans le cadre de ce projet, nous ne disposons uniquement que de données répertoriant les moyennes et les écarts-types des volumes des nids de treize espèces d'oiseaux différentes. En partant de ces données (moyennes et écart-types des volumes des nids) et de la commande $rnorm(\mu, \sigma)$ de R, nous avons implémenté la fonction \textit{simulation} qui a pour mission de générer aléatoirement un échantillon d'un mélange Gaussien. Il s'agit d'une des plus importante fonction de ce projet, nous allons donc la décrire.
+\begin{lstlisting}
+	simulation = function(data_th, n=100){
+		X = rep(NA,n) #echantillon
+		vect_alpha = data_th[,2]
+		vect_mean = data_th[,3]
+		vect_sd = data_th[,4]
+		for(i in 1:n){
+			Z = runif(1)
+			if (Z <= vect_alpha[1]){
+				X[i] = rnorm(1, vect_mean[1], vect_sd[1])
+			}else{
+				k = 1
+				l = 2
+				Bool = FALSE
+				cumul_alpha = cumsum(vect_alpha)
+				while(Bool == FALSE){
+					if((cumul_alpha[k]<=Z) & (cumul_alpha[l]>=Z)){
+						Bool = TRUE
+						param_index = l
+					}
+					k = k+1
+					l = l+1
+				}
+				X[i] = rnorm(1, vect_mean[param_index], vect_sd[param_index])
+			}
+		}
+		return(X)
+	}
+\end{lstlisting}
+La fonction prend en argument data\_th (le dataframe contenant les paramètres $\alpha$, $\mu$ et $\sigma$) et n qui indique la taille de l'échantillon à générer aléatoirement. \\
+La fonction retourne le vecteur du mélange gaussien de taille n qui a été généré aléatoirement. \\
+La plus partie la plus importante et subtile de ce script est celle dans laquelle nous distribuons aléatoirement les lois des différents $(x_i)_{i \in \{1, \dots, n\}}$ de l'échantillon de sorte à avoir un bon mélange gaussien. \\
+Pour simplifier les choses nous allons prendre un exemple dans lequel nous voulons générer un mélange de trois gaussiennes ayant pour paramètres respectifs $\theta_1 = (\alpha_1, \mu_1, \sigma_1)$, $\theta_2 = (\alpha_2, \mu_2, \sigma_2)$ et $\theta_3 = (\alpha_3, \mu_3, \sigma_3)$. On rappel que  $\sum_{i=1}^{3} \alpha_i = 1$. Nous procédons de la manière suivante: \\
+On génère une variable aléatoire $Z$ de loi uniforme à l'aide de la commande $runif$ de R et on regarde :
+\begin{itemize}
+	\item Si $Z < \alpha_1$ alors $X \sim N(\mu_1, \sigma_1)$ \\
+	\item Sinon si $\alpha_1 \leq Z \leq \alpha_1 + \alpha_2$ alors $Z \sim N(\mu_2, \sigma_2)$ \\
+	\item Sinon si  $\alpha_1 + \alpha_2 \leq Z \leq \alpha_1 + \alpha_2 + \alpha_3$ alors $Z \sim N(\mu_3, \sigma_3)$
+\end{itemize}
+Notre implémentation fonctionne dans le cas générale d'un mélange de $J$ gaussienne avec $J \in \mathbb{N}$ et repose exactement sur le même principe que celui expliqué précédemment.
+
+\subsection{Pseudo-code de l'algorithme EM}
 Pour l'implémentation de cet algorithme, nous nous sommes appuyés sur le pseudo-code suivant.
 
 \begin{algorithm}
 	\caption{\textbf{L’algorithme EM (Dempster et al., 1977).}}
 	\begin{algorithmic}[1]
-		\REQUIRE{$K \in \mathbb{N}$, $\widehat{\theta_0} \in \Theta$, un jeu de données $x_1 \dots x_n$;}
-		\ENSURE
-		\STATE {$k:=1$;}
-		\FOR {$k $ de $1$ à $K$}
+		\REQUIRE{$\widehat{\theta_0} \in \Theta$, un jeu de données $x_1 \dots x_n$, $K \in \mathbb{N}$;}
+		\FOR {$k $ allant de $1$ à $K$}
 		\STATE {$\text{\textbf{ETAPE E :} \textit{Calculer la fonction }} Q(\theta;\widehat{\theta}_{k-1}) = \displaystyle\frac{1}{n} \sum_{i=1}^{n} \mathbb{E}_{\widehat{\theta}_{k-1}}[\mathcal{L}_c(\theta_k-1, \theta_{k}, X_1, \cdots, X_n)]$;}
-		\STATE {$\text{\textbf{ETAPE M : }} \widehat{\theta}_k = \underset{\theta}{\text{argmax}} \hspace{1.5mm} Q(\theta;\widehat{\theta}_{k-1})$;}
-		\STATE {$k \leftarrow k+1$;}
+		\STATE {$\text{\textbf{ETAPE M :}\textit{ Calculer }} \widehat{\theta}_k = \underset{\theta}{\text{argmax}} \hspace{1.5mm} Q(\theta;\widehat{\theta}_{k-1})$;}
 		\ENDFOR
-		\RETURN {$\widehat{\theta}_N$;}
+		\RETURN {$\widehat{\theta}_K$;}
 	\end{algorithmic}
 \end{algorithm}
 
@@ -716,8 +763,97 @@ Nous partons, pour ainsi dire, à l'aveugle, mais il sera gardé en mémoire les
 
 Nous avons, à partir du tableau de données sus-mentionné, construit le data-frame \textit{nest$\_$data} reprenant les noms des espèces, ainsi que les volumes moyens et variances associées. Ce dernier nous servira à créer les échantillons
 
+\section{Étude de simulations}
+Les différentes sections ci-dessous auront vocations à présenter plusieurs simulations dans le but de tester l'efficacité de notre implémentation de l'algorithme EM.
+\subsection{Étude d'un mélange gaussien à forte séparations}
+Dans cette partie, nous nous intéresserons à un mélange de trois gaussiennes ayant des loi respectives $N(\mu1, \sigma_1)$, $N(\mu_2, \sigma_2)$ et $N(\mu_3, \sigma_3)$ bien séparées, c'est à dire avec des paramètres bien différents les un des autres ($|\alpha_i$ - $\alpha_j|_{i \neq j}$; $|\mu_i$ - $\mu_j|_{i \neq j}$; $|\sigma_i$ - $\sigma_j|_{i \neq j}$) assez grand. Nous avons généré un échantillon d'un mélange de trois gaussiennes à fortes séparations qui est de taille $n = 500$. Les trois lois du mélange sont les suivantes:
+\begin{itemize}
+	\item $N(11, 1)$
+	\item $N(49, 10)$
+	\item $N(92, 3)$
+\end{itemize}
+La figure ci-dessous représente la distribution du mélange
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.7]{images/good_distrib.png}
+	\caption{Mélange gaussien à forte séparation}
+\end{figure}
+Nous avons lancé l'algorithme EM en choisissant un nombre d'itération $k = 10$. Comme on peut le voir sur la capture d'écran ci-dessous, les paramètres estimés par l'algorithme EM sont assez proche de ceux théorique.
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.7]{images/EM_good.png}
+	\caption{Paramètres théoriques VS paramètres estimés}
+\end{figure}
+
+Nous allons maintenant regarder si l'augmentation de la taille de l'échantillon du mélange gaussien généré aléatoirement aura pour effet de diminuer l'erreur absolue entre les paramètres estimés par l'algorithme EM et les valeurs théoriques dans le cas d'un mélange à forte séparation. Pour cela nous allons utiliser notre fonction \textit{Monte-Carlo}. \\
+Nous avons effectué 100 itérations de Monte-Carlo pour les différentes taille d'échantillon suivante:
+\begin{itemize}
+	\item $n = 100$ \\
+	\item $n = 250$ \\
+	\item $n = 500$
+\end{itemize}
+Les boites à moustaches (boxplot) ci-dessous, modélisent l'erreur absolue entre les paramètres estimés par l'algorithme Em et ceux théoriques.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.5]{images/good_alpha.png}
+	\caption{Boxplot des erreurs absolues pour $\alpha_1$, $\alpha_2$ et $\alpha_3$}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.5]{images/good_mu.png}
+	\caption{Boxplot des erreurs absolues pour $\mu_1$, $\mu_2$ et $\mu_3$}
+\end{figure}
+D'après les boites à moustaches, on constate que plus on augmente la taille de l'échantillons du mélange gaussien et plus l'erreur absolue entre les paramètre estimés par l'algorithme EM et ceux théoriques, diminuent.
+
+
+\subsection{Étude d'un mélange gaussien à faible séparations}
+Dans cette partie, nous nous intéresserons à un mélange de trois gaussiennes ayant des loi respectives $N(\mu1, \sigma_1)$, $N(\mu_2, \sigma_2)$ et $N(\mu_3, \sigma_3)$ faiblement séparées, c'est à dire avec des paramètres assez proches les un des autres ($|\alpha_i$ - $\alpha_j|_{i \neq j}$; $|\mu_i$ - $\mu_j|_{i \neq j}$; $|\sigma_i$ - $\sigma_j|_{i \neq j}$) assez petit.
+De même que pour la première étude, nous avons généré un échantillon de d'un mélange de trois gaussiennes de taille 500, cette fois-ci avec faible séparation. Les trois lois du mélange sont les suivantes:
+\begin{itemize}
+	\item $N(5, 1)$
+	\item $N(13.6, 11)$
+	\item $N(15.3, 6)$
+\end{itemize}
+La figure ci-dessous représente la distribution du mélange à faible séparation;
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.7]{images/bad_distrib.png}
+	\caption{Mélange gaussien à faible séparation}
+\end{figure}
+Ici aussi, nous avons lancé l'algorithme EM en choisissant un nombre d'itération $k = 10$. Comme on peut le voir sur la capture d'écran ci-dessous, même avec un mélange à faible séparation, les paramètres estimés par l'algorithme EM sont assez proche de ceux théorique.
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.7]{images/EM_bad.png}
+	\caption{Paramètres théoriques VS paramètres estimés}
+\end{figure}
+
+De même que pour l'étude précèdente, nous allons maintenant regarder si l'augmentation de la taille de l'échantillon du mélange gaussien généré aléatoirement aura pour effet de diminuer l'erreur absolue entre les paramètres estimés par l'algorithme EM et les valeurs théoriques dans le cas d'un mélange à faible séparation. Pour cela nous allons utiliser notre fonction \textit{Monte-Carlo}. \\
+Nous avons effectué 100 itérations de Monte-Carlo pour les différentes taille d'échantillon suivante:
+\begin{itemize}
+	\item $n = 100$ \\
+	\item $n = 250$ \\
+	\item $n = 500$
+\end{itemize}
+Les boites à moustaches (boxplot) ci-dessous, modélisent l'erreur absolue entre les paramètres estimés par l'algorithme Em et ceux théoriques dans le cas d'une faible séparation.
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.5]{images/bad_alpha.png}
+	\caption{Boxplot des erreurs absolues pour $\alpha_1$, $\alpha_2$ et $\alpha_3$}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.5]{images/bad_mu.png}
+	\caption{Boxplot des erreurs absolues pour $\mu_1$, $\mu_2$ et $\mu_3$}
+\end{figure}
+Même dans le cas d'un mélange à variables faiblement séparées, on constate que plus on augmente la taille de l'échantillons et plus l'erreur absolue diminuent, ce qui est rassurant.
+
 % section 2
-\section{Etude d'un mélange à deux lois}
+\section{Étude de cas avec les vrais données}
+\subsection{Cas d'un mélange à deux lois avec des vrais données}
 Dans cette section, nous allons étudier le cas d'un mélange de deux lois. Commençons par sélectionner aléatoirement deux espèces, ainsi que les proportions associées. Pour ce faire, nous utiliserons notre fonction, la fonction \textit{random$\_$species}. 
 
 \begin{lstlisting}
@@ -790,7 +926,7 @@ La moyenne de la première espèce est presque égale à la moyenne théorique, 
 Pour ce premier exemple de mélange de lois, nous obtenons de très bonne approximations.
 
 % section 3
-\section{Etude d'un mélange à trois lois}
+\section{Cas d'un mélange à trois lois avec des vrais données}
 Dans cette section, nous étudierons le cas d'un mélange à trois lois.
 
 

@@ -592,17 +592,19 @@ On en déduit ainsi $\lambda = n$, ainsi que le résultat énoncé.
 \end{proof}
 
 
-Tous ces inesthétiques et fastidieux calculs n'ont pas été effectué en vain. Nous les avons réalisé suite à l'introduction d'une notion nouvelle, celle de la log-vraisemblance conditionnelle; qui elle même à été introduite faute de ne pouvoir obtenir une expression analytique de la log-vraisemblance des observations. Nous allons maintenant tâcher de mettre en exergue le rapport entre ces deux log-vraisemblances. \newline
+Tous ces inesthétiques et fastidieux calculs n'ont pas été effectué en vain. Nous les avons réalisé suite à l'introduction d'une notion nouvelle, celle de la log-vraisemblance conditionnelle; qui elle même à été introduite faute de ne pouvoir obtenir une expression analytique de la log-vraisemblance des observations. Nous allons maintenant tâcher de mettre en exergue les raisons de ce développement théorique.
 
 \pagebreak
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % chapitre 2
 \chapter{L'algorithme EM}
 
+Le présent chapitre aura une double tâche. La première est d'introduire l'élément fondamental de notre projet, l'algorithme EM. La seconde, plus ardue, est de mettre en lumière 
 
 \section{Présentation laconique et pseudo-code}
 
-Dans cette partie, nous allons faire le lien entre les outils développés dans le chapitre précédent, et expliciter en quels sens ils apportent une solution à notre problématique. Rappelons que cette dernière consiste en l'estimation de paramètres d'une log-vraisemblance des observations impossible à maximiser analytiquement. Comme mentionné lors de l'introduction, nous allons présenter l'algorithme EM. Il s'agit d'une méthode itérative, constituée de deux étapes; à savoir une étape "Expectation" et une étape "Maximization". Dans la suite de ce chapitre, nous verrons que cet algorithme nous permet de calculer une suite de paramètres qui auront la particularité de faire croître la log-vraisemblance des observations à chaque itération.
+Dans cette partie, nous allons faire le lien entre les outils développés dans le chapitre précédent, et expliciter en quels sens ils apportent une solution à notre problématique. Rappelons que cette dernière consiste en l'estimation de paramètres d'une log-vraisemblance des observations impossible à maximiser analytiquement. Comme mentionné lors de l'introduction, nous allons présenter l'algorithme EM. Il s'agit d'une méthode itérative, constituée de deux étapes; à savoir une étape "Expectation" et une étape "Maximization". Dans la suite de ce chapitre, nous verrons que cet algorithme nous permet de calculer une suite de paramètres qui auront la particularité de faire croître la log-vraisemblance des observations à chaque itération. \\
+Nous allons dans un premier temps décrire le fonctionnement de l'algorithme, l'explication de sa raison d'être n'en sera que plus limpide.
 
 \subsection{L'étape E (Expectation)}
 La phase E consiste à calculer la log-vraisemblance conditionnelle $\displaystyle\frac{1}{n} \sum_{i=1}^{n} \mathbb{E}_{\widehat{\theta}_{k-1}}[\mathcal{L}_c(\theta_{k-1}, \theta_{k}, X_1, \cdots, X_n)]$. Son calcul sera rendu possible grâce à la formule établie dans la proposition 6 et grâce à l'utilisation des paramètres $\alpha_j, \mu_j, \sigma_j$ calculés à l'itération précédente lors de l'étape M. À l'itération zéro, il est donc indispensable de renseigner des paramètres initiaux. Leur détermination occupera donc une place centrale dans notre projet et nous en discuterons dans une section ultérieure.
@@ -626,15 +628,23 @@ Pour l'implémentation de cet algorithme, nous nous sommes appuyés sur le pseud
 	\end{algorithmic}
 \end{algorithm}
 
-Il n'existe pas de preuvre de convergence de l'algorithme EM; ce dernier peut en effet stagner dans des extremas locaux. Le choix de bons paramètres initiaux est de fait primordial. Nous verrons cela dans une prochaine section. Toutefois, nous sommes assurés que l'algorithme croît, en temoigne la section suivante.
+Il n'existe pas de preuvre de convergence de l'algorithme EM; ce dernier peut en effet stagner dans des extremas locaux. Le choix de bons paramètres initiaux est de fait primordial; nous verrons cela dans une prochaine section. Toutefois, nous sommes assurés que l'algorithme permet   en temoigne la section suivante.
 
 % section 2
-\section{Une preuve de la croissance}
+\section{Une preuve de croissance}
 
-Dans cette concise partie, nous donnons une preuve de la croissance de la log-vraisemblance conditionnelle au fur et à mesure des itérations de l'algorithme EM.
+Dans cette concise partie, nous donnons une preuve d'un théorème essentiel. e preuve de la croissance de la log-vraisemblance des observations $X_1,\cdots, X_n$ au fur et à mesure des itérations de l'algorithme EM.
+
+Ce dernier, et unique, théorème est un résultat fondamental, il apporte une réponse à la raison d'être de l'algorithme, une justification à son élaboration. \\
+Rappelons que notre problématique est de maximiser une log-vraisemblance des observations, qui présente une expression qu'il n'est possible de maximiser analytiquemement. Nous cherchons donc à maximiser la quantité $\mathcal{L}_{obs}(\theta, X_1, \cdots, X_n)$, définie à la proposition 2, en les paramètres $\alpha_1, \cdots, \alpha_J, \mu_1, \cdots, \mu_J, v_1, \cdots, v_J$. \\
+Le théorème suivant nous affirme, qu'à chaques itérations $k$, l'algorithme EM produit une suite de paramètres 
+\begin{center}
+$(\theta_k)_{k\in \llbracket1, K\rrbracket} := (\alpha_{1_k}, \cdots, \alpha_{J_k}, \mu_{1_k}, \cdots, \mu_{J_k}, v_{1_k}, \cdots, v_{J_k})_{k\in \llbracket1, K\rrbracket}$
+\end{center}
+qui ont la particularité de faire croître la log-vraisemblance des observations. Enonçons le et démontrons le. 
 
 \begin{thm}
-Soit $(\theta_k)_{k\in \N}$ la suite de paramètres construite à l'aide de l'algorithme EM. La log-vraisemblance $\lv_{obs}$ des observations vérifie 
+Soit $(\theta_k)_{k\in \llbracket1, K\rrbracket}$ la suite de paramètres construite à l'aide de l'algorithme EM. La log-vraisemblance $\lv_{obs}$ des observations vérifie 
 \begin{center} $\lv_{obs}(\theta_{k+1}, X_1, \cdots, X_n) \geq \lv_{obs}(\theta_k, X_1, \cdots, X_n)$ \end{center}
 \end{thm}
 
@@ -673,21 +683,14 @@ En effet, nous avons
 &=  -n\times ln(1)\\
 &= 0
 \end{align*}
-
-
 On obtient ainsi
-
 \begin{center} $\kappa_{\theta_{k}, \theta_k}-\kappa_{\theta_{k+1}, \theta_k} \geq 0$ \end{center}
-
-
 Et finalement
 \begin{center} $\lv_{obs}(\theta_{k+1}, X_1, \cdots, X_n) \geq \lv_{obs}(\theta_k, X_1, \cdots, X_n)$ \end{center}
-
 \end{proof}
 
+
 \newpage
-
-
 
 %%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1101,7 +1104,7 @@ Les deux méthodes de déterminations des paramètres initiaux nous donnent des 
 \chapter{Le package \textit{mclust}}
 Nous avons, dans un élan d'audace, commencé par programmer à la main l'algorithme EM, en nous appuyant sur le pseudo-code explicité en première partie du chapitre II. \newline
 
-Cependant, il existe une librairie \textit{R} - la librairie \textit{mclust} - contenant une implémentation de l'algorithme EM. Notre algorithme étant fonctionnel, nous ne détaillerons pas ici le fonctionnement de ce Package. Il est néanmoins pertinent de l'expérimenter, voire de comparer ces résultats avec ceux notre algorithme. Nous reprendrons ici les espèces étudiées lors du dernier chapitre; les divers paramètres seront conservés, seul l'échantillon généré changera. Nous nous somme appuyer sur [5] et [6] afin d'obtenir les éléments nécessaire à l'utilisation de ce package.
+Cependant, il existe une librairie \textit{R} - la librairie \textit{mclust} - contenant une implémentation de l'algorithme EM. Notre algorithme étant fonctionnel, nous ne détaillerons pas ici le fonctionnement de ce Package. Il est néanmoins pertinent de l'expérimenter, voire de comparer ces résultats avec ceux notre algorithme. Nous reprendrons ici les mêmes espèces étudiées lors du dernier chapitre; les divers paramètres seront donc conservés, seul l'échantillon généré changera. Nous nous somme appuyer sur [5] afin d'obtenir les éléments nécessaire à l'utilisation de ce package.
 
 Pour commencer, installons et chargeons le Package \textit{mclust}.
 \begin{lstlisting}
@@ -1193,7 +1196,7 @@ print("Ecart-types estimés:")
 [1] "Ecart-types estimés:"
 [1]  12.16256 136.32256
 \end{verbatim}
-Ici, le nombre de mélange est exact. Les proportions sont très bien estimées, l'erreur la plus importante est de l'ordre de $12\%$. Il en va de même pour les moyennes, les erreurs sont d'ordres inférieures à $10\%$. Les variances sont elles aussi très bien estimées, les erreurs sont négligeables.
+Ici, le nombre de mélange est exact. Les proportions sont très bien estimées, l'erreur la plus importante est de l'ordre de $4\%$. Il en va de même pour les moyennes, les erreurs sont d'ordres inférieures à $10\%$. Les erreurs sur les variances sont de l'ordre de $10\%$ ou moins, ce qui est plutôt bon. 
 \newpage
 %%%
 \section{Un exemple sur un mélange à trois lois}
@@ -1216,7 +1219,7 @@ shapiro.test(X3)
 data:  X3
 W = 0.97982, p-value = 0.1287
 \end{verbatim}
-La p-value est de 0.1287, ce qui est certes peu élevée, mais pas assez pour rejeter l'hypothèse $(H_0)$ de normalité. Nous sommes ici dans une situation ambiguë.\newline
+La p-value est de 0.1287, ce qui est certes peu élevée, mais pas assez pour rejeter l'hypothèse $(\mathcal{H}_0)$ de normalité. Nous sommes ici dans une situation ambiguë.\newline
 %
 
 Observons maintenant comment \textit{densityMclust} se défend fasse à cette situation. \newline
@@ -1250,9 +1253,6 @@ est_3b[13]|\$|parameters|\$|mean
 print("Ecart-types estimés:")
 (est_3b[13]|\$|parameters|\$|variance|\$|sigmasq)^(1/2)
 \end{lstlisting}
-0.6, 0.3,  0.1 
-60.9, 58.3, 71.6 
-20.8, 15, 12.9
 \begin{verbatim}
 [1] "Proportions estimées:"
 [1] 0.2552686 0.5642272 0.1805042
@@ -1263,7 +1263,7 @@ print("Ecart-types estimés:")
 [1] 17.51051
 \end{verbatim}
 
-Les proportions sont plutôt bien estimées, quoique légèrement surestimées pour deux d'entres elles, mais les erreurs restent faibles. Il en est étonnament de même pour les moyennes, qui sont très bien estimées. Ceci est surprenant au vue de l'allure de la densité. Cependant, il n'est estimé qu'un unique écart-type, ce qui n'est guère étonnant. Notons que celle ci est à peu près égale à la moyenne des écart-types des différentes lois. \newline
+Les proportions sont plutôt bien estimées, quoique légèrement surestimées pour deux d'entres elles, mais les erreurs restent faibles. Il en est étonnament de même pour les moyennes, qui sont très bien estimées. Les erreurs sont au plus de l'ordre de $5\%$. Ceci est surprenant au vue de l'allure de la densité. Cependant, il n'est estimé qu'un unique écart-type, ce qui n'est guère étonnant. Notons que celui-ci est à peu près égale à la moyenne des écart-types des différentes lois. \newline
 
 Ce cas ambigüe met en exergue les limites de l'algorithme implémenté dans ce package.
 

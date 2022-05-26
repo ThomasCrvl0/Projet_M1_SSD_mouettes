@@ -216,13 +216,13 @@
 \addcontentsline{toc}{part}{Introduction}
 L’observation est une composante essentielle en sciences appliquées, et tout particulièrement pour nous, futur statisticiens. Ces dernières nous permettent d’élaborer des modèles, et dans le cadre de l’estimation paramétrique, de construire des estimateurs.
 
-Dans la situation où les données sont correctement observées, cadre idéal , la statistique inférentielle nous permet d’obtenir d’agréables expressions analytiques des estimateurs, notamment par la méthode du maximum de vraisemblance, qui est d'une redoutable efficacité. Toujours est-il que ces situations sont peu courantes ; nous sommes souvent confrontés à des situation présentant des données « cachées » ou manquantes. Dans ce dernier cas, nous verrons que les méthodes analytiques exactes ne suffisent plus, et qu’il est nécessaire d’introduire de nouvelles méthodes, basées sur le principe du maximum de vraisemblancen, pour tenter d’estimer les paramètres.
+Dans la situation où les données sont correctement observées, cadre idéal, la statistique inférentielle nous permet d’obtenir d’agréables expressions analytiques des estimateurs, notamment par la méthode du maximum de vraisemblance, qui est d'une redoutable efficacité. Toujours est-il que ces situations sont peu courantes ; nous sommes souvent confrontés à des situations présentant des données « cachées » ou manquantes. Dans ce dernier cas, nous verrons que les méthodes analytiques exactes ne suffisent plus, et qu’il est nécessaire d’introduire de nouvelles méthodes, également 	basées sur le principe du maximum de vraisemblance, pour tenter d’estimer les paramètres.
 
 Nous étudierons dans le présent projet l’une de ces méthodes, conçue par Dempster et al. (1977), l’algorithme Expectation-Maximization.  
 
-Nous nous appuierons ici un exemple extrait de l’ornithologie ; les données observées seront celles de la taille des nids d’oiseaux, et les données manquantes seront l’espèce qui l’a construit.
+Nous nous appuierons sur un exemple extrait de l’ornithologie ; les données observées seront celles des volumes des nids d’oiseaux, et les données manquantes seront l’espèce qui l’a construit.
 
-Dans une première partie, nous modéliserons mathématiquement le problème et poserons les bases théoriques nécessaires à l’étude; nous verrons brièvement le cas des données complètes, puis étudierons le cas des observations manquantes. Une seconde partie sera consacrée à une implémentation en langage R de l’algorithme EM et aux performances des résultats ce dernier. Nous détaillerons notre implémentation, et étudierons son risque d'erreur. Dans une troisième et dernière partie, nous nous proposons de nous mettre en conditions réelles et de réaliser une étude de cas à l'aide des outils que nous aurons implémenté.
+Dans un premier chapitre, nous modéliserons mathématiquement le problème et poserons les bases théoriques nécessaires à l’étude; nous verrons brièvement le cas des données complètes, puis étudierons le cas des observations manquantes. Une second chapitre sera consacré à une description et une implémentation en langage $R$ de l’algorithme EM. Puis, dans un troisième chapitre, nous étudierons les performances des résultats ce notre implémentation à l'aide de simulation; nous détaillerons notre implémentation, et étudierons son risque d'erreur. Dans un quatitème et dernièr chapitre, nous considererons une suite d'observations, et proposerons une étude de cas à l'aide des outils que nous aurons implémenté.
 
 \pagebreak
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -230,7 +230,7 @@ Dans une première partie, nous modéliserons mathématiquement le problème et 
 
 %%% Premier chapitre %%%
 \chapter{Modélisation du problème et liminaire mathématique}
-Dans ce premier chapitre, nous introduirons les outils nécessaires pour modéliser mathématiquement le problème. Puis, nous présenterons successivement les deux situations existantes dans le cadre du recueil de données des nids d'oiseaux : celle dans laquelle et l'espèce et la taille du nid ont été observées; et celle dans laquelle seule la taille a pu être observée.
+Dans ce premier chapitre, nous introduirons les outils nécessaires pour modéliser mathématiquement le problème. Puis, nous présenterons successivement les deux situations existantes dans le cadre du recueil de données des nids d'oiseaux : celle dans laquelle et l'espèce et la volume du nid ont été observés; et celle dans laquelle seule le volume a pu être observé.
 Nous verrons et ce qui diffère entre ces deux situations, et les raisons qui ont incité à la création de l’algorithme EM, l’objet de notre projet. 
 
 Ce chapitre s'inspirera des références [1], [2] et [3]
@@ -599,15 +599,21 @@ Tous ces inesthétiques et fastidieux calculs n'ont pas été effectué en vain.
 % chapitre 2
 \chapter{L'algorithme EM}
 
-Le présent chapitre aura une double tâche. La première est d'introduire l'élément fondamental de notre projet, l'algorithme EM. La seconde, plus ardue, est de mettre en lumière 
+Le présent chapitre aura une double tâche. La première est d'introduire l'élément fondamental de notre projet, l'algorithme EM. La seconde sera de mettre en lumière la réponse apportée par les élements déjà introduit à notre problématique.
 
 \section{Présentation laconique et pseudo-code}
 
 Dans cette partie, nous allons faire le lien entre les outils développés dans le chapitre précédent, et expliciter en quels sens ils apportent une solution à notre problématique. Rappelons que cette dernière consiste en l'estimation de paramètres d'une log-vraisemblance des observations impossible à maximiser analytiquement. Comme mentionné lors de l'introduction, nous allons présenter l'algorithme EM. Il s'agit d'une méthode itérative, constituée de deux étapes; à savoir une étape "Expectation" et une étape "Maximization". Dans la suite de ce chapitre, nous verrons que cet algorithme nous permet de calculer une suite de paramètres qui auront la particularité de faire croître la log-vraisemblance des observations à chaque itération. \\
 Nous allons dans un premier temps décrire le fonctionnement de l'algorithme, l'explication de sa raison d'être n'en sera que plus limpide.
 
+Dans ce qui suit, nous noterons par $X_1,\cdots X_n$ l'échantillon observé, et par $\theta := (\alpha_j, \mu_j, \sigma_j)_{j\in\llbracket 1,J \rrbracket}$ le vecteur des paramètres.
+
 \subsection{L'étape E (Expectation)}
-La phase E consiste à calculer la log-vraisemblance conditionnelle $\displaystyle\frac{1}{n} \sum_{i=1}^{n} \mathbb{E}_{\widehat{\theta}_{k-1}}[\mathcal{L}_c(\theta_{k-1}, \theta_{k}, X_1, \cdots, X_n)]$. Son calcul sera rendu possible grâce à la formule établie dans la proposition 6 et grâce à l'utilisation des paramètres $\alpha_j, \mu_j, \sigma_j$ calculés à l'itération précédente lors de l'étape M. À l'itération zéro, il est donc indispensable de renseigner des paramètres initiaux. Leur détermination occupera donc une place centrale dans notre projet et nous en discuterons dans une section ultérieure.
+La phase E consiste à calculer la log-vraisemblance conditionnelle 
+\begin{center}
+$\lv_{c}(\theta, \thetat, X_1, \cdots, X_n) = \E_{\thetat}[\lv_\theta(X_1, \cdots, X_n, Z_1, \cdots, Z_n) | X_1, \cdots, X_n]$
+\end{center}
+Son calcul sera rendu possible grâce à la formule établie dans la proposition 6 et grâce à l'utilisation des paramètres $\alpha_j, \mu_j, \sigma_j$ calculés à l'itération précédente lors de l'étape M. À l'itération zéro, il est donc indispensable de renseigner des paramètres initiaux. Leur détermination occupera donc une place centrale dans notre projet et nous en discuterons dans une section ultérieure.
 
 \subsection{L'étape M (Maximization)}
 La phase M consiste à maximiser la vraisemblance trouvée à l'étape E. Ce maximum sera atteint en $\theta_M = (\widehat{\alpha_j}, \widehat{\mu_j}, \widehat{\sigma_j})$ et ces trois paramètres seront calculalés à l'aide maximiseur établis à la proposition 7. Une fois qu'ils auront étés déterminés, ce sont ces trois paramètres qui seront utilisés dans l'itération suivante pour mettre à jour la log-vraisemblance conditionnelle lors de l'étape M.
@@ -619,29 +625,28 @@ Pour l'implémentation de cet algorithme, nous nous sommes appuyés sur le pseud
 \begin{algorithm}
 	\caption{\textbf{L’algorithme EM (Dempster et al., 1977).}}
 	\begin{algorithmic}[1]
-		\REQUIRE{$\widehat{\theta_0} \in \Theta$, un jeu de données $x_1 \dots x_n$, $K \in \mathbb{N}$;}
+		\REQUIRE{$\widehat{\theta_0} \in \Theta$, un jeu de données $X_1 \cdots X_n$, $K \in \mathbb{N}$;}
 		\FOR {$k $ allant de $1$ à $K$}
-		\STATE {$\text{\textbf{ETAPE E :} \textit{Calculer la fonction }} Q(\theta;\widehat{\theta}_{k-1}) = \displaystyle\frac{1}{n} \sum_{i=1}^{n} \mathbb{E}_{\widehat{\theta}_{k-1}}[\mathcal{L}_c(\theta_k-1, \theta_{k}, X_1, \cdots, X_n)]$;}
+		\STATE {$\text{\textbf{ETAPE E :} \textit{Calculer la fonction }} Q(\theta;\widehat{\theta}_{k-1}) = \lv_{c}(\theta, \widehat{\theta}_{k-1}, X_1, \cdots, X_n)$}
 		\STATE {$\text{\textbf{ETAPE M :}\textit{ Calculer }} \widehat{\theta}_k = \underset{\theta}{\text{argmax}} \hspace{1.5mm} Q(\theta;\widehat{\theta}_{k-1})$;}
 		\ENDFOR
 		\RETURN {$\widehat{\theta}_K$;}
 	\end{algorithmic}
 \end{algorithm}
-
+\newpage
 Il n'existe pas de preuvre de convergence de l'algorithme EM; ce dernier peut en effet stagner dans des extremas locaux. Le choix de bons paramètres initiaux est de fait primordial; nous verrons cela dans une prochaine section. Toutefois, nous sommes assurés que l'algorithme permet   en temoigne la section suivante.
 
 % section 2
 \section{Une preuve de croissance}
 
-Dans cette concise partie, nous donnons une preuve d'un théorème essentiel. e preuve de la croissance de la log-vraisemblance des observations $X_1,\cdots, X_n$ au fur et à mesure des itérations de l'algorithme EM.
-
-Ce dernier, et unique, théorème est un résultat fondamental, il apporte une réponse à la raison d'être de l'algorithme, une justification à son élaboration. \\
-Rappelons que notre problématique est de maximiser une log-vraisemblance des observations, qui présente une expression qu'il n'est possible de maximiser analytiquemement. Nous cherchons donc à maximiser la quantité $\mathcal{L}_{obs}(\theta, X_1, \cdots, X_n)$, définie à la proposition 2, en les paramètres $\alpha_1, \cdots, \alpha_J, \mu_1, \cdots, \mu_J, v_1, \cdots, v_J$. \\
+Dans cette concise section, nous énonçons un théorème essentiel. Ce dernier, et unique, théorème est un résultat fondamental, il apporte une réponse à la raison d'être de l'algorithme, une justification à son élaboration. \\
+Rappelons que notre problématique est de maximiser une log-vraisemblance des observations, qui présente une expression qu'il n'est possible de maximiser analytiquemement. Nous cherchons donc à maximiser la quantité $\mathcal{L}_{obs}(\theta, X_1, \cdots, X_n)$ définie à la proposition 2, en les paramètres $\alpha_1, \cdots, \alpha_J, \mu_1, \cdots, \mu_J, v_1, \cdots, v_J$. \\
 Le théorème suivant nous affirme, qu'à chaques itérations $k$, l'algorithme EM produit une suite de paramètres 
 \begin{center}
 $(\theta_k)_{k\in \llbracket1, K\rrbracket} := (\alpha_{1_k}, \cdots, \alpha_{J_k}, \mu_{1_k}, \cdots, \mu_{J_k}, v_{1_k}, \cdots, v_{J_k})_{k\in \llbracket1, K\rrbracket}$
 \end{center}
-qui ont la particularité de faire croître la log-vraisemblance des observations. Enonçons le et démontrons le. 
+qui ont la particularité de faire croître la log-vraisemblance des observations, $K$ étant le nombre d'itérations de l'algorithme. \\ 
+Enonçons précisément ce théorème et démontrons le. 
 
 \begin{thm}
 Soit $(\theta_k)_{k\in \llbracket1, K\rrbracket}$ la suite de paramètres construite à l'aide de l'algorithme EM. La log-vraisemblance $\lv_{obs}$ des observations vérifie 

@@ -214,6 +214,7 @@
 
 \chapter*{Introduction}
 \addcontentsline{toc}{part}{Introduction}
+
 L’observation est une composante essentielle en sciences appliquées, et tout particulièrement pour nous, futur statisticiens. Ces dernières nous permettent d’élaborer des modèles, et dans le cadre de l’estimation paramétrique, de construire des estimateurs.
 
 Dans la situation où les données sont correctement observées, cadre idéal, la statistique inférentielle nous permet d’obtenir d’agréables expressions analytiques des estimateurs, notamment par la méthode du maximum de vraisemblance, qui est d'une redoutable efficacité. Toujours est-il que ces situations sont peu courantes ; nous sommes souvent confrontés à des situations présentant des données « cachées » ou manquantes. Dans ce dernier cas, nous verrons que les méthodes analytiques exactes ne suffisent plus, et qu’il est nécessaire d’introduire de nouvelles méthodes, également 	basées sur le principe du maximum de vraisemblance, pour tenter d’estimer les paramètres.
@@ -222,7 +223,9 @@ Nous étudierons dans le présent projet l’une de ces méthodes, conçue par D
 
 Nous nous appuierons sur un exemple extrait de l’ornithologie ; les données observées seront celles des volumes des nids d’oiseaux, et les données manquantes seront l’espèce qui l’a construit.
 
-Dans un premier chapitre, nous modéliserons mathématiquement le problème et poserons les bases théoriques nécessaires à l’étude; nous verrons brièvement le cas des données complètes, puis étudierons le cas des observations manquantes. Une second chapitre sera consacré à une description et une implémentation en langage $R$ de l’algorithme EM. Puis, dans un troisième chapitre, nous étudierons les performances des résultats ce notre implémentation à l'aide de simulation; nous détaillerons notre implémentation, et étudierons son risque d'erreur. Dans un quatitème et dernièr chapitre, nous considererons une suite d'observations, et proposerons une étude de cas à l'aide des outils que nous aurons implémenté.
+Ceci constituera le fil rouge de ce projet, et sera le cœur de notre problématique; comment estimer les divers paramètres associés aux observations quand une partie des données sont inaccessibles ?
+
+Dans un premier chapitre, nous modéliserons mathématiquement le problème et poserons les bases théoriques nécessaires à l’étude; nous verrons brièvement le cas des données complètes, puis étudierons le cas des observations manquantes. Une second chapitre sera consacré à une description et une implémentation en langage $R$ de l’algorithme EM. Puis, dans un troisième chapitre, nous étudierons les performances des résultats ce notre implémentation à l'aide de simulation; nous détaillerons notre implémentation, et étudierons son risque d'erreur. Dans un quatitème et dernièr chapitre, nous considererons une suite d'observations, et proposerons un modèle pour les nids d'oiseaux à l'aide des outils que nous aurons implémenté.
 
 \pagebreak
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -241,7 +244,7 @@ Ce chapitre s'inspirera des références [1], [2] et [3]
 Nous allons pour commencer donner une première définition, qui est au coeur du présent projet.
 
 \begin{defn}[Loi de mélange]
-On appelle loi de mélange toute loi dont la densité s'écrit sous la forme d'une combinaison convexe de plusieurs densités. Si l'on se donne $J$  densités $f_1(x), \cdots, f_J(x)$, alors toute variable aléatoire $X$ dont la densité $f$ s'exprime, pour tout $x\in\R$, sous la forme
+On appelle loi de mélange toute loi dont la densité s'écrie sous la forme d'une combinaison convexe de plusieurs densités. Si l'on se donne $J$  densités $f_1(x), \cdots, f_J(x)$, alors toute variable aléatoire $X$ dont la densité $f$ s'exprime, pour tout $x\in\R$, sous la forme
 \begin{center}
 $f(x) := \displaystyle\sum_{i=1}^J \alpha_i f_i(x)$ , $\alpha_i \in\R_+^*$ et $\displaystyle\sum_{j=1}^J\alpha_j=1$ \end{center}
 suit une loi de mélange.
@@ -1065,11 +1068,20 @@ Les proportions sont toutes deux très bien estimées, les erreurs sont de l'ord
 Les deux méthodes de déterminations des paramètres initiaux nous donnent des résultats très satisfaisant. Le cas étudié est très favorable, le mélange étant, en quelques sortes, à "fortes séparations".
 
 
+%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\chapter*{Conclusion}
+\addcontentsline{toc}{part}{Conclusion}
 
-
-
-
+Dans le cadre de ce projet, nous nous sommes confrontés à une situation nouvelle, bien que commune ; la non existence d’expressions analytiques des estimateurs du maximum de vraisemblance. Cette difficulté s'est présentée dès le début de l'étude théorique, dès l'instant où nous exploration le problème s'offrant à nous. Ce dernier est issu d'une problématique concrète empruntée à l'ornithologie, celui de l'observation des nids d'oiseaux. \newline
+\break 
+L'impossibilité théorique sus-mentionnée a trouvé solution dans une méthode numérique, l’algorithme EM. \newline
+\break
+Nous avons choisi d’implémenter cette méthode de nous-même, afin de mieux cerner son fonctionnement, et de ne pas utiliser des « boites-noires ». Par suite nous avons étudié les performances, en terme de justesse de précisions, de notre implémentation ; et ce au travers de simulations. Les résultats obtenus sont satisfaisants ; toutefois nous restons critique envers eux, la preuve de convergence de la suite de paramètres produite vers ceux du maximum de vraisemblance n’existant pas. \newline
+Ceci nous a permis de proposer dans un dernier chapitre un modèle pour les nids d’oiseaux ; et d’entrevoir ce qu’est une étude de données; ou tout du moins dans une situation favorable. En effet, les données étant générées par $R$, nous n’avons pas eu à nous soucier des problèmes usuels en science de données ; à savoir les problèmes concernant un échantillon de taille trop faible ou bien de données aberrantes.\newline
+\break
+L’algorithme EM est un point d’accroche aux solutions dont nous disposons pour résoudre ce type de problème. Il a été rapidement généralisé, et plusieurs variantes existent ; nous pouvons citer l’algorithme Generalized EM, qui propose une amélioration de EM ; ou bien le Stochastic Em, qui utilise des méthodes stochastiques afin de diminuer les risques d’obtenir un maximum local.
 
 %%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

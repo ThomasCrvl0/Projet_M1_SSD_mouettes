@@ -650,8 +650,77 @@ Pour l'implémentation de cet algorithme, nous nous sommes appuyés sur le pseud
 		\RETURN {$\thetat_K$;}
 	\end{algorithmic}
 \end{algorithm}
-\newpage
-Il n'existe pas de preuvre de convergence de l'algorithme EM; ce dernier peut en effet stagner dans des extremas locaux. Le choix de bons paramètres initiaux est de fait primordial; nous verrons cela dans une prochaine section. Toutefois, nous sommes assurés que l'algorithme permet   en temoigne la section suivante.
+\subsection{Implémentation de l'algorithme EM}
+	L'algorithme EM constitue sans aucun doute le pilier centrale de notre projet, une description de son implémentation semble donc indispensable.
+	\begin{lstlisting}
+		algo_EM = function(data_init, X, K){
+			J = dim(data_init)[1]
+			n = length(X)
+			data_stateE = param_State_E(n, J)
+			
+			for(k in 1:K){
+				vect_alpha = data_init[,2] #de longueur J
+				vect_mean = data_init[,3]
+				vect_sd = data_init[,4]
+				v = rep(0,n) 
+				
+				# Etape E
+				for(j in 1:J){
+					data_stateE[,j] = vect_alpha[j]*dnorm(X,vect_mean[j],vect_sd[j])
+					v = v+data_stateE[,j]
+				}
+				for(j in 1:J){
+					data_stateE[,j] = data_stateE[,j]/v
+				}
+				
+				# Etape M
+				H = data_stateE
+				for(col in 2:4){ #on met a jour le data_init
+					for(ind in 1:J){
+						
+						# on met à jour les alpha
+						if(col == 2){
+							data_init[,col][ind] = mean(H[,ind])
+						}
+						# on met à jour les mu
+						if(col == 3){
+							data_init[,col][ind] = (sum(X*H[,ind]))/(sum(H[,ind]))
+						} 
+						# on met à jour les sigma
+						if(col == 4){
+							data_init[,col][ind] = sqrt((sum( (X-rep(data_init[,col-1][ind],n))^2
+							*H[,ind] ))/sum(H[,ind]))
+						}
+					}
+				}
+			}
+			new_df = data_init
+			colnames(new_df) = c('bird_names', 'alpha', 'mu', 'sigma')
+			return(new_df)
+		}
+	\end{lstlisting}
+	La fonction $algo\_EM$ prend en argument:
+	\begin{itemize}
+		\item data\_init, le dataframe contenant les paramètres initiaux choisis à savoir $\alpha_{init}$, $\mu_{init}$, $\sigma_{init}$ \\
+		\item X, l'échantillon issu d'un mélange gaussien (il a été créé par la fonction \textit{simulation} et est de taille n)\\
+		\item K le nombre d'itérations de l'algorithme EM
+	\end{itemize}  
+	Cette fonction va retourner un dataframe contenant les valeurs des
+	paramètres $\alpha$, $\mu$ et $\sigma$ estimées par l'algorithme.
+	\begin{itemize}
+		\item Lors de l'étape E nous déterminons la probabilité $\mathbb{P}_{\tilde{\theta}}(Z = j| X = X_i)$ via la formule suivante:
+		\[
+		\mathbb{P}_{\tilde{\theta}}(Z = j| X = X_i) = \frac{\alpha_j \times \gamma_{\mu_j, j_v}}{\sum_{k=1}^{J} \alpha_k \times \gamma_{\mu_k, v_k}}
+		\] \\
+		\item Lors de l'étape M, nous déterminons les estimateurs du maximum de vraisemblance $(\widehat{\alpha_j}, \widehat{\mu_j}, \widehat{\sigma_j})$ via les formules établies à la proposition 7 dont nous rappelons les expressions:
+		\begin{align*}
+			\widehat{\alpha_j} &= \displaystyle\frac{1}{n}\sum_{i=1}^n \prob_{\thetat}(Z=j|X=X_i) \\
+			\widehat{\mu_j} &= \displaystyle\frac{\displaystyle\sum_{i=1}^n X_i\prob_{\thetat}(Z=j|X=X_i)}{\displaystyle\sum_{i=1}^n \prob_{\thetat}(Z=j|X=X_i)} \\
+			\widehat{v_j} &= \displaystyle\frac{\displaystyle\sum_{i=1}^n (X_i -\widehat{\mu_j})^2 \prob_{\thetat}(Z=j|X=X_i)}{\displaystyle\sum_{i=1}^n\prob_{\thetat}(Z=j|X=X_i)}
+		\end{align*}
+	\end{itemize}
+	\vspace{7mm}
+Il n'existe pas de preuvre de convergence de la suite de paramètres établie par l'algorithme EM; cette dernière peut en effet stagner dans des extremas locaux. Le choix de bons paramètres initiaux est de fait primordial. Toutefois, nous sommes assurés que l'algorithme permet de faire croître la log-vraisemblance des observations en les paramètres itérativement créés, en temoigne la section suivante.
 
 % section 2
 \section{Une preuve de croissance}

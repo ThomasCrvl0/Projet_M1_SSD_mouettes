@@ -937,9 +937,11 @@ data <- simulation(df, 500)
 \end{lstlisting}
 
 Nous commençons par tracer la courbe de densité associée à l'échantillon.
-\begin{center}
+\begin{figure}[H]
+\centering
 \includegraphics[scale=0.8]{dens_1.pdf}
-\end{center}
+\caption{Densité de l'échantillon estimée par une méthode à noyau}
+\end{figure}
 Le mélange des deux lois se distingue au premier coup d'oeil; nous distinguons nettement deux pics. L'"étalement" des pics n'étant pas les mêmes, nous pouvons supposer sans craintes que les variances des deux lois sont différentes. Il est cependant difficile d'émettre des hypothèses quant aux proportions.\newline
 Nous proposons dans ce qui suit deux sous-sections. Dans la première, nous déterminerons les paramètres initiaux via la première méthode décrite précedemment. Nous pourrons dès lors réaliser une première exécution de notre implémentation de l'algorithme EM.
 Dans la seconde section, nous ferons de même, en considérant cette fois-ci la seconde méthode de détermination des paramètres initiaux.
@@ -951,9 +953,11 @@ Dans la seconde section, nous ferons de même, en considérant cette fois-ci la 
 \item
 Commençons par déterminer les paramètres initiaux via une méthode graphique. Cette méthode sera basée sur des heuristiques très approximatives, mais nous permettra d'obtenir des valeurs initiales plutôt correctes. \newline
 Pour les moyennes, nous considèrerons l'abscisse correspondant au point culminant des pics; et pour les écarts-types $\sigma$, nous tenterons de déterminer la valeur entre la moyenne précédemment déterminée et le point d'inflexion du pic. Après plusieurs essais sur $R$, nous obtenons le graphique suivant :
-\begin{center}
+\begin{figure}[H]
+\centering
 \includegraphics[scale=0.8]{dens_1bis.pdf}
-\end{center}
+\caption{Détermination graphique des paramètres initiaux}
+\end{figure}
 Nous avons tracé des lignes pleines aux abscisses $X=40$ et $X=320$, qui correspondent approximativement au point culminant des pics. Ceci nous donne donc nos moyennes initiales 
 \begin{center} 
 $\mu_{1_{init}} =  40$ et $\mu_{2_{init}} = 320$. 

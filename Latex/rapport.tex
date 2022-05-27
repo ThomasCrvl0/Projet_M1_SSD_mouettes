@@ -392,7 +392,7 @@ $ \widehat{\mu_j} = \displaystyle\frac{\sum_{i\in A_j} X_i}{\#A_j} $
 $ \widehat{v_j} = \displaystyle \frac{\sum_{i\in A_j}(X_i - \widehat{\mu_j})^2}{\#A_j}$
 \end{center}
 \end{prop}
-
+\newpage
 \begin{proof}
 Soit $\theta = (\alpha_j, \mu_j, v_j)_{j \in \llbracket 1,J \rrbracket}$. Il s'agit de déterminer 
 \begin{center}
@@ -546,9 +546,11 @@ $\widehat{\mu_j}= \displaystyle\frac{\displaystyle\sum_{i=1}^n X_i\prob_{\thetat
 \end{center}
 \begin{center}
 
-$\widehat{v_j} = \displaystyle\frac{\displaystyle\sum_{i=1}^n (X_i -\mu_j)^2 \prob_{\thetat}(Z=j|X=X_i)}{\displaystyle\sum_{i=1}^n\prob_{\thetat}(Z=j|X=X_i)}$
+$\widehat{v_j} = \displaystyle\frac{\displaystyle\sum_{i=1}^n (X_i -\widehat{\mu_j})^2 \prob_{\thetat}(Z=j|X=X_i)}{\displaystyle\sum_{i=1}^n\prob_{\thetat}(Z=j|X=X_i)}$
 \end{center}
 \end{prop}
+
+\newpage
 
 \begin{proof}
 Soit $\theta = (\alpha_j, \mu_j, v_j)_{j\in\llbracket1,J\rrbracket}$. Il s'agit ici de maximiser la fonction $\theta \mapsto \lv_{c}(\theta,\thetat, X_1, \cdots, X_n)$.
@@ -623,15 +625,16 @@ Nous allons dans un premier temps décrire le fonctionnement de l'algorithme, l'
 Dans ce qui suit, nous noterons par $X_1,\cdots X_n$ l'échantillon observé, et par $\theta := (\alpha_j, \mu_j, \sigma_j)_{j\in\llbracket 1,J \rrbracket}$ le vecteur des paramètres.
 
 \subsection{L'étape E (Expectation)}
-La phase E consiste à calculer la log-vraisemblance conditionnelle 
+La phase E consiste à calculer de manière effective non pas la log-vraisemblance conditionnelle $\lv_{c}(\theta, \thetat, X_1, \cdots, X_n)$, mais seulement la probabilité
 \begin{center}
-$\lv_{c}(\theta, \thetat, X_1, \cdots, X_n) = \E_{\thetat}[\lv_\theta(X_1, \cdots, X_n, Z_1, \cdots, Z_n) | X_1, \cdots, X_n]$
+$\prob_{\thetat}(Z=j|X=X_i)$
 \end{center}
-Son calcul sera rendu possible grâce à la formule établie dans la proposition 6 et grâce à l'utilisation des paramètres $\alpha_j, \mu_j, \sigma_j$ calculés à l'itération précédente lors de l'étape M. À l'itération zéro, il est donc indispensable de renseigner des paramètres initiaux. Leur détermination occupera donc une place centrale dans notre projet et nous en discuterons dans une section ultérieure.
+puisque seule son expression est nécessaire pour obtenir les maximums établi à la proposition 7. Son calcul sera rendu possible grâce à la formule établie dans la proposition 2 et grâce à l'utilisation des paramètres $\alpha_j, \mu_j, \sigma_j$ calculés à l'itération précédente lors de l'étape M. À l'itération zéro, il est donc indispensable de renseigner des paramètres initiaux. Leur détermination occupera donc une place centrale dans notre projet et nous en discuterons dans une section ultérieure.
 
 \subsection{L'étape M (Maximization)}
 La phase M consiste à maximiser la vraisemblance trouvée à l'étape E. Ce maximum sera atteint en $\theta_M = (\widehat{\alpha_j}, \widehat{\mu_j}, \widehat{\sigma_j})$ et ces trois paramètres seront calculalés à l'aide maximiseur établis à la proposition 7. Une fois qu'ils auront étés déterminés, ce sont ces trois paramètres qui seront utilisés dans l'itération suivante pour mettre à jour la log-vraisemblance conditionnelle lors de l'étape M.
 
+\newpage
 
 \subsection{Pseudo-code de l'algorithme EM}
 Pour l'implémentation de cet algorithme, nous nous sommes appuyés sur le pseudo-code suivant.
@@ -639,12 +642,12 @@ Pour l'implémentation de cet algorithme, nous nous sommes appuyés sur le pseud
 \begin{algorithm}
 	\caption{\textbf{L’algorithme EM (Dempster et al., 1977).}}
 	\begin{algorithmic}[1]
-		\REQUIRE{$\widehat{\theta_0} \in \Theta$, un jeu de données $X_1 \cdots X_n$, $K \in \mathbb{N}$;}
+		\REQUIRE{$\thetat_0 \in \Theta$, un jeu de données $X_1 \cdots X_n$, $K \in \mathbb{N}$;}
 		\FOR {$k $ allant de $1$ à $K$}
-		\STATE {$\text{\textbf{ETAPE E :} \textit{Calculer la fonction }} Q(\theta;\widehat{\theta}_{k-1}) = \lv_{c}(\theta, \widehat{\theta}_{k-1}, X_1, \cdots, X_n)$}
-		\STATE {$\text{\textbf{ETAPE M :}\textit{ Calculer }} \widehat{\theta}_k = \underset{\theta}{\text{argmax}} \hspace{1.5mm} Q(\theta;\widehat{\theta}_{k-1})$;}
+		\STATE {$\text{\textbf{ETAPE E :} \textit{Calculer la probabilité }}\prob_{\thetat_{k-1}}(Z=j|X=X_i) = \displaystyle\frac{\alpha_j\times\gamma_{\mu_j, j_v}}{\displaystyle\sum_{k=1}^J\alpha_k\times\gamma_{\mu_k, v_k}}$ , $\forall i\in \llbracket1,n\rrbracket$}
+		\STATE {$\text{\textbf{ETAPE M :}\textit{ Calculer }} \thetat_{k} = \underset{\theta = (\alpha_j, \mu_j, v_j)_{j\in\llbracket1,J\rrbracket}}{\text{argmax}} \hspace{1.5mm} \prob_{\thetat_{k-1}}(Z=j|X=X_i)$;}
 		\ENDFOR
-		\RETURN {$\widehat{\theta}_K$;}
+		\RETURN {$\thetat_K$;}
 	\end{algorithmic}
 \end{algorithm}
 \newpage
@@ -715,6 +718,8 @@ Comme sus-mentionné, ce résultat ne prétend pas que l'algorithme EM maximiser
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \chapter{Etude de simulations}
+
+Dans ce troisième chapitre, il s'agira de présenter des algorithmes complémentaires à celui de l'algorithme EM. Ces derniers nous mener à bien notre brève étude sur "l'efficacité" de notre implémentation, et ce pour divers mélanges.
 
 \section{La fonction simulation}
 Afin de pouvoir lancer l'algorithme EM, nous avons besoin d'un échantillon issue d'un mélange gaussien. Comme nous le verrons dans le chapitre 4, nous disposons dans le cadre de ce projet uniquement de données répertoriant les moyennes et les écarts-types des volumes des nids de treize espèces d'oiseaux différentes. Grâce à ces données et à la commande $rnorm(\mu, \sigma)$ de $R$, nous avons implémenté la fonction \textit{simulation}, qui a pour mission de générer aléatoirement un échantillon d'un mélange Gaussien. Il s'agit d'une des plus importante fonction de ce projet, nous allons donc la décrire.
@@ -890,6 +895,61 @@ Les boites à moustaches (boxplot) ci-dessous, modélisent l'erreur absolue entr
 \end{figure}
 
 Concernant les boxplots des erreurs absolues des paramètres $(\mu_{i})_{i \in 1 \dots 3}$ et $(\sigma_i)_{i \in 1 \dots 3}$, les conclusions sont les mêmes que dans le cas d'un mélange gaussien avec "fortes séparations". En effet, leurs erreurs absolues diminuent lorsque la taille de l'échantillon $n$ croît. Nous observons cependant quelque chose d'inhabituelle chez les paramètres $\alpha_2$ et $\alpha_3$. Leurs erreurs absolues augmentent quand n croît alors que leurs variances diminuent. Cela montre bien que les paramètres estimés par l'algorithme EM ne convergent pas toujours vers les paramètres du maximum de vraisemblance.
+
+
+\section{Automatisation des paramètres initiaux}
+
+Dans le cas éventuel où l'utilisateur ne souhaite pas, ou ne peut pas, effectuer de décisions quant aux paramètres initiaux de l'algorithme EM, nous nous proposons de présenter diverses fonctions automatisant ce choix.
+
+
+
+\subsection{La fonction \textit{param$\_$quantile1}}
+
+\begin{lstlisting}
+param_quantile1 <- function(X,J){
+  N <- length(X)
+  Alpha = rep(1/J,J)
+  Mean <- rep(NA,J)
+  
+  for(j in 1:J){
+    Mean[j] <- floor(j*N/J+1)
+  }
+  
+  X <- sort(X)
+  Sd <- sqrt(var(X[1:Mean[1]]))
+  Sd <- rep(Sd,J)
+  
+  data <- data.frame(init_alpha = Alpha, init_mu = Mean, init_sd = Sd)
+  return(data)
+}
+\end{lstlisting}
+
+\subsection{La fonction \textit{param$\_$quantile2}}
+
+\begin{lstlisting}
+param_quantile2 <- function(X,J){
+  N <- length(X)
+  Alpha = rep(1/J,J)
+  Mean <- rep(NA,J)
+  X <- sort(X)
+  
+  index1_Q <- 1
+  index2_Q <- 0
+  for(j in 1:J-1){
+    index2_Q <- floor(j*N/J)+1
+    Mean[j] <- mean(X[index1_Q:index2_Q])
+    index1_Q <- index2_Q+1
+  }
+  Mean[J] <- mean(X[index1_Q:N])
+  
+  Sd <- sqrt(var(X[1:floor(N/J)+1]))
+  Sd <- rep(Sd,J)
+  
+  data <- data.frame(init_alpha = Alpha, init_mu = Mean, init_sd = Sd)
+  return(data)
+}
+\end{lstlisting}
+
 
 \chapter{Un modèle pour les nids d'oiseaux}
 
@@ -1311,13 +1371,6 @@ Ce cas ambigüe met en exergue les limites de l'algorithme implémenté dans ce 
 
 
 \end{appendices}
-
-
-
-
-
-
-
 
 
 

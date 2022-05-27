@@ -32,6 +32,7 @@
 \usepackage{listings}
 \usepackage{adforn}
 \usepackage{float}
+\usepackage{subfig}
 % Les packages necessaires pour faire le pseudo code
 %%%%%%%%%%%%%%%%%%%%%%%%%
 \usepackage{algorithm}
@@ -667,7 +668,7 @@ Soit $(\theta_k)_{k\in \llbracket1, K\rrbracket}$ la suite de paramètres constr
 \end{thm}
 
 \begin{proof}
-
+Cette preuve s'inspirera des références [1] et [3].\newline
 Nous allons commencer cette preuve en donnant une autre forme de la log-vraisemblance, dépendant de $\lv_ {obs}(\theta, X_1, \cdots, X_n)$ et d'un terme $\kappa_{\theta,\theta_k}$. Nous avons :
 \begin{align*}
 \lv_c(\theta, \theta_k, X_1, \cdots, X_n) &=  \displaystyle\sum_{i=1}^n\sum_{j=1}^J ln(h_\theta(X_i ,j))  \prob_{\theta_k}(Z = j|X = X_i)\\
@@ -821,7 +822,7 @@ Nous avons effectué 100 itérations de Monte-Carlo pour les différentes taille
 	\item $n = 500$
 \end{itemize}
 
-Les boites à moustaches (boxplot) ci-dessous, modélisent l'erreur absolue entre les paramètres $\mu$ et $\sigma$ estimés par l'algorithme Em et les paramètres $\mu$ et $\sigma$ théoriques.
+Les boites à moustaches (boxplot) ci-dessous, modélisent l'erreur absolue entre les paramètres $\mu$ et $\sigma$ estimés par l'algorithme EM et les paramètres $(\alpha_i)_{i\in\llbracket1,3\rrbracket}$ et $(\mu_i)_{i\in\llbracket1,3\rrbracket}$ théoriques.
 
 \pagebreak
 
@@ -838,7 +839,7 @@ Les boites à moustaches (boxplot) ci-dessous, modélisent l'erreur absolue entr
 	}%
 \end{figure}
 
- En observant les boxplots, on remarque que plus la taille de l'échantillon n est grande et plus la longueur des boxplots ainsi que leurs médianes diminuent. En d'autre terme, cela indique que l'erreur absolue entre les paramètres estimés par l'algorithme Em et ceux théoriques diminue. On en déduit que dans le cas d'un mélange gaussien "à forte séparation", l'augmentation de la taille de n a pour effet d'améliorer la précision de l'algorithme EM.
+ En observant les boxplots, nous remarquons que plus la taille de l'échantillon$n$ est grande, plus la longueur des boxplots ainsi que leurs médianes diminuent. En d'autre terme, cela indique que l'erreur absolue entre les paramètres estimés par l'algorithme EM et ceux théoriques diminue. Nous nous en déduisons donc que, dans le cas d'un mélange gaussien "à fortes séparations", l'augmentation de la taille de l'échantillon $n$ a pour effet d'améliorer la précision de l'algorithme EM.
 
 
 \subsection{Étude d'un mélange gaussien à faible séparations}
@@ -863,7 +864,7 @@ Ici aussi, nous avons lancé l'algorithme EM en choisissant un nombre d'itérati
 	\caption{Paramètres théoriques VS paramètres estimés}
 \end{figure}
 
-De même que pour l'étude précèdente, nous allons maintenant regarder si l'augmentation de la taille de l'échantillon du mélange gaussien généré aléatoirement aura pour effet de diminuer l'erreur absolue entre les paramètres estimés par l'algorithme EM et les valeurs théoriques dans le cas d'un mélange à faibles séparations. Pour cela nous allons utiliser notre fonction \textit{Monte-Carlo}. \\
+De même que pour l'étude précèdente, nous allons maintenant regarder si l'augmentation de la taille de l'échantillon du mélange gaussien généré aléatoirement aura pour effet de diminuer l'erreur absolue entre les paramètres estimés par l'algorithme EM et les valeurs théoriques dans le cas d'un mélange à faibles séparations. Pour cela nous allons de nouveau utiliser notre fonction \textit{Monte-Carlo}. \\
 Nous avons effectué 100 itérations de Monte-Carlo pour les différentes tailles d'échantillons suivantes:
 \begin{itemize}
 	\item $n = 100$ \\
@@ -888,7 +889,7 @@ Les boites à moustaches (boxplot) ci-dessous, modélisent l'erreur absolue entr
 	}%
 \end{figure}
 
-Concernant les boxplots des erreurs absolues des paramètres $(\mu_{i})_{i \in 1 \dots 3}$ et $(\sigma_i)_{i \in 1 \dots 3}$, les conclusions sont les mêmes que dans le cas d'un mélange gaussien avec "fortes séparations". En effet, leurs erreurs absolues diminuent lorsque la taille de l'échantillon n croît. Nous observons cependant quelque chose d'inhabituelle chez les paramètres $\alpha_2$ et $\alpha_3$. Leurs erreurs absolues augmentent quand n croît alors que leurs variances diminuent. Cela montre bien que les paramètres estimés par l'algorithme EM ne convergence pas toujours vers les vrais paramètres du maximum de vraisemblance.
+Concernant les boxplots des erreurs absolues des paramètres $(\mu_{i})_{i \in 1 \dots 3}$ et $(\sigma_i)_{i \in 1 \dots 3}$, les conclusions sont les mêmes que dans le cas d'un mélange gaussien avec "fortes séparations". En effet, leurs erreurs absolues diminuent lorsque la taille de l'échantillon $n$ croît. Nous observons cependant quelque chose d'inhabituelle chez les paramètres $\alpha_2$ et $\alpha_3$. Leurs erreurs absolues augmentent quand n croît alors que leurs variances diminuent. Cela montre bien que les paramètres estimés par l'algorithme EM ne convergent pas toujours vers les paramètres du maximum de vraisemblance.
 
 \chapter{Un modèle pour les nids d'oiseaux}
 

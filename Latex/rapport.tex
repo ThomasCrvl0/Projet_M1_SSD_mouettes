@@ -821,20 +821,24 @@ Nous avons effectué 100 itérations de Monte-Carlo pour les différentes taille
 	\item $n = 500$
 \end{itemize}
 
-Les boites à moustaches (boxplot) ci-dessous, représentent l'erreur absolue entre les paramètres estimés par l'algorithme EM et ceux théoriques.
+Les boites à moustaches (boxplot) ci-dessous, modélisent l'erreur absolue entre les paramètres $\mu$ et $\sigma$ estimés par l'algorithme Em et les paramètres $\mu$ et $\sigma$ théoriques.
 
-\begin{figure}[H]
+\pagebreak
+
+\begin{figure}[htp] 
 	\centering
-	\includegraphics[scale=0.5]{images/good_alpha.png}
-	\caption{Boxplot des erreurs absolues pour $\alpha_1$, $\alpha_2$ et $\alpha_3$}
+	\subfloat[Boxplot des erreurs absolues pour $\alpha_1$, $\alpha_2$ et $\alpha_3$]{%
+		\includegraphics[scale=0.35]{images/good_alpha.png}%
+		\label{fig:a}%
+	}%
+	\hfill%
+	\subfloat[Boxplot des erreurs absolues pour $\mu_1$, $\mu_2$ et $\mu_3$]{%
+		\includegraphics[scale=0.35]{images/good_mu.png}%
+		\label{fig:b}%
+	}%
 \end{figure}
 
-\begin{figure}[H]
-	\centering
-	\includegraphics[scale=0.5]{images/good_mu.png}
-	\caption{Boxplot des erreurs absolues pour $\mu_1$, $\mu_2$ et $\mu_3$}
-\end{figure}
-D'après les boites à moustaches, nous constatons que plus la taille de l'échantillons du mélange gaussien est grande, plus l'erreur absolue entre les paramètre estimés par l'algorithme EM et ceux théoriques diminuent.
+ En observant les boxplots, on remarque que plus la taille de l'échantillon n est grande et plus la longueur des boxplots ainsi que leurs médianes diminuent. En d'autre terme, cela indique que l'erreur absolue entre les paramètres estimés par l'algorithme Em et ceux théoriques diminue. On en déduit que dans le cas d'un mélange gaussien "à forte séparation", l'augmentation de la taille de n a pour effet d'améliorer la précision de l'algorithme EM.
 
 
 \subsection{Étude d'un mélange gaussien à faible séparations}
@@ -866,21 +870,25 @@ Nous avons effectué 100 itérations de Monte-Carlo pour les différentes taille
 	\item $n = 250$ \\
 	\item $n = 500$
 \end{itemize}
-Les boites à moustaches (boxplot) ci-dessous, modélisent l'erreur absolue entre les paramètres estimés par l'algorithme EM et ceux théoriques dans le cas d'une faible séparation.
-\begin{figure}[H]
+
+Les boites à moustaches (boxplot) ci-dessous, modélisent l'erreur absolue entre les paramètres estimés par l'algorithme Em et ceux théoriques dans le cas d'une "faibles séparations".
+
+\pagebreak
+
+\begin{figure}[htp] 
 	\centering
-	\includegraphics[scale=0.5]{images/bad_alpha.png}
-	\caption{Boxplot des erreurs absolues pour $\alpha_1$, $\alpha_2$ et $\alpha_3$}
+	\subfloat[Boxplot des erreurs absolues pour $\alpha_1$, $\alpha_2$ et $\alpha_3$]{%
+		\includegraphics[scale=0.35]{images/bad_alpha.png}%
+		\label{fig:c}%
+	}%
+	\hfill%
+	\subfloat[Boxplot des erreurs absolues pour $\mu_1$, $\mu_2$ et $\mu_3$]{%
+		\includegraphics[scale=0.35]{images/bad_mu.png}%
+		\label{fig:d}%
+	}%
 \end{figure}
 
-\begin{figure}[H]
-	\centering
-	\includegraphics[scale=0.5]{images/bad_mu.png}
-	\caption{Boxplot des erreurs absolues pour $\mu_1$, $\mu_2$ et $\mu_3$}
-\end{figure}
-Même dans le cas d'un mélange à variables faiblement séparées, on constate que plus on augmente la taille de l'échantillons et plus l'erreur absolue diminue, ce qui est rassurant.
-
-
+Concernant les boxplots des erreurs absolues des paramètres $(\mu_{i})_{i \in 1 \dots 3}$ et $(\sigma_i)_{i \in 1 \dots 3}$, les conclusions sont les mêmes que dans le cas d'un mélange gaussien avec "fortes séparations". En effet, leurs erreurs absolues diminuent lorsque la taille de l'échantillon n croît. Nous observons cependant quelque chose d'inhabituelle chez les paramètres $\alpha_2$ et $\alpha_3$. Leurs erreurs absolues augmentent quand n croît alors que leurs variances diminuent. Cela montre bien que les paramètres estimés par l'algorithme EM ne convergence pas toujours vers les vrais paramètres du maximum de vraisemblance.
 
 \chapter{Un modèle pour les nids d'oiseaux}
 

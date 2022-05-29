@@ -220,13 +220,13 @@ L'observation est une composante essentielle en sciences appliquées, et tout pa
 
 Dans la situation où les données sont correctement observées, cadre idéal, la statistique inférentielle nous permet d’obtenir d’agréables expressions analytiques des estimateurs, notamment par la méthode du maximum de vraisemblance, qui est d'une redoutable efficacité. Toujours est-il que ces situations sont peu courantes ; nous sommes souvent confrontés à des situations présentant des données « cachées » ou manquantes. Dans ce dernier cas, nous verrons que les méthodes analytiques exactes ne suffisent plus, et qu’il est nécessaire d’introduire de nouvelles méthodes, également basées sur le principe du maximum de vraisemblance, pour tenter d’estimer les paramètres.
 
-Nous étudierons dans le présent projet l’une de ces méthodes, conçue par Dempster et al. (1977), l’algorithme Expectation-Maximization.  
+Nous étudierons dans le présent projet l’une de ces méthodes, conçue par Dempster et al. [1], l’algorithme Expectation-Maximization.  
 
 Nous nous appuierons sur un exemple extrait de l’ornithologie ; les données observées seront celles des volumes des nids d’oiseaux, et les données manquantes seront l’espèce qui l’a construit.
 
 Ceci constituera le fil rouge de ce projet, et sera le cœur de notre problématique; comment estimer les divers paramètres associés aux observations quand une partie des données est inaccessible ?
 
-Dans un premier chapitre, nous modéliserons mathématiquement le problème et poserons les bases théoriques nécessaires à l’étude; nous verrons brièvement le cas des données complètes, puis étudierons le cas des observations manquantes. Un second chapitre sera consacré à une description et une implémentation en langage $R$ de l’algorithme EM. Puis, dans un troisième chapitre, nous étudierons les performances des résultats de notre implémentation à l'aide de simulations; nous détaillerons notre implémentation, et étudierons son risque d'erreur. Dans un quatrième et dernier chapitre, nous considèrerons une suite d'observations, et proposerons un modèle pour les nids d'oiseaux à l'aide des outils que nous aurons implémenté.
+Dans un premier chapitre, nous modéliserons mathématiquement le problème et poserons les bases théoriques nécessaires à l’étude; nous verrons brièvement le cas des données complètes, puis étudierons le cas des observations manquantes. Un second chapitre sera consacré à une description et une implémentation en langage $R$ de l’algorithme EM. Puis, dans un troisième chapitre, nous étudierons les performances des résultats de notre implémentation à l'aide de simulations; nous détaillerons notre implémentation, et étudierons son risque d'erreur. Dans un quatrième et dernier chapitre, nous considèrerons une suite d'observations, et proposerons un modèle pour les nids d'oiseaux à l'aide des outils que nous aurons implémentés.
 
 \pagebreak
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -237,7 +237,7 @@ Dans un premier chapitre, nous modéliserons mathématiquement le problème et p
 Dans ce premier chapitre, nous introduirons les outils nécessaires pour modéliser mathématiquement le problème. Puis, nous présenterons successivement les deux situations existantes dans le cadre du recueil de données des nids d'oiseaux : celle dans laquelle et l'espèce et la volume du nid ont été observés; et celle dans laquelle seule le volume a pu être observé.
 Nous verrons et ce qui diffère entre ces deux situations, et les raisons qui ont incité à la création de l’algorithme EM, l’objet de notre projet. 
 
-Ce chapitre s'inspirera des références [1], [2] et [3].
+Ce chapitre s'inspirera des références [2], [3] et [4].
 
 % section 1
 \section{Modélisation du problème}
@@ -637,7 +637,7 @@ La phase M consiste à maximiser la vraisemblance trouvée à l'étape E. Ce max
 \newpage
 
 \subsection{Pseudo-code de l'algorithme EM}
-Pour l'implémentation de cet algorithme, nous nous sommes appuyés sur le pseudo-code suivant, insipré de la référence [2].
+Pour l'implémentation de cet algorithme, nous nous sommes appuyés sur le pseudo-code suivant, insipré de la référence [3].
 
 \begin{algorithm}
 	\caption{\textbf{L’algorithme EM (Dempster et al., 1977).}}
@@ -741,7 +741,7 @@ Soit $(\theta_k)_{k\in \llbracket1, K\rrbracket}$ la suite de paramètres constr
 \end{thm}
 
 \begin{proof}
-Cette preuve s'inspirera des références [1] et [3].\newline
+Cette preuve s'inspirera des références [2] et [4].\newline
 Nous allons commencer cette preuve en donnant une autre forme de la log-vraisemblance, dépendant de $\lv_ {obs}(\theta, X_1, \cdots, X_n)$ et d'un terme $\kappa_{\theta,\theta_k}$. Nous avons :
 \begin{align*}
 \lv_c(\theta, \theta_k, X_1, \cdots, X_n) &=  \displaystyle\sum_{i=1}^n\sum_{j=1}^J ln(h_\theta(X_i ,j))  \prob_{\theta_k}(Z = j|X = X_i)\\
@@ -1034,7 +1034,7 @@ En voici un extrait :
 \begin{figure}[H]
 \centering
 \includegraphics[scale = 0.5]{tab_oiseaux.png}
-\caption{Caractéristiques des nids (d'après [4])}
+\caption{Caractéristiques des nids (d'après [5])}
 \end{figure}
 
 Parmi elles ce trouve des volumes moyens de nids ainsi que la variance associée. \newline
@@ -1226,9 +1226,10 @@ Les proportions sont toutes deux très bien estimées, les erreurs sont de l'ord
 
 \end{itemize}
 
-Les deux méthodes de déterminations des paramètres initiaux nous donnent des résultats très satisfaisant. Le cas étudié est très favorable, le mélange étant, en quelques sortes, à "fortes séparations".
-
-
+Les deux méthodes de déterminations des paramètres initiaux nous donnent des résultats très satisfaisant. Le cas étudié est très favorable, le mélange étant, en quelques sortes, à "fortes séparations".  \newline
+\break
+Nous ferons en annexe une brève étude du package \textit{mclust}, qui contient une implémentation de l'algorithme EM. Nous l'exécuterons sur le même échantillon que celui que nous venons de présenter. Les paramètres estimés par \textit{mclust} seront d'une plus grande précision; toutefois notre implémentation produit des résultats tout aussi satisfaisant.
+ 
 %%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -1249,20 +1250,21 @@ L’algorithme EM est un point d’accroche aux solutions dont nous disposons po
 \chapter*{Bibliographie}
 \addcontentsline{toc}{part}{Bibliographie}
  
-
-[1] Chafai D., Malrieu F. (2018). Recueil de modèles aléatoires, 105-11, \textit{Prépublication}\newline
+[1] Dempster A.P., Laird N. M., Rubin D. B. (1977). Maximum Likelihood from Incomplete Data via the EM Algorithm, \textit{Journal of the Royal Statistical Society, Series B, Vol. 39, 1, 1-38}\newline
+\break
+[2] Chafai D., Malrieu F. (2018). Recueil de modèles aléatoires, 105-11, \textit{Prépublication}\newline
 \url{https://hal.archives-ouvertes.fr/hal-01897577v3}\newline
 \break
-[2] Frédéric Santos (2015). L’algorithme EM : une courte présentation, \textit{Document de cours}
+[3] Frédéric Santos (2015). L’algorithme EM : une courte présentation, \textit{Document de cours}
 \newline\url{https://members.loria.fr/moberger/Enseignement/AVR/Exposes/algo-em.pdf} \newline
 \break
-[3] Michael Collins (1997). The EM algorithm, \textit{Document de cours}\newline
+[4] Michael Collins (1997). The EM algorithm, \textit{Document de cours}\newline
 \url{http://faculty.washington.edu/fxia/courses/LING572/EM_collins97.pdf} \newline
 \break
-[4] Biddle L.E., Broughton R.E., Goodman A.M., Deeming D.C (2018). Composition of Bird Nests is a Species-Specific Characteristic, \textit{Avian Biology Research, Vol 11, 2, 132-153}\newline
+[5] Biddle L.E., Broughton R.E., Goodman A.M., Deeming D.C (2018). Composition of Bird Nests is a Species-Specific Characteristic, \textit{Avian Biology Research, Vol. 11, 2, 132-153}\newline
 \url{https://core.ac.uk/download/pdf/155777956.pdf}\newline % doc des oiseaux
 \break
-[5] Fraley C., Raftery A.E., Scrucca L., Murphy T.B, Fop M. (2020). Package 'mclust', \textit{Documentation du package mclust}\newline
+[6] Fraley C., Raftery A.E., Scrucca L., Murphy T.B, Fop M. (2020). Package 'mclust', \textit{Documentation du package mclust}\newline
  \url{https://cran.r-project.org/web/packages/mclust/mclust.pdf} 
 
 
@@ -1279,7 +1281,7 @@ L’algorithme EM est un point d’accroche aux solutions dont nous disposons po
 \chapter{Le package \textit{mclust}}
 Nous avons, dans un élan d'audace, commencé par programmer à la main l'algorithme EM, en nous appuyant sur le pseudo-code explicité en première partie du chapitre II. \newline
 
-Cependant, il existe une librairie \textit{R} - la librairie \textit{mclust} - contenant une implémentation de l'algorithme EM. Notre algorithme étant fonctionnel, nous ne détaillerons pas ici le fonctionnement de ce Package. Il est néanmoins pertinent de l'expérimenter, voire de comparer ces résultats avec ceux notre algorithme. Nous reprendrons ici les mêmes espèces étudiées lors du dernier chapitre; les divers paramètres seront donc conservés, seul l'échantillon généré changera. Nous nous somme appuyer sur [5] afin d'obtenir les éléments nécessaire à l'utilisation de ce package.
+Cependant, il existe une librairie \textit{R} - la librairie \textit{mclust} - contenant une implémentation de l'algorithme EM. Notre algorithme étant fonctionnel, nous ne détaillerons pas ici le fonctionnement de ce Package. Il est néanmoins pertinent de l'expérimenter, voire de comparer ces résultats avec ceux notre algorithme. Nous reprendrons ici les mêmes espèces étudiées lors du dernier chapitre; les divers paramètres seront donc conservés, de même que l'échantillon généré. Nous nous somme appuyer sur [6] afin d'obtenir les éléments nécessaire à l'utilisation de ce package.
 
 Pour commencer, installons et chargeons le Package \textit{mclust}.
 \begin{lstlisting}
@@ -1301,10 +1303,10 @@ sd_volume = c(9.1,  20.8, 15.0,  12.2,  3.8,  12.9,  46.5, 29.8, 27.4, 55.9,
               78.5,  125.1,  56.6)
 \end{lstlisting}
 %
-Puis, il suffit de construire des dataframe. Ici, nous considérerons deux mélanges; un mélange à deux lois et un autre à trois lois.
+Puis, il suffit de construire des dataframe. Ici, nous considérerons deux mélanges; un mélange à deux lois et un autre à trois lois. Nous reprenons les mêmes proportions que lors de chapitre 4 pour le mélange à deux lois.
 \begin{lstlisting}
 df_2= data.frame(bird_names = c("European Goldfinch", "Ring Ouzel")
-                          ,proportion_alpha = c(0.3, 0.7), mean = c(38, 298.6),
+                          ,proportion_alpha = c0.2878713, 0.7121287), mean = c(38, 298.6),
                           sd = c(9.1, 125.1))
 
 df_3= data.frame(bird_names = c("Common Linnet", "Common Chaffinch", "Hawfinch" )
@@ -1320,7 +1322,7 @@ simulation = function(data_th, n=100)
 Les prérequis étant posés, nous simulons un échantillon $X2$ de deux espèces d'oiseaux et un autre $X3$ de trois espèces d'oiseaux :
 \begin{lstlisting}
 set.seed(1907)
-X2 <- simulation(df_2)
+X2 <- data # Ce dataframe est celui créé au chapitre 4.
 X3 <- simulation(df_3)
 \end{lstlisting}
 %
@@ -1336,7 +1338,11 @@ est_2 <- densityMclust(X2)
 \end{lstlisting}
 %
 Il est en premier lieu retourné le graphe de la densité du mélange de lois.
-\begin{center}\includegraphics[scale=0.75]{fig1.png}\end{center}
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.75]{fig1.pdf}
+\caption{Densité du mélange à deux lois}
+\end{figure}
 Nous pouvons nettement distinguer les deux "pics", correspondant aux deux gaussiennes mélangées.
 Intéressons-nous maintenant à l'objet créé \textit{est$\_$2}.
 \begin{lstlisting}
@@ -1353,7 +1359,7 @@ Available components:
 \end{verbatim}
 %
 Ici nous voulons les paramètres estimés, nous nous concentrerons donc que sur la treizième coordonnée de ce vecteur.\newline
-Rappelons que les divers paramètres de ce mélange sont : 0.3 et 0.7 en proportions; 38 et 298.6 pour les moyennes; et 9.1 et 125.1 en écart-types.
+Rappelons que les divers paramètres de ce mélange sont : 0.2878713 et 0.7121287 en proportions; 38 et 298.6 pour les moyennes; et 9.1 et 125.1 en écart-types.
 \begin{lstlisting}
 print("Proportions estimées:")
 est_2[13]|\$|parameters|\$|pro
@@ -1364,14 +1370,14 @@ print("Ecart-types estimés:")
 \end{lstlisting}
 \begin{verbatim}
 [1] "Proportions estimées:"
-[1] 0.2612243 0.7387757
+[1] 0.2906965 0.7093035
 [1] "Moyennes estimées:"
         1         2 
- 36.80898 301.97108 
+ 37.75991 302.37625 
 [1] "Ecart-types estimés:"
-[1]  12.16256 136.32256
+[1]   9.48752 126.06755
 \end{verbatim}
-Ici, le nombre de mélange est exact. Les proportions sont très bien estimées, l'erreur la plus importante est de l'ordre de $4\%$. Il en va de même pour les moyennes, les erreurs sont d'ordres inférieures à $10\%$. Les erreurs sur les variances sont de l'ordre de $10\%$ ou moins, ce qui est plutôt bon. 
+Ici, le nombre de mélange est exact. Les proportions sont très bien estimées, l'erreur la plus importante est de l'ordre de $1\%$. Il en va de même pour les moyennes, les erreurs sont d'ordres inférieures à $3\%$. Les erreurs sur les variances sont de l'ordre de $1\%$, ce qui est également très bon.
 \newpage
 %%%
 \section{Un exemple sur un mélange à trois lois}
@@ -1380,7 +1386,11 @@ Regardons maintenant le cas d'un mélange de trois lois. Afin de mettre à rude 
 \begin{lstlisting}
 est_3<- densityMclust(X3)
 \end{lstlisting}
-\begin{center}\includegraphics[scale=0.75]{fig2.png}\end{center}
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.75]{fig2.png}
+\caption{Densité du mélange à trois lois}
+\end{figure}
 Nous obtenons ici quelque chose d'intéressant; la fonction de densité de ce mélange de trois lois paraît toute à fait gaussienne. Sans une exploration plus approfondie des données, nous commettrions une chagrinante erreur et des conclusions totalement faussées... \newline
 %
 Il est ici pertinent d'observer la structure des données; plus précisemment, nous allons effectuer un test de \textit{Shapiro}.

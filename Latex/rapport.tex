@@ -216,7 +216,7 @@
 \chapter*{Introduction}
 \addcontentsline{toc}{part}{Introduction}
 
-L’observation est une composante essentielle en sciences appliquées, et tout particulièrement pour nous, futur statisticiens. Ces dernières nous permettent d’élaborer des modèles, et dans le cadre de l’estimation paramétrique, de construire des estimateurs.
+L'observation est une composante essentielle en sciences appliquées, et tout particulièrement pour nous, futur statisticiens. Cette dernière nous permet d’élaborer des modèles, et dans le cadre de l’estimation paramétrique, de construire des estimateurs.
 
 Dans la situation où les données sont correctement observées, cadre idéal, la statistique inférentielle nous permet d’obtenir d’agréables expressions analytiques des estimateurs, notamment par la méthode du maximum de vraisemblance, qui est d'une redoutable efficacité. Toujours est-il que ces situations sont peu courantes ; nous sommes souvent confrontés à des situations présentant des données « cachées » ou manquantes. Dans ce dernier cas, nous verrons que les méthodes analytiques exactes ne suffisent plus, et qu’il est nécessaire d’introduire de nouvelles méthodes, également basées sur le principe du maximum de vraisemblance, pour tenter d’estimer les paramètres.
 
@@ -224,9 +224,9 @@ Nous étudierons dans le présent projet l’une de ces méthodes, conçue par D
 
 Nous nous appuierons sur un exemple extrait de l’ornithologie ; les données observées seront celles des volumes des nids d’oiseaux, et les données manquantes seront l’espèce qui l’a construit.
 
-Ceci constituera le fil rouge de ce projet, et sera le cœur de notre problématique; comment estimer les divers paramètres associés aux observations quand une partie des données sont inaccessibles ?
+Ceci constituera le fil rouge de ce projet, et sera le cœur de notre problématique; comment estimer les divers paramètres associés aux observations quand une partie des données est inaccessible ?
 
-Dans un premier chapitre, nous modéliserons mathématiquement le problème et poserons les bases théoriques nécessaires à l’étude; nous verrons brièvement le cas des données complètes, puis étudierons le cas des observations manquantes. Un second chapitre sera consacré à une description et une implémentation en langage $R$ de l’algorithme EM. Puis, dans un troisième chapitre, nous étudierons les performances des résultats de notre implémentation à l'aide de simulation; nous détaillerons notre implémentation, et étudierons son risque d'erreur. Dans un quatitème et dernier chapitre, nous considèrerons une suite d'observations, et proposerons un modèle pour les nids d'oiseaux à l'aide des outils que nous aurons implémenté.
+Dans un premier chapitre, nous modéliserons mathématiquement le problème et poserons les bases théoriques nécessaires à l’étude; nous verrons brièvement le cas des données complètes, puis étudierons le cas des observations manquantes. Un second chapitre sera consacré à une description et une implémentation en langage $R$ de l’algorithme EM. Puis, dans un troisième chapitre, nous étudierons les performances des résultats de notre implémentation à l'aide de simulations; nous détaillerons notre implémentation, et étudierons son risque d'erreur. Dans un quatrième et dernier chapitre, nous considèrerons une suite d'observations, et proposerons un modèle pour les nids d'oiseaux à l'aide des outils que nous aurons implémenté.
 
 \pagebreak
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -237,7 +237,7 @@ Dans un premier chapitre, nous modéliserons mathématiquement le problème et p
 Dans ce premier chapitre, nous introduirons les outils nécessaires pour modéliser mathématiquement le problème. Puis, nous présenterons successivement les deux situations existantes dans le cadre du recueil de données des nids d'oiseaux : celle dans laquelle et l'espèce et la volume du nid ont été observés; et celle dans laquelle seule le volume a pu être observé.
 Nous verrons et ce qui diffère entre ces deux situations, et les raisons qui ont incité à la création de l’algorithme EM, l’objet de notre projet. 
 
-Ce chapitre s'inspirera des références [1], [2] et [3]
+Ce chapitre s'inspirera des références [1], [2] et [3].
 
 % section 1
 \section{Modélisation du problème}
@@ -245,17 +245,17 @@ Ce chapitre s'inspirera des références [1], [2] et [3]
 Nous allons pour commencer donner une première définition, qui est au coeur du présent projet.
 
 \begin{defn}[Loi de mélange]
-On appelle loi de mélange toute loi dont la densité s'écrie sous la forme d'une combinaison convexe de plusieurs densités. Si l'on se donne $J$  densités $f_1(x), \cdots, f_J(x)$, alors toute variable aléatoire $X$ dont la densité $f$ s'exprime, pour tout $x\in\R$, sous la forme
+On appelle loi de mélange toute loi dont la densité s'écrit sous la forme d'une combinaison convexe de plusieurs densités. Si l'on se donne $J$  densités $f_1(x), \cdots, f_J(x)$, alors toute variable aléatoire $X$ dont la densité $f$ s'exprime, pour tout $x\in\R$, sous la forme
 \begin{center}
 $f(x) := \displaystyle\sum_{i=1}^J \alpha_i f_i(x)$ , $\alpha_i \in\R_+^*$ et $\displaystyle\sum_{j=1}^J\alpha_j=1$ \end{center}
-suit une loi de mélange.
+suit une loi de mélange continue.
 \end{defn}
 
 Afin de modéliser commodément le problème, nous introduisons les variables aléatoires suivantes :
 
 \begin{itemize}[label=\adfflowerleft]
-	\item La variable aléatoire $X$, modélisant le volume des nids, de densité $f$
-	\item $Z$, la variable aléatoire discrète et à valeurs dans $\llbracket 1,J\rrbracket$, représentant l'espèce d'oiseau qui a construit le nid
+	\item La variable aléatoire $X$, modélisant le volume des nids, de densité $f$,
+	\item La variable aléatoire discrète $Z$, à valeurs dans $\llbracket 1,J\rrbracket$, représentant l'espèce d'oiseau qui a construit le nid.
 \end{itemize}
 
 Enfin, nous nous placerons sous les hypothèses suivantes:
@@ -266,35 +266,36 @@ Nous supposerons que, $\forall j\in \llbracket 1,J \rrbracket$, le volume des ni
 
 
 \begin{hyp}
-Soit $\Theta := \{ \theta = (\alpha_j,\mu_j, v_j)_{1 \leq j \leq J} \text{ tels que } \alpha_j > 0 \text{ } \forall j\in \llbracket 1,J\rrbracket \text{ et } \displaystyle\sum_{j=1}^J\alpha_j=1\}$. Soient $X_1, \cdots, X_n$ un échantillon de même loi que $X$. On supposera qu'il existe un $\theta \in \Theta$ tel que les données récoltées, ici les volumes des nids, soient la réalisation du précédent échantillon.
+Soit $\Theta := \{ \theta = (\alpha_j,\mu_j, v_j)_{1 \leq j \leq J} \text{ tels que } \alpha_j > 0 \text{ } \forall j\in \llbracket 1,J\rrbracket \text{ et } \displaystyle\sum_{j=1}^J\alpha_j=1\}$. Soit $X_1, \cdots, X_n$ un échantillon de même loi que $X$. On supposera qu'il existe un $\theta \in \Theta$ tel que les données récoltées, ici les volumes des nids, soient la réalisation du précédent échantillon.
 \end{hyp}
 
 \begin{rem}
 La variable $Z$ est discrète et à valeur dans un sous-ensemble fini de $\N$, elle suit donc une loi 
 \begin{center} $\displaystyle \sum_{j=1}^J \alpha_j\delta_j$ \end{center}
-\underline{où} $J$ représente le nombre d'espèce de d'oiseaux considéré et les $\alpha_j$ sont des réels, positifs stricts, représentant la proportion de nids de l'espèce $j$, tels que $\displaystyle\sum_{i=1}^J \alpha_j = 1$.
+\underline{où} $J$ représente le nombre d'espèce d'oiseaux considéré et les $\alpha_j$ sont des réels, strictement positifs, représentant la proportion de nids de l'espèce $j$, tels que $\displaystyle\sum_{i=1}^J \alpha_j = 1$.
 \end{rem}
 
 Il s'ensuit la proposition suivante, qui sera essentielle dans la suite.
 \begin{prop}
-La distribution du volume des nids des oiseaux, \underline{i.e.} $X$, admet pour densité ,au point $x$ et par rapport à la mesure de Lebesgue sur $\R$, la fonction $f_ \theta$ définie comme suit
+La distribution du volume des nids des oiseaux $X$ admet pour densité, au point $x$ et par rapport à la mesure de Lebesgue sur $\R$, la fonction $f_ \theta$ définie comme suit
 \begin{center} $f_\theta(x) = \displaystyle\sum_{j=1}^J \alpha_j \gamma_{\mu_j, v_j}(x) $ \end{center}
 \end{prop}
 
 \begin{proof}
-En effet, 
+En effet, la fontion de répartition de $X$ s'écrit
 \begin{align*}
 \prob(X\leq x) &= \prob\left(\bigcup_{j=1}^J (X\leq x)\cap(Z=j)\right)\\
 &=\displaystyle\sum_{j=1}^J \prob((X\leq x)\cap(Z=j))\\
 &=\displaystyle\sum_{i=1}^J\prob(Z=j)\times\prob(x\leq X | Z = j) \\
 &=\displaystyle\sum_{i=1}^J\alpha_i\times\prob(x\leq X | Z = j) \\
-&=\displaystyle\sum_{i=1}^J\alpha_i\times f(x| Z = j) \\
-&= \displaystyle\sum_{i=1}^J\alpha_i\times \gamma_{\mu_j, v_j}(x)
 \end{align*}
-
+On en déduit donc que la densité de $X$ vaut :
+\begin{center}
+$\displaystyle\sum_{i=1}^J\alpha_i\times f(x| Z = j)  = \displaystyle\sum_{i=1}^J\alpha_i\times \gamma_{\mu_j, v_j}(x)$
+\end{center}
 \end{proof}
 
-Le but de ce projet sera d'étudier des méthodes permettant l'estimation des divers paramètres de cette densité. Nous dénoterons par $\theta := (\alpha_j, \mu_j, v_j)_{1\leq j\leq J}$ le vecteur des paramètres.
+Le but de ce projet sera d'étudier des méthodes permettant l'estimation des divers paramètres de cette densité.
 
 \section{Une histoire de densités}
 Les variables $X$ et $Z$ sont toutes deux intégrables, nous pouvons dès lors considérer la loi conditionnelle de $Z$ sachant $X$ et la loi du couple $(X,Z)$. Nous introduisons donc une dernière densité et une dernière probabilité, qui nous seront fortes utiles dans la suite. 
@@ -316,7 +317,8 @@ Les variables $X$ et $Z$ sont toutes deux intégrables, nous pouvons dès lors c
 \begin{proof}
 En effet, 
 \begin{align*}
-\prob(X\leq x, Z = j) = \displaystyle\int_{-\infty}^x \prob(Z = j | X = u) \times f_\theta(u) du
+\prob(X\leq x, Z = j) &= \prob(X\leq x | Z = j) \times \prob(Z = j) \\
+&= \displaystyle\int_{-\infty}^x \prob(Z = j | X = u) \times f_\theta(u) du
 \end{align*}
 On obtient dès lors
 \begin{center}
@@ -349,36 +351,22 @@ La Log-vraisemblance du modèle s'écrit
 \begin{center} $\mathcal{L}_\theta(X_1, \cdots, X_n, Z_1, \cdots, Z_n) = \displaystyle \sum_{j=1}^J \#A_j ln(\alpha_j) + \sum_{j=1}^J\sum_{i\in A_j}ln(\gamma_{\mu_j, v_j}(X_i))$ \end{center}
 \underline{où} les $A_j$ sont définis par $A_j := \{ i\in \llbracket1,n \rrbracket$ tels que $Z_i = j \}$ \underline{i.e.} $\displaystyle\bigcup_{j=1}^J A_j = \llbracket1,n \rrbracket$
 \end{prop}
-Avant de démontrer cette proposition, nous allons introduire une notation qui nous sera immédiatement utile :
-\begin{nota}
-Dans ce qui suit, nous noterons
-\begin{center}
-$\delta_j := \1_{(Z_i = j)}(Z_i)$
-\end{center}
-Ainsi, 
-\begin{center}
-$h_\theta(X_i, Z_i) = \displaystyle\prod_{j=1}^J h_\theta(X_i, Z_i)^{\delta_j}$
-\end{center}
-\end{nota}
 
 \begin{proof}
 La Log-vraisemblance du modèle s'écrit:
 \begin{align*}
-\mathcal{L}_\theta(X_1, \cdots, X_n, Z_1, \cdots, Z_n) 
-&= ln\left(\displaystyle\prod_{i=1}^n h_\theta(X_i, Z_i) \right)\\
-&= ln\left(\displaystyle\prod_{i=1}^n\prod_{j=1}^J h_\theta(X_i, Z_i)^{\delta_j} \right)\\
-&= \1_{(Z_i = j)}(Z_i)\times ln\left(\displaystyle\prod_{i=1}^n\prod_{j=1}^J h_\theta(X_i, Z_i) \right)\\
+\mathcal{L}_\theta(X_1, \cdots, X_n, Z_1, \cdots, Z_n) &= ln\left(\displaystyle\prod_{i=1}^n h_\theta(X_i, Z_i) \right)\\
+&= ln\left(\displaystyle\prod_{i=1}^n  \alpha_{Z_i}\gamma_{\mu_{Z_i}, v_{Z_i}}(X_i) \right)\\
+&= \displaystyle\sum_{i=1}^n ln(\alpha_{Z_i})+ ln(\gamma_{\mu_{Z_i}, v_{Z_i}}(X_i))\\
 \end{align*}
-$Z_i$ est à valeur dans $j\in\llbracket 1, J \rrbracket$, on  partitionne donc $I := \llbracket1,n \rrbracket$ comme $I = \displaystyle\bigcup_{j=1}^J A_j$. \newline
-Ceci va nous permettre de nous désencombrer de l'indicatrice en réindexant la somme. Nous obtenons dès lors : 
+$Z_i$ est à valeur dans $\llbracket1,J \rrbracket$, on  partitionne donc $I := \llbracket1,n \rrbracket$ comme $I = \displaystyle\bigcup_{j=1}^J A_j$ pour obtenir
 \begin{align*}
-\mathcal{L}_\theta(X_1, \cdots, X_n, Z_1, \cdots, Z_n) &=  ln\left(\displaystyle\prod_{i\in A_i}\prod_{j=1}^J h_\theta(X_i, Z_i) \right)\\
-&= ln\left(\displaystyle\prod_{i\in A_i}\prod_{j=1}^J  \alpha_j\gamma_{\mu_j, v_j}(X_i) \right)\\
-&=\displaystyle\sum_{i\in A_i}\sum_{j=1}^J ln(\alpha_{j}\gamma_{\mu_j, v_j}(X_i))\\
+\mathcal{L}_\theta(X_1, \cdots, X_n, Z_1, \cdots, Z_n) &=  \displaystyle\sum_{j=1}^J\sum_{i\in A_j} ln(\alpha_{j})+ \sum_{j=1}^J\sum_{i\in A_j} ln(\gamma_{\mu_j, v_j}(X_i))\\
 &= \displaystyle\sum_{j=1}^J\sum_{i\in A_j} ln(\alpha_j)+ \sum_{j=1}^J\sum_{i\in A_j} ln(\gamma_{\mu_j, v_j}(X_i)) \\
 &= \displaystyle\sum_{j=1}^J \#A_j ln(\alpha_j)+ \sum_{j=1}^J\sum_{i\in A_j} ln(\gamma_{\mu_j, v_j}(X_i)) \\
 \end{align*}
 \end{proof}
+
 Nous pouvons dès lors maximiser la log-vraisemblance afin d'obtenir les estimateurs souhaités :
 \begin{prop}[Estimateurs]
 Les estimateurs du maximum de vraisemblance $\widehat{\alpha_j}$ (resp. $\widehat{\mu_j}$, et $\widehat{v_j}$) de $\alpha_j$ (resp. $\mu_j$ et $v_j$) sont donnés par
@@ -398,7 +386,7 @@ Soit $\theta = (\alpha_j, \mu_j, v_j)_{j \in \llbracket 1,J \rrbracket}$. Il s'a
 \begin{center}
 	$\underset{\theta\in\R^{3J}, \sum_{j=1}^J\alpha_j = 1}{\text{argmax}}\left(\displaystyle\sum_{j=1}^J \#A_j ln(\alpha_j)+ \sum_{j=1}^J\sum_{i\in A_j} ln(\gamma_{\mu_j, v_j}(X_i))\right)$
 \end{center}
-Nous avons donc à résoudre un programme de minimisation d'une fonction convexe sur un convexe avec une contraire égalité, il est ainsi naturel de faire appel au Lagrangien. \newline 
+Nous avons donc à résoudre un programme de minimisation d'une fonction convexe sur un convexe avec une contraite égalité, il est ainsi naturel de faire appel au Lagrangien. \newline 
 Ce dernier s'écrit
 \begin{align*} 
 L(\theta) &= \displaystyle\sum_{j=1}^J \#A_j ln(\alpha_j)+ \sum_{j=1}^J\sum_{i\in A_j} ln(\gamma_{\mu_j, v_j}(X_i)) - \lambda\times\left(\sum_{j=1}^J\alpha_j - 1\right)\\
@@ -469,19 +457,31 @@ Nous avons
 \begin{center} $\lv_{c}(\theta, \thetat, X_1, \cdots, X_n) = \displaystyle\sum_{i=1}^n\sum_{j=1}^J ln(h_\theta(X_i ,j))  \prob_{\thetat}(Z = j|X = X_i)$ \end{center}
 \end{prop}
 
+Avant de démontrer cette proposition, nous allons introduire une notation qui nous sera immédiatement utile :
+\begin{nota}
+Dans ce qui suit, nous noterons
+\begin{center}
+$\delta_{i,j} := \1_{(Z_i = j)} = \begin{cases} 1 \text{ si } Z_i = j \\ 0 \text{ sinon } \end{cases}$
+\end{center}
+Ainsi, 
+\begin{center}
+$h_\theta(X_i, Z_i) = \displaystyle\prod_{j=1}^J h_\theta(X_i, Z_i)^{\delta_j}$
+\end{center}
+\end{nota}
+
+
 \begin{proof}
 En effet
 \begin{align*}
 \lv_{c}(\theta, \thetat, X_1, \cdots, X_n) &= \E_{\thetat}[\lv_\theta(X_1, \cdots, X_n, Z_1, \cdots, X_n)|X_1, \cdots, X_n]\\
-&=\left.  \E_{\thetat}\Bigg[\displaystyle ln\left(\prod_{i=1}^n \prod_{j=1}^J h_\theta(X_i,Z_i)^{\delta_j}\right)  \right| X_1, \cdots X_n \Bigg]\\
-&= \displaystyle\sum_{i=1}^n\sum_{j=1}^J  \E_{\thetat}\big[\left.\delta_j\times ln(h_\theta(X_i,Z_i))\right|X_1, \cdots, X_n\big]\\
-&= \displaystyle\sum_{i=1}^n\sum_{j=1}^J  \E_{\thetat}\big[\left.\1_{(Z_i=j)}(Z_i)\times ln(h_\theta(X_i,Z_i))\right|X_1, \cdots, X_n\big]\\
+&=\left.  \E_{\thetat}\Bigg[\displaystyle ln\left(\prod_{i=1}^n \prod_{j=1}^J h_\theta(X_i, j)^{\delta_{i, j}}\right)  \right| X_1, \cdots X_n \Bigg]\\
+&= \displaystyle\sum_{i=1}^n\sum_{j=1}^J  \E_{\thetat}\big[\left.\delta_{i,j}\times ln(h_\theta(X_i,j))\right|X_1, \cdots, X_n\big]\\
+&= \displaystyle\sum_{i=1}^n\sum_{j=1}^J  \E_{\thetat}\big[\left.\1_{(Z_i=j)}\times ln(h_\theta(X_i,j))\right|X_1, \cdots, X_n\big]\\
 \end{align*}
 Or, les couples $(X_i, Z_i)$ sont indépendants, donc
 \begin{align*}
-\lv_{c}(\theta, \thetat, X_1, \cdots, X_n) &= \displaystyle\sum_{i=1}^n\sum_{j=1}^J  \E_{\thetat}\big[\left.\1_{(Z_i=j)}(Z_i)\times ln(h_\theta(X_i,Z_i))\right|X_i\big]\\
-&= \displaystyle\sum_{i=1}^n\sum_{j=1}^J  \E_{\thetat}\big[\left.\1_{(Z_i=j)}(Z_i)\times ln(h_\theta(X_i,j))\right|X_i\big]\\
-&= \displaystyle\sum_{i=1}^n\sum_{j=1}^Jln(h_\theta(X_i,j))  \E_{\thetat}\big[\left.\1_{(Z_i=j)}(Z_i)\right|X_i\big]\\
+\lv_{c}(\theta, \thetat, X_1, \cdots, X_n) &= \displaystyle\sum_{i=1}^n\sum_{j=1}^J  \E_{\thetat}\big[\left.\1_{(Z_i=j)}\times ln(h_\theta(X_i, j))\right|X_i\big]\\
+&= \displaystyle\sum_{i=1}^n\sum_{j=1}^Jln(h_\theta(X_i,j))  \E_{\thetat}\big[\left.\1_{(Z_i=j)}\right|X_i\big]\\
 &=\displaystyle\sum_{i=1}^n\sum_{j=1}^Jln(h_\theta(X_i,j)) \prob_{\thetat}(Z=j|X=X_i)
 \end{align*}
 \end{proof}
@@ -497,7 +497,7 @@ Nous nous appuierons sur l'expression suivante pour l'expression des estimateurs
 
 
 \begin{proof}
-Nous commençons par considérer la forme précédente de la log-vraisemblance conditionnelle; nous avons ainsi : 
+Nous commençons par considérer la forme précédente de la log-vraisemblance conditionnelle; nous avons ainsi, d'après la proposition 5 : 
 
 \begin{align*}
  \lv_{c}(\theta, \thetat, X_1, \cdots, X_n) &= \sum_{i=1}^n \sum_{j = 1}^J ln(h_\theta(X_i,j)) \times\prob_{\thetat} (Z = j|X = X_i)\\
@@ -513,7 +513,7 @@ Nous avons :
 \begin{center}
 $\gamma_{\mu_j,v_j}(X_i) = \frac{1}{\sqrt{2 \pi v_j}}e^{-\frac{1}{2}\frac{(X_i - \mu_j)^2}{v_j}}$
 \end{center}
-et
+et, d'après la proposition 2
 \begin{center}
 $\prob_{\thetat}(Z=j | X = X_i) = \displaystyle\frac{\alpha_j\times\gamma_{\mu_j, j_v}}{\displaystyle\sum_{k=1}^J\alpha_k\times\gamma_{\mu_k, v_k}}$
 \end{center}
@@ -608,7 +608,7 @@ On en déduit ainsi $\lambda = n$, ainsi que le résultat énoncé.
 \end{proof}
 
 
-Tous ces inesthétiques et fastidieux calculs n'ont pas été effectué en vain. Nous les avons réalisé suite à l'introduction d'une notion nouvelle, celle de la log-vraisemblance conditionnelle; qui elle même à été introduite faute de ne pouvoir obtenir une expression analytique de la log-vraisemblance des observations. Nous allons maintenant tâcher de mettre en exergue les raisons de ce développement théorique.
+Tous ces inesthétiques et fastidieux calculs n'ont pas été effectué en vain. Nous les avons réalisé suite à l'introduction d'une notion nouvelle, celle de la log-vraisemblance conditionnelle; qui elle-même à été introduite faute de ne pouvoir obtenir une expression analytique de la log-vraisemblance des observations. Nous allons maintenant tâcher de mettre en exergue les raisons de ce développement théorique.
 
 \pagebreak
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -619,7 +619,7 @@ Le présent chapitre aura une double tâche. La première est d'introduire l'él
 
 \section{Présentation laconique et pseudo-code}
 
-Dans cette partie, nous allons faire le lien entre les outils développés dans le chapitre précédent, et expliciter en quels sens ils apportent une solution à notre problématique. Rappelons que cette dernière consiste en l'estimation de paramètres d'une log-vraisemblance des observations impossible à maximiser analytiquement. Comme mentionné lors de l'introduction, nous allons présenter l'algorithme EM. Il s'agit d'une méthode itérative, constituée de deux étapes; à savoir une étape "Expectation" et une étape "Maximization". Dans la suite de ce chapitre, nous verrons que cet algorithme nous permet de calculer une suite de paramètres qui auront la particularité de faire croître la log-vraisemblance des observations à chaque itération. \\
+Dans cette partie, nous allons faire le lien entre les outils développés dans le chapitre précédent, et expliciter en quel sens ils apportent une solution à notre problématique. Rappelons que cette dernière consiste en l'estimation de paramètres d'une log-vraisemblance des observations impossible à maximiser. Comme mentionné lors de l'introduction, nous allons présenter l'algorithme EM. Il s'agit d'une méthode itérative, constituée de deux étapes; à savoir une étape "Expectation" et une étape "Maximization". Dans la suite de ce chapitre, nous verrons que cet algorithme nous permet de calculer une suite de paramètres qui auront la particularité de faire croître la log-vraisemblance des observations à chaque itération. \\
 Nous allons dans un premier temps décrire le fonctionnement de l'algorithme, l'explication de sa raison d'être n'en sera que plus limpide.
 
 Dans ce qui suit, nous noterons par $X_1,\cdots X_n$ l'échantillon observé, et par $\theta := (\alpha_j, \mu_j, \sigma_j)_{j\in\llbracket 1,J \rrbracket}$ le vecteur des paramètres.
@@ -632,7 +632,7 @@ $\prob_{\thetat}(Z=j|X=X_i)$
 puisque seule son expression est nécessaire pour obtenir les maximums établi à la proposition 7. Son calcul sera rendu possible grâce à la formule établie dans la proposition 2 et grâce à l'utilisation des paramètres $\alpha_j, \mu_j, \sigma_j$ calculés à l'itération précédente lors de l'étape M. À l'itération zéro, il est donc indispensable de renseigner des paramètres initiaux. Leur détermination occupera donc une place centrale dans notre projet et nous en discuterons dans une section ultérieure.
 
 \subsection{L'étape M (Maximization)}
-La phase M consiste à maximiser la vraisemblance trouvée à l'étape E. Ce maximum sera atteint en $\theta_M = (\widehat{\alpha_j}, \widehat{\mu_j}, \widehat{\sigma_j})$ et ces trois paramètres seront calculalés à l'aide maximiseur établis à la proposition 7. Une fois qu'ils auront étés déterminés, ce sont ces trois paramètres qui seront utilisés dans l'itération suivante pour mettre à jour la log-vraisemblance conditionnelle lors de l'étape M.
+La phase M consiste à maximiser la vraisemblance trouvée à l'étape E. Ce maximum sera atteint en $\theta_M = (\widehat{\alpha_j}, \widehat{\mu_j}, \widehat{\sigma_j})$ et ces trois paramètres seront calculés à l'aide des maximiseurs établis à la proposition 7. Une fois qu'ils auront été déterminés, ce sont ces trois paramètres qui seront utilisés dans l'itération suivante pour mettre à jour la log-vraisemblance conditionnelle lors de l'étape M.
 
 \newpage
 
@@ -651,7 +651,7 @@ Pour l'implémentation de cet algorithme, nous nous sommes appuyés sur le pseud
 	\end{algorithmic}
 \end{algorithm}
 \subsection{Implémentation de l'algorithme EM}
-	L'algorithme EM constitue sans aucun doute le pilier centrale de notre projet, une description de son implémentation semble donc indispensable.
+	L'algorithme EM constitue sans aucun doute le pilier central de notre projet, une description de son implémentation semble donc indispensable.
 	\begin{lstlisting}
 		algo_EM = function(data_init, X, K){
 			J = dim(data_init)[1]
@@ -720,7 +720,7 @@ Pour l'implémentation de cet algorithme, nous nous sommes appuyés sur le pseud
 		\end{align*}
 	\end{itemize}
 	\vspace{7mm}
-Il n'existe pas de preuvre de convergence de la suite de paramètres établie par l'algorithme EM; cette dernière peut en effet stagner dans des extremas locaux. Le choix de bons paramètres initiaux est de fait primordial. Toutefois, nous sommes assurés que l'algorithme permet de faire croître la log-vraisemblance des observations en les paramètres itérativement créés, en temoigne la section suivante.
+Il n'existe pas de preuvre de convergence de la suite de paramètres établie par l'algorithme EM; cette dernière peut en effet stagner dans des extremas locaux. Le choix de bons paramètres initiaux est de fait primordial. Toutefois, nous sommes assurés que l'algorithme permet de faire croître la log-vraisemblance des observations en les paramètres itérativement créés, en témoigne la section suivante.
 
 \newpage
 % section 2
@@ -792,7 +792,7 @@ Comme sus-mentionné, ce résultat ne prétend pas que l'algorithme EM maximiser
 Dans ce troisième chapitre, il s'agira de présenter des algorithmes complémentaires à celui de l'algorithme EM. Ces derniers nous mener à bien notre brève étude sur "l'efficacité" de notre implémentation, et ce pour divers mélanges.
 
 \section{La fonction simulation}
-Afin de pouvoir lancer l'algorithme EM, nous avons besoin d'un échantillon issue d'un mélange gaussien. Comme nous le verrons dans le chapitre 4, nous disposons dans le cadre de ce projet uniquement de données répertoriant les moyennes et les écarts-types des volumes des nids de treize espèces d'oiseaux différentes. Grâce à ces données et à la commande $rnorm(\mu, \sigma)$ de $R$, nous avons implémenté la fonction \textit{simulation}, qui a pour mission de générer aléatoirement un échantillon d'un mélange Gaussien. Il s'agit d'une des plus importante fonction de ce projet, nous allons donc la décrire.
+Afin de pouvoir exécuter l'algorithme EM, nous avons besoin d'un échantillon issue d'un mélange gaussien. Comme nous le verrons dans le chapitre 4, nous disposons dans le cadre de ce projet uniquement de données répertoriant les moyennes et les écarts-types des volumes des nids de treize espèces d'oiseaux différentes. Grâce à ces données et à la commande $rnorm(\mu, \sigma)$ de $R$, nous avons implémenté la fonction \textit{simulation}, qui a pour mission de générer aléatoirement un échantillon d'un mélange Gaussien. Il s'agit d'une des plus importantes fonction de ce projet, nous allons donc la décrire.
 \begin{lstlisting}
 	simulation = function(data_th, n=100){
 		X = rep(NA,n) #echantillon
@@ -839,7 +839,7 @@ Notre implémentation fonctionne dans le cas général d'un mélange de $J$ gaus
 
 \section{Étude de simulations}
 Les différentes sections ci-dessous auront pour vocations de présenter plusieurs simulations, dans le but de tester l'efficacité de notre implémentation de l'algorithme EM.
-\subsection{Étude d'un mélange gaussien à forte séparations}
+\subsection{Étude d'un mélange gaussien à "forte séparation"}
 Dans cette partie, nous nous intéresserons à un mélange de trois lois gaussiennes, ayant comme lois respectives $\mathcal{N}(\mu_1, \sigma_1)$, $\mathcal{N}(\mu_2, \sigma_2)$ et $\mathcal{N}(\mu_3, \sigma_3)$ bien séparées, c'est à dire avec des paramètres bien différents les uns des autres (\underline{i.e. }$|\alpha_i$ - $\alpha_j|_{i \neq j}$; $|\mu_i$ - $\mu_j|_{i \neq j}$; $|\sigma_i$ - $\sigma_j|_{i \neq j}$ assez grands). Nous avons généré un échantillon d'un mélange de trois gaussiennes à fortes séparations de taille $n = 500$. Les trois lois du mélange sont les suivantes:
 \begin{itemize}
 	\item $\mathcal{N}(11, 1)$
@@ -850,7 +850,7 @@ La figure ci-dessous représente la distribution du mélange
 \begin{figure}[H]
 	\centering
 	\includegraphics[scale=0.7]{images/good_distrib.png}
-	\caption{Mélange gaussien à forte séparation}
+	\caption{Mélange gaussien à "forte séparation"}
 \end{figure}
 \newpage
 Nous avons lancé l'algorithme EM en choisissant un nombre d'itération $k = 10$. Comme on peut le voir sur la capture d'écran ci-dessous, les paramètres estimés par l'algorithme EM sont assez proche de ceux théoriques.
@@ -918,15 +918,15 @@ Les boites à moustaches (boxplot) ci-dessous, modélisent l'erreur absolue entr
 
 En observant les boxplots, nous remarquons que plus la taille de l'échantillon $n$ est grande, plus la longueur des boxplots ainsi que leurs médianes diminuent. En d'autre terme, cela indique que l'erreur absolue entre les paramètres estimés par l'algorithme EM et ceux théoriques diminue. Nous nous en déduisons donc que, dans le cas d'un mélange gaussien "à fortes séparations", l'augmentation de la taille de l'échantillon $n$ a pour effet d'améliorer la précision de l'algorithme EM.
 \newpage
-\subsection{Étude d'un mélange gaussien à faible séparations}
+\subsection{Étude d'un mélange gaussien à "faible séparation"}
 Dans cette partie, nous nous intéresserons à un mélange de trois lois gaussiennes ayant comme loi respectives $\mathcal{N}(\mu_1, \sigma_1)$, $\mathcal{N}(\mu_2, \sigma_2)$ et $\mathcal{N}(\mu_3, \sigma_3)$ faiblement séparées, c'est à dire avec des paramètres assez proches les uns des autres (\underline{i.e.} $|\alpha_i$ - $\alpha_j|_{i \neq j}$; $|\mu_i$ - $\mu_j|_{i \neq j}$; $|\sigma_i$ - $\sigma_j|_{i \neq j}$ assez petits).
-De même que pour la première étude, nous avons généré un échantillon d'un mélange de trois lois gaussiennes de taille 500, cette fois-ci avec faible séparation. Les trois lois du mélange sont les suivantes:
+De même que pour la première étude, nous avons généré un échantillon d'un mélange de trois lois gaussiennes de taille 500, cette fois-ci avec "faible séparation". Les trois lois du mélange sont les suivantes:
 \begin{itemize}
 	\item $\mathcal{N}(5, 1)$
 	\item $\mathcal{N}(13.6, 11)$
 	\item $\mathcal{N}(15.3, 6)$
 \end{itemize}
-La figure ci-dessous représente la distribution du mélange à faibles séparations;
+La figure ci-dessous représente la distribution du mélange à "faible séparation";
 
 \begin{figure}[H]
 	\centering
@@ -965,10 +965,10 @@ Les boites à moustaches (boxplot) ci-dessous, modélisent l'erreur absolue entr
 	}%
 \end{figure}
 
-Concernant les boxplots des erreurs absolues des paramètres $(\mu_{i})_{i \in 1 \dots 3}$ et $(\sigma_i)_{i \in 1 \dots 3}$, les conclusions sont les mêmes que dans le cas d'un mélange gaussien avec "fortes séparations". En effet, leurs erreurs absolues diminuent lorsque la taille de l'échantillon $n$ croît. Nous observons cependant quelque chose d'inhabituelle chez les paramètres $\alpha_2$ et $\alpha_3$. Leurs erreurs absolues augmentent quand n croît alors que leurs variances diminuent. Cela montre bien que les paramètres estimés par l'algorithme EM ne convergent pas toujours vers les paramètres du maximum de vraisemblance.
+Concernant les boxplots des erreurs absolues des paramètres $(\mu_{i})_{i \in 1 \dots 3}$ et $(\sigma_i)_{i \in 1 \dots 3}$, les conclusions sont les mêmes que dans le cas d'un mélange gaussien avec "fortes séparations". En effet, leurs erreurs absolues diminuent lorsque la taille de l'échantillon $n$ croît. Nous observons cependant quelque chose d'inhabituel chez les paramètres $\alpha_2$ et $\alpha_3$. Leurs erreurs absolues augmentent quand n croît alors que leurs variances diminuent. Cela illustre bien que les paramètres estimés par l'algorithme EM ne convergent pas toujours vers les paramètres du maximum de vraisemblance.
 
 
-\section{Automatisation des paramètres initiaux}
+\section{Automatisation du choix des paramètres initiaux}
 
 Dans le cas éventuel où l'utilisateur ne souhaite pas, ou ne peut pas, effectuer de décisions quant aux paramètres initiaux de l'algorithme EM, nous nous proposons de présenter diverses fonctions automatisant ce choix.
 
@@ -1029,16 +1029,18 @@ Dans ce quatrième et dernier chapitre, nous nous proposons de mettre en oeuvre 
 % section 1
 \section{Préambule}
 
-Nous n'avons hélas pu trouver des jeux de données sur les volumes de nids d'oiseaux en libre accès. Toutefois, nous avons récupéré sur le site de l'\textit{Université de Lincoln (Royaume-Uni)} la prébublication [4], contenant des informations fortes utiles sur une douzaine d'espèces d'oiseaux.
+Nous n'avons hélas pu trouver des jeux de données sur les volumes de nids d'oiseaux en libre accès. Toutefois, nous avons récupéré sur le site de l'\textit{Université de Lincoln (Royaume-Uni)} la prébublication [4], contenant des informations fort utiles sur une douzaine d'espèces d'oiseaux.
 En voici un extrait :
-\begin{center}
+\begin{figure}[H]
+\centering
 \includegraphics[scale = 0.5]{tab_oiseaux.png}
-\end{center}
+\caption{Caractéristiques des nids (d'après [4])}
+\end{figure}
 
 Parmi elles ce trouve des volumes moyens de nids ainsi que la variance associée. \newline
 
 
-Afin de se conformer aux hypothèses que nous avons précédemment mentionné, nous supposerons ici que les volumes des nids suivent une loi normale. Nous ferons une dernière hypothèse; nous supposerons le nombre de lois connu lors des observations. \newline
+Afin de se conformer aux hypothèses que nous avons précédemment mentionné, nous supposerons ici que les volumes des nids suivent une loi normale. Nous ferons une dernière hypothèse; nous supposerons le nombre d'espèce $J$ connu lors des observations. \newline
 
 Plaçons nous dès à présent dans le cadre d'une étude. Pour ce faire, commençons par établir une méthodologie. 
 Il sera en premier lieu choisi, aléatoirement, plusieurs espèces d'oiseaux parmi celles que nous avons à disposition. Puis nous allons générer, avec \textit{R}, les données dont nous avons besoin. Cet $n$-échantillon sera créé grâce à notre fonction de simulation. Notre jeu de données étant prêt, nous pourrons commencer l'étude. \newline

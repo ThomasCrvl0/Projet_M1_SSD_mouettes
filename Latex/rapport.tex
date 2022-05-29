@@ -914,9 +914,10 @@ Les boites à moustaches (boxplot) ci-dessous, modélisent l'erreur absolue entr
 		\includegraphics[scale=0.35]{images/good_mu.png}%
 		\label{fig:b}%
 	}%
+	\caption{Boxplot des erreurs absolues de $(\alpha_j)_{j \in  \{1\dots3\}}$ et $(\mu_j)_{j \in \{1\dots3\}}$}
 \end{figure}
 
-En observant les boxplots, nous remarquons que plus la taille de l'échantillon $n$ est grande, plus la longueur des boxplots ainsi que leurs médianes diminuent. En d'autre terme, cela indique que l'erreur absolue entre les paramètres estimés par l'algorithme EM et ceux théoriques diminue. Nous nous en déduisons donc que, dans le cas d'un mélange gaussien "à fortes séparations", l'augmentation de la taille de l'échantillon $n$ a pour effet d'améliorer la précision de l'algorithme EM.
+En observant les boxplots de la figure 3.3, nous remarquons que plus la taille $n$ de l'échantillon est grande, plus la longueur des boxplots ainsi que leurs médianes diminuent. En d'autre terme, cela indique que l'erreur absolue entre les paramètres estimés par l'algorithme EM et ceux théoriques diminue. Nous en déduisons donc que, dans le cas d'un mélange gaussien "à fortes séparations", l'augmentation de la taille de l'échantillon a pour effet d'améliorer la précision de l'algorithme EM. D'ailleurs, dans le cas ici présent, les estimateurs produits par ce dernier convergent effectivement vers les valeurs théoriques des paramètres.
 \newpage
 \subsection{Étude d'un mélange gaussien à "faible séparation"}
 Dans cette partie, nous nous intéresserons à un mélange de trois lois gaussiennes ayant comme loi respectives $\mathcal{N}(\mu_1, \sigma_1)$, $\mathcal{N}(\mu_2, \sigma_2)$ et $\mathcal{N}(\mu_3, \sigma_3)$ faiblement séparées, c'est à dire avec des paramètres assez proches les uns des autres (\underline{i.e.} $|\alpha_i$ - $\alpha_j|_{i \neq j}$; $|\mu_i$ - $\mu_j|_{i \neq j}$; $|\sigma_i$ - $\sigma_j|_{i \neq j}$ assez petits).
@@ -963,9 +964,10 @@ Les boites à moustaches (boxplot) ci-dessous, modélisent l'erreur absolue entr
 		\includegraphics[scale=0.35]{images/bad_mu.png}%
 		\label{fig:d}%
 	}%
+	\caption{Boxplot des erreurs absolues de $(\alpha_j)_{j \in  \{1\dots3\}}$ et $(\mu_j)_{j \in \{1\dots3\}}$}
 \end{figure}
 
-Concernant les boxplots des erreurs absolues des paramètres $(\mu_{i})_{i \in 1 \dots 3}$ et $(\sigma_i)_{i \in 1 \dots 3}$, les conclusions sont les mêmes que dans le cas d'un mélange gaussien avec "fortes séparations". En effet, leurs erreurs absolues diminuent lorsque la taille de l'échantillon $n$ croît. Nous observons cependant quelque chose d'inhabituel chez les paramètres $\alpha_2$ et $\alpha_3$. Leurs erreurs absolues augmentent quand n croît alors que leurs variances diminuent. Cela illustre bien que les paramètres estimés par l'algorithme EM ne convergent pas toujours vers les paramètres du maximum de vraisemblance.
+Concernant les boxplots des erreurs absolues des paramètres $(\mu_{i})_{i \in 1 \dots 3}$ et $(\sigma_i)_{i \in 1 \dots 3}$ de la figure 3.6, les conclusions sont les mêmes que dans le cas d'un mélange gaussien avec "fortes séparations". En effet, leurs erreurs absolues diminuent lorsque la taille $n$ de l'échantillon croît. Nous observons cependant quelque chose d'inhabituel chez les paramètres $\alpha_2$ et $\alpha_3$. Leurs erreurs absolues augmentent quand n croît alors que leurs variances diminuent. Cela illustre bien que les paramètres estimés par l'algorithme EM ne convergent pas toujours vers les paramètres théoriques.
 
 
 \section{Automatisation du choix des paramètres initiaux}

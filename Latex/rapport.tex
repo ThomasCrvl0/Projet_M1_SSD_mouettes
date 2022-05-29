@@ -218,7 +218,7 @@
 
 L'observation est une composante essentielle en sciences appliquées, et tout particulièrement pour nous, futur statisticiens. Cette dernière nous permet d’élaborer des modèles, et dans le cadre de l’estimation paramétrique, de construire des estimateurs.
 
-Dans la situation où les données sont correctement observées, cadre idéal, la statistique inférentielle nous permet d’obtenir d’agréables expressions analytiques des estimateurs, notamment par la méthode du maximum de vraisemblance, qui est d'une redoutable efficacité. Toujours est-il que ces situations sont peu courantes ; nous sommes souvent confrontés à des situations présentant des données « cachées » ou manquantes. Dans ce dernier cas, nous verrons que les méthodes analytiques exactes ne suffisent plus, et qu’il est nécessaire d’introduire de nouvelles méthodes, également basées sur le principe du maximum de vraisemblance, pour tenter d’estimer les paramètres.
+Dans la situation où les données sont correctement observées, cadre idéal, la statistique inférentielle nous permet d’obtenir dans certaines situations d’agréables expressions analytiques des estimateurs, notamment par la méthode du maximum de vraisemblance, qui est d'une redoutable efficacité. Toujours est-il que ces situations sont peu courantes ; nous sommes souvent confrontés à des situations présentant des données « cachées » ou manquantes. Dans ce dernier cas, nous verrons que les méthodes analytiques exactes ne suffisent plus, et qu’il est nécessaire d’introduire de nouvelles méthodes, également basées sur le principe du maximum de vraisemblance, pour tenter d’estimer les paramètres.
 
 Nous étudierons dans le présent projet l’une de ces méthodes, conçue par Dempster et al. [1], l’algorithme Expectation-Maximization.  
 
@@ -247,7 +247,7 @@ Nous allons pour commencer donner une première définition, qui est au coeur du
 \begin{defn}[Loi de mélange]
 On appelle loi de mélange toute loi dont la densité s'écrit sous la forme d'une combinaison convexe de plusieurs densités. Si l'on se donne $J$  densités $f_1(x), \cdots, f_J(x)$, alors toute variable aléatoire $X$ dont la densité $f$ s'exprime, pour tout $x\in\R$, sous la forme
 \begin{center}
-$f(x) := \displaystyle\sum_{i=1}^J \alpha_i f_i(x)$ , $\alpha_i \in\R_+^*$ et $\displaystyle\sum_{j=1}^J\alpha_j=1$ \end{center}
+$f(x) := \displaystyle\sum_{j=1}^J \alpha_j f_j(x)$ , $\alpha_j \in\R_+^*$ et $\displaystyle\sum_{j=1}^J\alpha_j=1$ \end{center}
 suit une loi de mélange continue.
 \end{defn}
 
@@ -272,7 +272,7 @@ Soit $\Theta := \{ \theta = (\alpha_j,\mu_j, v_j)_{1 \leq j \leq J} \text{ tels 
 \begin{rem}
 La variable $Z$ est discrète et à valeur dans un sous-ensemble fini de $\N$, elle suit donc une loi 
 \begin{center} $\displaystyle \sum_{j=1}^J \alpha_j\delta_j$ \end{center}
-\underline{où} $J$ représente le nombre d'espèce d'oiseaux considéré et les $\alpha_j$ sont des réels, strictement positifs, représentant la proportion de nids de l'espèce $j$, tels que $\displaystyle\sum_{i=1}^J \alpha_j = 1$.
+\underline{où} $J$ représente le nombre d'espèce d'oiseaux considéré et les $\alpha_j$ sont des réels, strictement positifs, représentant la proportion de nids de l'espèce $j$, tels que $\displaystyle\sum_{j=1}^J \alpha_j = 1$.
 \end{rem}
 
 Il s'ensuit la proposition suivante, qui sera essentielle dans la suite.
@@ -286,12 +286,12 @@ En effet, la fontion de répartition de $X$ s'écrit
 \begin{align*}
 \prob(X\leq x) &= \prob\left(\bigcup_{j=1}^J (X\leq x)\cap(Z=j)\right)\\
 &=\displaystyle\sum_{j=1}^J \prob((X\leq x)\cap(Z=j))\\
-&=\displaystyle\sum_{i=1}^J\prob(Z=j)\times\prob(x\leq X | Z = j) \\
-&=\displaystyle\sum_{i=1}^J\alpha_i\times\prob(x\leq X | Z = j) \\
+&=\displaystyle\sum_{j=1}^J\prob(Z=j)\times\prob(x\leq X | Z = j) \\
+&=\displaystyle\sum_{j=1}^J\alpha_i\times\prob(x\leq X | Z = j) \\
 \end{align*}
 On en déduit donc que la densité de $X$ vaut :
 \begin{center}
-$\displaystyle\sum_{i=1}^J\alpha_i\times f(x| Z = j)  = \displaystyle\sum_{i=1}^J\alpha_i\times \gamma_{\mu_j, v_j}(x)$
+$\displaystyle\sum_{j=1}^J\alpha_i\times f(x| Z = j)  = \displaystyle\sum_{j=1}^J\alpha_i\times \gamma_{\mu_j, v_j}(x)$
 \end{center}
 \end{proof}
 
@@ -632,7 +632,7 @@ $\prob_{\thetat}(Z=j|X=X_i)$
 puisque seule son expression est nécessaire pour obtenir les maximums établi à la proposition 7. Son calcul sera rendu possible grâce à la formule établie dans la proposition 2 et grâce à l'utilisation des paramètres $\alpha_j, \mu_j, \sigma_j$ calculés à l'itération précédente lors de l'étape M. À l'itération zéro, il est donc indispensable de renseigner des paramètres initiaux. Leur détermination occupera donc une place centrale dans notre projet et nous en discuterons dans une section ultérieure.
 
 \subsection{L'étape M (Maximization)}
-La phase M consiste à maximiser la vraisemblance trouvée à l'étape E. Ce maximum sera atteint en $\theta_M = (\widehat{\alpha_j}, \widehat{\mu_j}, \widehat{\sigma_j})$ et ces trois paramètres seront calculés à l'aide des maximiseurs établis à la proposition 7. Une fois qu'ils auront été déterminés, ce sont ces trois paramètres qui seront utilisés dans l'itération suivante pour mettre à jour la log-vraisemblance conditionnelle lors de l'étape M.
+La phase M consiste à maximiser la vraisemblance trouvée à l'étape E. Ce maximum sera atteint en $\theta_M = (\widehat{\alpha_j}, \widehat{\mu_j}, \widehat{\sigma_j})$ et ces trois paramètres seront calculés à l'aide des maximas établis à la proposition 7. Une fois qu'ils auront été déterminés, ce sont ces trois paramètres qui seront utilisés dans l'itération suivante pour mettre à jour la log-vraisemblance conditionnelle lors de l'étape M.
 
 \newpage
 

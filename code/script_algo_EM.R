@@ -224,6 +224,149 @@ Monte_Carlo = function(data_th, data_init, k, n, N){
   return(df_MonteCarlo)
 }
 
+
+#Paramètres initiaux 
+
+param_quantile1 <- function(X,J){
+  N <- length(X)
+  Alpha = rep(1/J,J)
+  Mean <- rep(NA,J)
+  
+  for(j in 1:J){
+    Mean[j] <- floor(j*N/J+1)
+  }
+  
+  X <- sort(X)
+  Sd <- sqrt(var(X[1:Mean[1]]))
+  Sd <- rep(Sd,J)
+  
+  data <- data.frame(init_alpha = Alpha, init_mu = Mean, init_sd = Sd)
+  return(data)
+}
+
+param_quantile2 <- function(X,J){
+  N <- length(X)
+  Alpha = rep(1/J,J)
+  Mean <- rep(NA,J)
+  X <- sort(X)
+  
+  index1_Q <- 1
+  index2_Q <- 0
+  for(j in 1:J-1){
+    index2_Q <- floor(j*N/J)+1
+    Mean[j] <- mean(X[index1_Q:index2_Q])
+    index1_Q <- index2_Q+1
+  }
+  Mean[J] <- mean(X[index1_Q:N])
+  
+  Sd <- sqrt(var(X[1:floor(N/J)+1]))
+  Sd <- rep(Sd,J)
+  
+  data <- data.frame(init_alpha = Alpha, init_mu = Mean, init_sd = Sd)
+  return(data)
+}
+
+param_kmeans <- function(X,J){
+  density <- density(X)
+  abscisse <- density$x
+  ordonné <- density$y
+  
+  m_X <- abscisse[ggpmisc:::find_peaks(ordonné)]#positions des max
+  
+  centers <- data.frame(moyennes = m_X)
+  size_m_X <- length(m_X)
+  alpha <- rep(NA,J)
+  var <- rep(NA,J)
+  
+  if (size_m_X > J){
+    min <- m_X[m_X < mean(X)] 
+    max <- m_X[m_X > mean(X)]
+    min_max <- sort(c(abs(min-mean(X)),abs(max-mean(X))))
+    i <- 1 
+    while (size_m_X > J){
+      if (!is.null(min_max)){
+        m_X <- m_X[m_X != min_max[i]] #On enlève les max les plus éloignés
+        size_m_X <- length(m_X)
+      }
+      else{
+        m_X2 <- sort(m_X)
+        m_X <- m_X[m_X != m_X2[i]] #On enlève les max les plus faibles
+      }
+      i <- i+1
+    }
+  }
+  
+  if (size_m_X==J){
+    k <- kmeans(X,centers)
+    m_X <- k$centers #permet d'éviter d'avoir de faux max
+    indiv <- k$cluster
+    for (j in 1:J){
+      alpha[j] <- (1/100)*k$size[j]
+      var[j] <- sqrt(var(X[indiv==j]))
+    }
+    param_init <- data.frame(espèces = 1:J, alpha = alpha, moyenne = m_X, variance = sqrt(var))
+    return(param_init)
+  }
+  
+  
+  while (size_m_X<J){
+    k <- kmeans(X,centers)
+    indice_kmeans <- which.max(k$size)
+    nv_kmeans <- kmeans(X[k$cluster==indice_kmeans],2)
+    moyennes <- k$centers[-(indice_kmeans:size_m_X)]
+    moyennes <- c(moyennes,nv_kmeans$centers)
+    moyennes <- c(moyennes,k$centers[-(1:indice_kmeans)])
+    m_X <- moyennes
+    centers <- data.frame(moyennes = m_X)
+    size_m_X <- size_m_X+1
+  }
+  
+  k <- kmeans(X,centers)
+  for (j in 1:J){
+    indiv <- k$cluster
+    alpha[j] <- (1/100)*k$size[j]
+    var[j] <- sqrt(var(X[indiv==j]))
+  }
+  m_X <- k$centers
+  param_init <- data.frame(espèces = 1:J, alpha = alpha, moyenne = m_X, 
+                           variance = sqrt(var))
+  return(param_init)
+}
+
+
+log_Vrais_X <- function(data_param,X){
+  J <- length(data_param[,1])
+  logVrai_X <- 0
+  for(i in 1:length(X)){
+    sum_j <- 0
+    for(j in 1:J){
+      sum_j <- sum_j +  data_param[j,2]*dnorm(X[i],mean = data_param[j,3], 
+                                              sd = data_param[j,4])
+    }
+    logVrai_X <- logVrai_X + log(sum_j)
+  }
+  return(logVrai_X)
+}
+
+
+param_init <- function(data,X){
+  J <- length(data[,1])
+  col <- length(data[1,])-1
+  res <- -Inf
+  data_res <- data.frame()
+  for(i in seq(1,col,by = 3)){
+    data_i <- data.frame(espèces = data[,1], alpha = data[,i+1],
+                         moyennes = data[,i+2], sd = data[,i+3])
+    log_Vrai <- log_Vrais_X(data_i,X)
+    if (res <= log_Vrai){
+      res <- log_Vrai
+      data_res <- data_i
+    }
+  }
+  return(data_res)
+}
+
+
 #############################################################################
 # partie tests
 #############################################################################

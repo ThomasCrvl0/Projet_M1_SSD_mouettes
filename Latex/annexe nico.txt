@@ -1,0 +1,108 @@
+\section{Etude entre fonctions}
+
+
+
+Revenons aux choix des paramètres initiaux. Nous disposons désormais de trois fonctions permettant chacune de déterminer un choix quant à l'initialisation de l'algorithme EM.
+
+Il convient alors d'étudier les résultats de chacune d'elles, en appliquant l'algorithme EM sur les initialisations qu'elles proposent et en comparant la valeur de la log-vraisemblance de l'échantillon $(X_1,\dots,X_n)$
+
+
+On présente alors les deux fonctions suivantes :\newline
+
+Celle-ci permettent de déterminer la valeur de la log-vraisemblance de l'échantillon.
+
+\begin{lstlisting}
+
+log_Vrais_X <- function(data_param,X){
+
+J <- length(data_param[,1])
+
+logVrai_X <- 0
+
+for(i in 1:length(X)){
+
+sum_j <- 0
+
+for(j in 1:J){
+
+sum_j <- sum_j + data_param[j,2]*dnorm(X[i],mean = data_param[j,3],
+
+sd = data_param[j,4])
+
+}
+
+logVrai_X <- logVrai_X + log(sum_j)
+
+}
+
+return(logVrai_X)
+
+}
+
+\end{lstlisting}
+
+Elle prend comme arguments :
+
+\begin{itemize}
+
+\item data\_param, le tableau des résultats obtenus, le nom des epèces est ajouté en première colonne
+
+\item $X$, l'échantillon observé
+
+\end{itemize}
+
+Elle retourne la valeur de la log-vraisemblande de $(X_1, \dots, X_n)$ pour les paramètres issus de $data\_param$.\\
+
+
+Nous avons également la fonction $param\_init$, effectuant le choix des paramètres en comparant les valeurs des log-vraisemblance obtenues
+
+\begin{lstlisting}
+
+param_init <- function(data,X){
+
+J <- length(data[,1])
+
+col <- length(data[1,])-1
+
+res <- -Inf
+
+data_res <- data.frame()
+
+for(i in seq(1,col,by = 3)){
+
+data_i <- data.frame(espèces = data[,1], alpha = data[,i+1],
+
+moyennes = data[,i+2], sd = data[,i+3])
+
+log_Vrai <- log_Vrais_data_i,X)
+
+if (res <= log_Vrai){
+
+res <- log_Vrai
+
+data_res <- data_i
+
+}
+
+}
+
+return(data_res)
+
+}
+
+\end{lstlisting}
+
+
+
+Elle prend comme arguments :
+
+\begin{itemize}
+
+\item data, le tableau de tous les résultats obtenus à partir des fonctions d'initialisation, le nom des epèces est ajouté en première colonne
+
+\item X, l'échantillon
+
+\end{itemize}
+
+Elle retourne le tableau d'initialisation ayant permit d'obtenir le meilleur résulat.
+

@@ -1,0 +1,7 @@
+\babel@toc {french}{}\relax 
+\beamer@sectionintoc {1}{Introduction}{2}{0}{1}
+\beamer@sectionintoc {2}{Préliminaires mathématiques}{3}{0}{2}
+\beamer@sectionintoc {3}{L'algorithme EM}{4}{0}{3}
+\beamer@sectionintoc {4}{Études de simulations}{7}{0}{4}
+\beamer@sectionintoc {5}{Modélisation des nids d'oiseaux}{9}{0}{5}
+\beamer@sectionintoc {6}{Conclusion}{11}{0}{6}

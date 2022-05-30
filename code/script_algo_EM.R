@@ -1,5 +1,6 @@
 library(ggplot2)
 library(ggpubr)
+library(ggpmisc)
 
 # Vecteur dans lequel on a stocké les noms des 13 espèces d'oiseaux présentent 
 # dans notre document

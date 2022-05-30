@@ -7,6 +7,10 @@
 \usepackage{subfig}
 \usepackage{algorithm}
 \usepackage{algorithmic}
+%%% Packages additionnels
+\usepackage{verbatim}
+\usepackage{bbm}
+\usepackage{stmaryrd}
 
 \renewcommand{\algorithmicrequire}{\textbf{Entrée(s) :}}
 \renewcommand{\algorithmicreturn}{\textbf{retourner}}
@@ -89,11 +93,127 @@
 		\end{block}
 	\end{frame}
 	
-	\section{Préliminaires mathématiques}
+	\section{Liminaires théoriques et modélisation du problème}
 	
-	\begin{frame}{Préliminaires mathématiques}
-		\begin{block}{Préliminaires mathématiques}
-			À remplir tout comme j'ai rempli la chatte de vos mères avec ma semence !!!
+	\begin{frame}{Définition et hypothèses}
+		\begin{block}{Loi de mélange}
+			Si l'on se donne $J$  densités $f_1(x), \cdots, f_J(x)$, alors toute variable aléatoire $X$ dont la densité $f$ s'exprime, pour tout $x\in\mathbbm{R}$, sous la forme
+			\[
+			f(x) := \displaystyle\sum_{j=1}^J \alpha_j f_j(x)
+			\]
+			où
+			\[
+			\alpha_j \in\mathbbm{R}_+^* \text{ et } \displaystyle\sum_{j=1}^J\alpha_j=1
+			\]
+			suit une loi de mélange continue.
+		\end{block}
+	\end{frame}
+	
+
+	\begin{frame}{Définition et hypothèses}
+		\begin{block}{Une histoire de variables}
+			Nous introduisons les deux variables aléatoires (V.A.) suivantes :
+			\begin{itemize}
+				\item la V.A. $X$, modélisant le volume des nids, de densité $f$
+				\item la V.A. discrète $Z \in \llbracket 1,J\rrbracket$, représentant l'espèce d'oiseau
+			\end{itemize}
+		\end{block}
+
+		\begin{block}{Hypothèse 1}
+			$X$ conditionnellement à $(Z = j)$ suit une loi normale $\mathcal{N}(\mu_j, v_j)$
+		\end{block}
+		\begin{block}{Hypothèse 2}
+			\[
+			\exists \theta = (\alpha_j, \mu_j, v_j) \in \{  \}
+			\]
+à voir
+		\end{block}
+	\end{frame}
+
+	\begin{frame}{Une histoire de densités}
+		\begin{block}{}
+			\scriptsize
+			\begin{itemize}
+				\item Densité de la loi $X$ conditionnellement à $(Z=j)$ :
+				\[
+				f(x| Z = j)  = \gamma_{\mu_j, v_j}(x)
+				\]
+				\item Densité de la loi de $X$ :
+					\[
+					f_\theta(x) = \displaystyle\sum_{j=1}^J \alpha_j \gamma_{\mu_j, v_j}(x)
+					\]
+				\item Probabilité de la loi de $Z$ conditionnellement à $(X = x)$ : 
+					\[
+					\mathbbm{P}_\theta(Z = j | X = x)=\displaystyle \frac{\gamma_{\mu_j, v_j}\times\alpha_j}{f_\theta(x)}
+					\]
+			\end{itemize}
+		\end{block}
+	\end{frame}
+
+	
+
+	\begin{frame}{Une approche idéaliste}
+		\begin{block}{}
+			\scriptsize
+			\begin{itemize}
+				\item Nous observons et le volume et l'espèce d'oiseau
+				\item Log-vraisemblance du modèle :
+				\begin{align*}
+				& \mathcal{L}_\theta(X_1, \cdots, X_n, Z_1, \cdots, Z_n) \\
+				&= ln\left(\displaystyle\prod_{i=1}^n h_\theta(X_i, Z_i) \right) \\
+				&=\displaystyle\sum_{j=1}^J \#A_j ln(\alpha_j)+ \sum_{j=1}^J\sum_{i\in A_j} ln(\gamma_{\mu_j, v_j}(X_i))
+				\end{align*}
+				où
+				\[
+				A_j := \{ i\in \llbracket1,n \rrbracket \text{ tels que } Z_i = j \}
+				\]
+			\end{itemize}
+		\end{block}
+	\end{frame}
+
+	\begin{frame}{Une approche idéaliste}
+		\begin{block}{Estimateurs du maximum de vraisemblance (EMV)}
+			\[
+			\widehat{\alpha_j} = \frac{\#A_j}{n}
+			\]
+			\[
+			\widehat{\mu_j} = \displaystyle\frac{\sum_{i\in A_j} X_i}{\#A_j}
+			\]
+			\[
+			\widehat{v_j} = \displaystyle \frac{\sum_{i\in A_j}(X_i - \widehat{\mu_j})^2}{\#A_j}
+			\]
+		\end{block}
+	\end{frame}
+
+
+	\begin{frame}
+		\begin{block}{Une approche réaliste}
+			\begin{itemize}
+				\item Nous observons seulement le volume du nids
+				\item Log-vraisemblance du modèle :
+				\begin{align*}
+					& \mathcal{L}_{obs}(\theta, X_1, \cdots, X_n) \\
+					&= ln\left( \displaystyle\prod_{i=1}^n f_\theta(X_i) \right)\\
+					&= \displaystyle\sum_{i=1}^nln\left( \sum_{j=1}^J \alpha_j \gamma_{\mu_j, v_j}(X_i) \right)
+				\end{align*}
+				\item L'existence d'une expression analytique des EMV n'est pas assurée
+			\end{itemize}
+		\end{block}
+	\end{frame}
+
+
+
+	\begin{frame}{Log-vraisemblance conditionnelle}
+		\begin{block}{}
+			\scriptsize
+			\begin{itemize}
+				\item texte
+				\item Nous définissons ainsi la log-vraisemblance conditionnelle comme :
+					\[
+					\mathcal{L}_{c}(\theta, \tilde{\theta}, X_1, \cdots, X_n) = \mathbbm{E}_{\tilde{\theta}}[\mathcal{L}_\theta(X_1, \cdots, X_n, Z_1, \cdots, Z_n) | X_1, \cdots, X_n]
+					\]
+
+			\end{itemize}
 		\end{block}
 	\end{frame}
 	
@@ -152,26 +272,98 @@
 	\end{frame}
 	
 	\section{Modélisation des nids d'oiseaux}
-	
-	\begin{frame}{Modélisation des nids d'oiseaux}
-		\begin{block}{\scriptsize Première exploration des données}
-			\begin{figure}[H]
-				\centering
-				\includegraphics[scale=0.34]{dens1.pdf}
-				\caption{Densité du mélange}
-			\end{figure}
+
+	\begin{frame}{Préambule}
+		\begin{figure}[H]
+			\centering
+			\includegraphics[scale=0.3]{tab_oiseaux.png}
+			\caption{Caractéristiques des nids}
+		\end{figure}
+	\end{frame}	
+
+	\begin{frame}{Hypothèses, outils et démarche}
+		\begin{block}{\scriptsize Hypothèses}
+			\begin{itemize}
+				\scriptsize 
+				\item la distribution du volume des nids est gaussienne
+				\item le nombre d'espèce $J$ est connu
+			\end{itemize}
 		\end{block}
+
+		\begin{block}{\scriptsize Outils}
+			\begin{itemize}
+				\scriptsize 
+				\item fonction \textit{simulation}
+				\item fonction \textit{algo$\_$EM}
+			\end{itemize}
+		\end{block}
+
+		\begin{block}{\scriptsize  Démarche}
+			\begin{itemize}
+				\scriptsize 
+				\item Génération de l'échantillon
+				\item Représentation graphique de la densité de l'échantillon
+				\item Détermination des paramètres initiaux
+				\item Execution de l'algorithme EM
+			\end{itemize}
+		\end{block}
+
+	\end{frame}
+
+
+
+	\begin{frame}{Première exploration des données}
+		\begin{figure}[H]
+			\centering
+			\includegraphics[scale=0.4]{dens1.pdf}
+			\caption{Densité du mélange}
+		\end{figure}
 	\end{frame}
 
 	\begin{frame}{Heuristique graphique}
-		\begin{block}{}
-			\begin{figure}[H]
+		\begin{figure}[H]
+			\centering
+			\includegraphics[scale=0.4]{dens1bis.pdf}
+			\caption{Détermination des valeurs initiales}
+		\end{figure}
+	\end{frame}
+
+
+	\begin{frame}[fragile]\frametitle{Heuristique graphique}
+		\begin{block}{\scriptsize Paramètres initiaux}
+			\begin{itemize}
+				\scriptsize
 				\centering
-				\includegraphics[scale=0.37]{dens1bis.pdf}
-				\caption{Densité du mélange}
-			\end{figure}
+				\item $\mu_{1_{init}} =  40$ et $\mu_{2_{init}} = 320$
+				\item $\sigma_{1_{init}} =  80$ et $\sigma_{2_{init}} = 140$
+				\item $\alpha_{1_{init}} = 0.5$ et $\alpha_{2_{init}} = 0.5$
+			\end{itemize}
+		\end{block}
+		\begin{block}{\scriptsize Résultats}
+			\scriptsize
+			\begin{verbatim}
+          bird_names     alpha        mu      sigma
+1 European Goldfinch 0.2910832  37.76285   9.512478
+2         Ring Ouzel 0.7089168 302.51936 125.951894
+			\end{verbatim}
+		\end{block}
+		\begin{block}{\scriptsize Valeurs théoriques}
+			\scriptsize
+			\begin{verbatim}
+         bird_names2 proportion_alpha mean_volume sd_volume
+1 European Goldfinch         0.2878713       38.0       9.1
+12         Ring Ouzel        0.7121287      298.6     125.1
+			\end{verbatim}
 		\end{block}
 	\end{frame}
+
+
+	\begin{frame}{Détermination automatique}
+		\begin{block}{}
+			Comme dans le rapport ou fonction de Nicolas ??
+		\end{block}
+	\end{frame}
+
 
 	\section{Conclusion}
 

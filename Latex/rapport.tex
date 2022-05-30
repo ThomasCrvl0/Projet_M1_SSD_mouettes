@@ -969,59 +969,171 @@ Les boites à moustaches (boxplot) ci-dessous, modélisent l'erreur absolue entr
 
 Concernant les boxplots des erreurs absolues des paramètres $(\mu_{i})_{i \in 1 \dots 3}$ et $(\sigma_i)_{i \in 1 \dots 3}$ de la figure 3.6, les conclusions sont les mêmes que dans le cas d'un mélange gaussien avec "fortes séparations". En effet, leurs erreurs absolues diminuent lorsque la taille $n$ de l'échantillon croît. Nous observons cependant quelque chose d'inhabituel chez les paramètres $\alpha_2$ et $\alpha_3$. Leurs erreurs absolues augmentent quand n croît alors que leurs variances diminuent. Cela illustre bien que les paramètres estimés par l'algorithme EM ne convergent pas toujours vers les paramètres théoriques.
 
+\section{Automatisation des paramètres initaux}
 
-\section{Automatisation du choix des paramètres initiaux}
+Dans le cas eventuel où l'utilisateur ne souhaite pas ou ne pas peut pas effectuer de descision, quant au choix des paramètres initaux de l'algorithme EM, on se propose de présenter trois fonctions automatisant ce choix. \\\\
 
-Dans le cas éventuel où l'utilisateur ne souhaite pas, ou ne peut pas, effectuer de décisions quant aux paramètres initiaux de l'algorithme EM, nous nous proposons de présenter diverses fonctions automatisant ce choix.
+On présente dans un premier temps les deux fonctions $param\_quantile1$ et $param\_quantile2$. Elles reposent sur une approche plus simplicite et rendent compte, pour le choix des paramètres $\alpha_j,~\forall j \in [1,...,J]$ (porportions des J espèces observées) et $v_j,~\forall j \in [1,..,J]$ (variance du volume des J espèces observées), des idées suivantes : 
+
+Si l'échantillon est obtenu aléatoirement, sur une zone d'étude tirée aléatoirement, on pourrait supposer que la quantité de chaque espèce sur cette zone est approximativement la même. 
+On choisira ainsi des proprtions égales pour le choix d'initialisation des paramètres $\alpha_j,~\forall j \in [1,...,J]$.
+
+De même, il peut être vraisemblable de ce dire, pour des espèces semblables, que chaque espèce font des nids approximativement de même volume. Ainsi on pourra choisir comme écart-type, des écart-types égaux.\\
+
+La distinction de ces deux fonctions vient quant aux choix des moyennes des epèces observées.
+Pour ce faire, nous allons décrire les codes de ces deux fonctions.
 
 
-
-\subsection{La fonction \textit{param$\_$quantile1}}
-
-\begin{lstlisting}
-param_quantile1 <- function(X,J){
-  N <- length(X)
-  Alpha = rep(1/J,J)
-  Mean <- rep(NA,J)
-  
-  for(j in 1:J){
-    Mean[j] <- floor(j*N/J+1)
-  }
-  
-  X <- sort(X)
-  Sd <- sqrt(var(X[1:Mean[1]]))
-  Sd <- rep(Sd,J)
-  
-  data <- data.frame(init_alpha = Alpha, init_mu = Mean, init_sd = Sd)
-  return(data)
-}
-\end{lstlisting}
-
-\subsection{La fonction \textit{param$\_$quantile2}}
+\subsection{Fonction param$\_$quantile1}
 
 \begin{lstlisting}
-param_quantile2 <- function(X,J){
-  N <- length(X)
-  Alpha = rep(1/J,J)
-  Mean <- rep(NA,J)
-  X <- sort(X)
+	param_quantile1 <- function(X,J){
+  		N <- length(X)
+  		Alpha = rep(1/J,J)
+  		Mean <- rep(NA,J)
+  		X <- sort(X)
   
-  index1_Q <- 1
-  index2_Q <- 0
-  for(j in 1:J-1){
-    index2_Q <- floor(j*N/J)+1
-    Mean[j] <- mean(X[index1_Q:index2_Q])
-    index1_Q <- index2_Q+1
-  }
-  Mean[J] <- mean(X[index1_Q:N])
+  		for(j in 1:J){
+    			Mean[j] <- X[floor(j*N/J+1)]
+  		}
   
-  Sd <- sqrt(var(X[1:floor(N/J)+1]))
-  Sd <- rep(Sd,J)
+  		Sd <- sqrt(var(X[1:Mean[1]]))
+  		Sd <- rep(Sd,J)
   
-  data <- data.frame(init_alpha = Alpha, init_mu = Mean, init_sd = Sd)
-  return(data)
-}
+  		data <- data.frame(init_alpha = Alpha, init_mu = Mean, init_sd = Sd)
+  		return(data)
+	}
 \end{lstlisting}
+
+
+La fonction $param\_quantile1$ prend en argument : 
+\begin{itemize}
+	\item X, l'échantillon observé
+	\item J, le nombre d'espèce observée
+\end{itemize}
+
+
+Comme décrit en debut de section, on choisi des proportions égales entre espèce. On a alors $\alpha_j$, les valeurs $\alpha_j = \frac{1}{J},~\forall j \in [1,..J]$.
+
+Puisque que les espèces font (dans l'idée de cette fonction) des nids semblables, on va trier pour la suite notre échantillon. 
+
+Pour le choix des moyennes le principe est le suivant : 
+On découpe l'intervalle des observations en J+1 intervalles, chacune des coupures correspondra (suivant la parité de l'échantillon) à decouper l'intervalle de façon uniforme.
+On prendra comme moyennes les J premières valeurs associées à ces coupures. Approximativement cela correspond à prendre les J premiers quantiles.
+Le fait de supposer des proportions égales entre les epèces, permet de voir chaque intervalle comme les valeurs associées aux volumes de chaque espèces, aura ainsi pour le j-ème intervalle formé les valeurs des volumes des nids de l'espèces j.
+
+Quant aux choix des écart-types de chaque espèce, on choisira l'écat-type de la première espèce. \\
+
+Décrivons maintenant la seconde fonction.
+
+\subsection{Fonction param$\_$quantile2}
+
+\begin{lstlisting}
+	param_quantile2 <- function(X,J){
+		N <- length(X)
+		Alpha = rep(1/J,J)
+		Mean <- rep(NA,J)
+		Sd <- rep(NA,J)
+		X <- sort(X)
+
+		index1_Q <- 1
+		index2_Q <- 0
+		for(j in 1:J-1){
+			index2_Q <- floor(j*N/J)+1
+			Mean[j] <- mean(X[index1_Q:index2_Q])
+			index1_Q <- index2_Q+1
+			Sd[j] <- sqrt(var(X[index1_Q:index2_Q]))
+		}
+		Mean[J] <- mean(X[index1_Q:N])
+		Sd[J] <- sqrt(var(X[index1_Q:N]))
+  
+		data <- data.frame(init_alpha = Alpha, init_mu = Mean, init_sd = Sd)
+		return(data)
+	}
+\end{lstlisting}
+
+De la même façon que la fonction $param\_quantile1$, la fonction $param\_quantile2$ prend en argument : 
+\begin{itemize}
+	\item X, l'échantillon observé
+	\item J, le nombre d'espèce observée
+\end{itemize}
+
+Et on choisi comme paramètres initiaux $\alpha_j$, les valeurs $\alpha_j = \frac{1}{J}, ~\forall j \in [1,..J]$.\\
+
+La distinction qui se fait entre cette fonction et celle précédente est le choix des moyennes pour chaque espèce. 
+Le choix ici est le suivant : On effectue comme précédement un partionnement (uniforme suivant la parité) de l'échantillon. Puisque les intervalles formés correspondent approximativement aux valeurs du volume des nids de chaque espèce (suivant l'idée d'avoir des proportions égales d'espèce) la fonction choisi de prendre comme moyenne d'une espèce j, la moyenne du j-ème intervalle.
+
+Pour les écrat-types, on choisir les écart-types de chaque intervalle.\\
+
+\begin{rem}
+Même sous réserve d'avoir des proportions d'espèces proches, il n'est pas assuré que l'une des deux fonctions donne sans contestement une meilleure initialisation de l'algorithme EM.
+On peut envisager dans ce cas là, de considérer les deux fonctions et tester leurs résultats en appliquant l'algorithme EM. Il s'agira donc d'évaluer et de comparer la log-vraisemblance de la variable $X$ en les valeurs de sortie de l'algorithme EM, avec pour choix de paramètres initaux, ceux des fonctions présentées. On retiendra comme initalisation, celle dont la log-vraisemblance de $X$ sera la plus grande. \\
+\end{rem}
+
+Afin de se donner le plus de chance, quant à la détermination des estimateurs de maximum de vraisemblance de $X$. On en visage la fonction d'initialisation $param\_kmeans$, en espérant en plus qu'elle soit plus efficace que les deux précédentes.
+Par soucis de place, celle-ci sera donnée en Annexe.
+
+Décrivons tout fois son code et son principe :
+
+\subsection{Fonction param$\_$kmeans} 
+
+Cette fonction choisi en argument : 
+\begin{itemize}
+	\item X, l'échantillon observé
+	\item J, le nombre d'espèce observée\\
+\end{itemize}
+
+Il s'agit dans cette fonction de choisir une initialisation des paramètres initiaux dans un cadre plus générale que celui des deux fonctions précédente (en supposant égalité des coefficients $\alpha_j$ ou encore des $v_j$). \\
+
+La démarche est la suivante : 
+Etant donné une variable aléatoire X suivant une loi normale de paramètres quelqu'ils soient, la moyenne de variable X correspondra au maximum de ses valeurs. 
+Dans ce cas, et si on dispose d'un échantillon "plus ou moins bien hétérogène" (quant aux paramètres des lois normales du mélange) il est possible de choisir comme initialisation des moyennes, les moyennes exactes des espèces. 
+Dans le cas d'un mélange plus "homogène", il est possible de relever sur la densité de $X$ moins de max que de nombres de normales. Il peut y avoir plusieurs raison à cela, des moyennes très similaires, une proportion très faible d'espèce, des écart-types très élevés, tous ceci faisant confondre possiblement les normales entre elles. \\
+
+Pour remédier à ce problème, et quant à la suite des choix des paramètres, même dans des cas d'hétérogénéité, nous allons introduire un partitionnement de l'échantillon par méthode des k-means.\\
+
+La fonction $param\_kmeans$ va effectuer un partionnement par méthode des k-means sur le choix obtenu des moyennes (en les max de la densité de $X$). 
+Cette méthode permettra de ressembler les valeurs les plus proches de ces centres ensembles, il sera ensuite facile et rapide de déterminer une approximation de la proportion de chaque espèce ainsi que l'écart-type de leur loi associée.
+
+Cependant, comme indiqué juste au-dessus, il est possible que l'on ai un melange homogène entre les espèces, ceci peut amener à avoir moins de maximum qu'il y a d'espèces présentent et peut biaiser une bonne initialisation des moyennes. En voici une représentation du problème.
+
+image.
+
+Pour tenter de résoudre ceci, la fonction utilise un k-means sur les ces centres obtenus par maximum de la densité de $X$. Puis elle retient le cluster ayant le plus grand nombre de valeur et effectue un nouveau k-means sur ce sous échantillon, avec 2 centres initiaux, ces centres seront choisis automatiquement par la fonction $kmeans()$ de R parmi un choix de 25 initialisations. 
+
+De cette manière on actualise le choix des moyennes, la fonction effectuera autant de répétion nécéssaire, jusqu'à avoir un nombre de moyennes égale au nombre d'espèces. 
+En fin elle effectue un nouveau kmeans sur ces moyennes et relève les proportions associées aux clusters formés ainsi que leur écart-type.\\
+
+Nous allons maintenant décrire quelques parties de code de la fonction $param\_kmeans$ : 
+
+\begin{lstlisting}
+	if (size_m_X > J){
+    		min <- m_X[m_X < mean(X)] 
+    		max <- m_X[m_X > mean(X)]
+    		min_max <- sort(c(abs(min-mean(X)),abs(max-mean(X))))
+    		i <- 1 
+    		while (size_m_X > J){
+      			if (!is.null(min_max)){
+        			m_X <- m_X[m_X != min_max[i]] #On enlève les max les plus éloignés
+        			size_m_X <- length(m_X)
+      			}
+      			else{
+        				m_X2 <- sort(m_X)
+        				m_X <- m_X[m_X != m_X2[i]] #On enlève les max les plus faibles
+      			}
+      			i <- i+1
+    		}
+  	}
+\end{lstlisting}
+
+La densité de la variable X (des volumes des nids) peut faire apparaître par la cause d'un mélange "plus ou moins" homogène ou par l'approximation de la densité de $X$, des maximums non significatifs, ce qui peut engendrer des problèmes dans notre démarche. Il s'agira alors d'éssayer de les supprimer.
+
+Pour ce faire on relève tous les maximums en dehors de l'échantillon, et on supprime un part un ceux les plus éloignés de bornes de l'échantillon. Si cela ne suffit pas, on supprime les moyennes les moins significatifs (les plus faible) jusqu'à avoir un nombres de maximums égale au nombre d'espèces.
+Il s'agira également dans le choix d'initialisation des moyennes de remplacer les maximums par les centres des clusters formés, afin d'éviter le risque d'une moyenne non significatif.\\
+
+Pour finir cette section, il conviendra d'étudier ces trois fonctions comme dans la précédente remarque. 
+Le code ayant peu d'intérêt à présenter, on laissera le lecteur le choix de le voir en Annexe.
+
 
 
 \chapter{Un modèle pour les nids d'oiseaux}

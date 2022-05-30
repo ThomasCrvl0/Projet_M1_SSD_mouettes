@@ -216,7 +216,7 @@
 \chapter*{Introduction}
 \addcontentsline{toc}{part}{Introduction}
 
-L'observation est une composante essentielle en sciences appliquées, et tout particulièrement pour nous, futur statisticiens. Cette dernière nous permet d’élaborer des modèles, et dans le cadre de l’estimation paramétrique, de construire des estimateurs.
+L'observation est une composante essentielle en sciences appliquées, et tout particulièrement pour nous, futurs statisticiens. Cette dernière nous permet d’élaborer des modèles, et dans le cadre de l’estimation paramétrique, de construire des estimateurs.
 
 Dans la situation où les données sont correctement observées, cadre idéal, la statistique inférentielle nous permet d’obtenir dans certaines situations d’agréables expressions analytiques des estimateurs, notamment par la méthode du maximum de vraisemblance, qui est d'une redoutable efficacité. Toujours est-il que ces situations sont peu courantes ; nous sommes souvent confrontés à des situations présentant des données « cachées » ou manquantes. Dans ce dernier cas, nous verrons que les méthodes analytiques exactes ne suffisent plus, et qu’il est nécessaire d’introduire de nouvelles méthodes, également basées sur le principe du maximum de vraisemblance, pour tenter d’estimer les paramètres.
 
@@ -234,8 +234,8 @@ Dans un premier chapitre, nous modéliserons mathématiquement le problème et p
 
 %%% Premier chapitre %%%
 \chapter{Modélisation du problème et liminaire mathématique}
-Dans ce premier chapitre, nous introduirons les outils nécessaires pour modéliser mathématiquement le problème. Puis, nous présenterons successivement les deux situations existantes dans le cadre du recueil de données des nids d'oiseaux : celle dans laquelle et l'espèce et la volume du nid ont été observés; et celle dans laquelle seule le volume a pu être observé.
-Nous verrons et ce qui diffère entre ces deux situations, et les raisons qui ont incité à la création de l’algorithme EM, l’objet de notre projet. 
+Dans ce premier chapitre, nous introduirons les outils nécessaires pour modéliser mathématiquement le problème. Puis, nous présenterons successivement les deux situations existantes dans le cadre du recueil de données des nids d'oiseaux : celle dans laquelle et l'espèce et le volume du nid ont été observés; et celle dans laquelle seul le volume a pu être observé.
+Nous verrons ce qui diffère entre ces deux situations et les raisons qui ont incité à la création de l’algorithme EM, l’objet de notre projet. 
 
 Ce chapitre s'inspirera des références [2], [3] et [4].
 
@@ -268,11 +268,11 @@ Nous supposerons que, $\forall j\in \llbracket 1,J \rrbracket$, le volume des ni
 \begin{hyp}
 Soit $\Theta := \{ \theta = (\alpha_j,\mu_j, v_j)_{1 \leq j \leq J} \text{ tels que } \alpha_j > 0 \text{ } \forall j\in \llbracket 1,J\rrbracket \text{ et } \displaystyle\sum_{j=1}^J\alpha_j=1\}$. Soit $X_1, \cdots, X_n$ un échantillon de même loi que $X$. On supposera qu'il existe un $\theta \in \Theta$ tel que les données récoltées, ici les volumes des nids, soient la réalisation du précédent échantillon.
 \end{hyp}
-
+\newpage
 \begin{rem}
-La variable $Z$ est discrète et à valeur dans un sous-ensemble fini de $\N$, elle suit donc une loi 
+La variable $Z$ est discrète et à valeurs dans un sous-ensemble fini de $\N$, elle suit donc une loi 
 \begin{center} $\displaystyle \sum_{j=1}^J \alpha_j\delta_j$ \end{center}
-\underline{où} $J$ représente le nombre d'espèce d'oiseaux considéré et les $\alpha_j$ sont des réels, strictement positifs, représentant la proportion de nids de l'espèce $j$, tels que $\displaystyle\sum_{j=1}^J \alpha_j = 1$.
+\underline{où} $J$ représente le nombre d'espèces d'oiseaux considéré et les $\alpha_j$ sont des réels, strictement positifs, représentant la proportion de nids de l'espèce $j$, tels que $\displaystyle\sum_{j=1}^J \alpha_j = 1$.
 \end{rem}
 
 Il s'ensuit la proposition suivante, qui sera essentielle dans la suite.
@@ -298,7 +298,7 @@ $\displaystyle\sum_{j=1}^J\alpha_i\times f(x| Z = j)  = \displaystyle\sum_{j=1}^
 Le but de ce projet sera d'étudier des méthodes permettant l'estimation des divers paramètres de cette densité.
 
 \section{Une histoire de densités}
-Les variables $X$ et $Z$ sont toutes deux intégrables, nous pouvons dès lors considérer la loi conditionnelle de $Z$ sachant $X$ et la loi du couple $(X,Z)$. Nous introduisons donc une dernière densité et une dernière probabilité, qui nous seront fortes utiles dans la suite. 
+Les variables $X$ et $Z$ sont toutes deux intégrables, nous pouvons dès lors considérer la loi conditionnelle de $Z$ sachant $X$, et la loi du couple $(X,Z)$. Nous introduisons donc une dernière densité et une dernière probabilité, qui nous seront fort utiles dans la suite. 
 
 \begin{prop} Nous avons les résultats suivants :
 \begin{enumerate}
@@ -380,20 +380,20 @@ $ \widehat{\mu_j} = \displaystyle\frac{\sum_{i\in A_j} X_i}{\#A_j} $
 $ \widehat{v_j} = \displaystyle \frac{\sum_{i\in A_j}(X_i - \widehat{\mu_j})^2}{\#A_j}$
 \end{center}
 \end{prop}
-\newpage
+
 \begin{proof}
 Soit $\theta = (\alpha_j, \mu_j, v_j)_{j \in \llbracket 1,J \rrbracket}$. Il s'agit de déterminer 
 \begin{center}
 	$\underset{\theta\in\R^{3J}, \sum_{j=1}^J\alpha_j = 1}{\text{argmax}}\left(\displaystyle\sum_{j=1}^J \#A_j ln(\alpha_j)+ \sum_{j=1}^J\sum_{i\in A_j} ln(\gamma_{\mu_j, v_j}(X_i))\right)$
 \end{center}
-Nous avons donc à résoudre un programme de minimisation d'une fonction convexe sur un convexe avec une contraite égalité, il est ainsi naturel de faire appel au Lagrangien. \newline 
+Nous avons donc à résoudre un programme de minimisation d'une fonction convexe sur un convexe avec une contrainte égalité, il est ainsi naturel de faire appel au Lagrangien. \newline 
 Ce dernier s'écrit
 \begin{align*} 
 L(\theta) &= \displaystyle\sum_{j=1}^J \#A_j ln(\alpha_j)+ \sum_{j=1}^J\sum_{i\in A_j} ln(\gamma_{\mu_j, v_j}(X_i)) - \lambda\times\left(\sum_{j=1}^J\alpha_j - 1\right)\\
 &= \displaystyle\sum_{j=1}^J \#A_j ln(\alpha_j)+ \sum_{j=1}^J\sum_{i\in A_j} ln\left(\frac{1}{\sqrt{2\pi v_j}}\exp\left(-\frac{\left(X_i -\mu_j\right)^2}{2v_j} \right)\right) - \lambda\times\left(\sum_{j=1}^J\alpha_j - 1\right)\\
 &= \displaystyle\sum_{j=1}^J \#A_j ln(\alpha_j)+ \sum_{j=1}^J\sum_{i\in A_j}\left( \frac{-1}{2}ln(2\pi v_j) -\frac{(X_i-\mu_j)^2}{2v_j}\right) - \lambda\times\left(\sum_{j=1}^J\alpha_j - 1\right)\\
 \end{align*}
-
+\newpage
 Il reste maintenant à résoudre le système suivant, afin d'obtenir le vecteur $\widehat{\theta} := (\widehat{\alpha_j}, \widehat{\mu_j}, \widehat{v_j})_{j\in\llbracket 1,J \rrbracket}$ solution du programme.
 
 $
@@ -439,7 +439,7 @@ $
 
 %section 3
 \section{Une situation concordante à la réalité} % approche réelle // situation naturelle // concordance
-Nous nous placerons désormais dans un contexte tout autre que celui du paragraphe précédent, un contexte concordant davantage à la réalité. Dans ce qui suit, nous supposerons que ne sont observées que les volumes des nids, les diverses espèces d'oiseaux les ayant construit étant en quelque sorte des données inobservées ou "cachées". Nous avons donc un échantillon $X_1,\cdots, X_n$ de même loi que la variable $X$ comme définie ci-dessus. \newline
+Nous nous placerons désormais dans un contexte tout autre que celui du paragraphe précédent, un contexte concordant davantage à la réalité. Dans ce qui suit, nous supposerons que ne sont observés que les volumes des nids, les diverses espèces d'oiseaux les ayant construit étant en quelque sorte des données inobservées ou "cachées". Nous avons donc un échantillon $X_1,\cdots, X_n$ de même loi que la variable $X$ comme définie ci-dessus. \newline
 La log-vraisemblance des observations $\mathcal{L}_{obs}$ s'obtient aisément : 
 \begin{center} $\mathcal{L}_{obs}(\theta, X_1, \cdots, X_n) := ln\left( \displaystyle\prod_{i=1}^n f_\theta(X_i) \right) = \displaystyle\sum_{i=1}^nln\left( \sum_{j=1}^J \alpha_j \gamma_{\mu_j, v_j}(X_i) \right)$ \end{center}
 Nous voyons dès lors que l'existence d'une expression analytique du maximum de la log-vraisemblance n'est pas assurée. Il est donc nécessaire de trouver un moyen d'approcher les valeurs des différents estimateurs. \newline
@@ -488,7 +488,7 @@ Or, les couples $(X_i, Z_i)$ sont indépendants, donc
 
 Nous nous appuierons sur l'expression suivante pour l'expression des estimateurs du maximum de vraisemblance :
 
-\begin{prop} La fonction $\lv_{c}(\theta, \thetat, X_1, \cdots, X_n)$ se réécrie sous la forme suivante : 
+\begin{prop} La fonction $\lv_{c}(\theta, \thetat, X_1, \cdots, X_n)$ se réécrit sous la forme suivante : 
 \begin{align*}
  \lv_{c}(\theta, \thetat, X_1, \cdots, X_n) &= -\frac{n}{2}ln(2\pi)+\sum_{j=1}^J \left(\sum_{i = 1}^n \prob_{\thetat}(Z= j|X=X_i)\right) \times ln(\alpha_j)\\
 &~~~-\frac{1}{2}\sum_{j=1}^J\left(\sum_{i=1}^n  \prob_{\thetat}(Z=j|X=X_i)\times\left(log(v_j)+\frac{(X_i-\mu_j)^2}{v_j}\right)\right)
@@ -550,13 +550,11 @@ $\widehat{v_j} = \displaystyle\frac{\displaystyle\sum_{i=1}^n (X_i -\widehat{\mu
 \end{center}
 \end{prop}
 
-\newpage
-
 \begin{proof}
 Soit $\theta = (\alpha_j, \mu_j, v_j)_{j\in\llbracket1,J\rrbracket}$. Il s'agit ici de maximiser la fonction $\theta \mapsto \lv_{c}(\theta,\thetat, X_1, \cdots, X_n)$.
 
 Puisqu'il s'agit d'un problème d'optimisation, nous appliquons la même méthode que précédemment, en introduisant le Lagrangien du problème sous la contrainte $\displaystyle\sum_{i=1}^n\alpha_i = 1$.
-Nous rappelons que le Lagrangien $L$ est définit par
+Nous rappelons que le Lagrangien $L$ est défini par
 
 \begin{center}
 $
@@ -608,7 +606,7 @@ On en déduit ainsi $\lambda = n$, ainsi que le résultat énoncé.
 \end{proof}
 
 
-Tous ces inesthétiques et fastidieux calculs n'ont pas été effectué en vain. Nous les avons réalisé suite à l'introduction d'une notion nouvelle, celle de la log-vraisemblance conditionnelle; qui elle-même à été introduite faute de ne pouvoir obtenir une expression analytique de la log-vraisemblance des observations. Nous allons maintenant tâcher de mettre en exergue les raisons de ce développement théorique.
+Tous ces inesthétiques et fastidieux calculs n'ont pas été effectués en vain. Nous les avons réalisés suite à l'introduction d'une notion nouvelle, celle de la log-vraisemblance conditionnelle; qui elle-même à été introduite faute de ne pouvoir obtenir une expression analytique de la log-vraisemblance des observations. Nous allons maintenant tâcher de mettre en exergue les raisons de ce développement théorique.
 
 \pagebreak
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -619,7 +617,7 @@ Le présent chapitre aura une double tâche. La première est d'introduire l'él
 
 \section{Présentation laconique et pseudo-code}
 
-Dans cette partie, nous allons faire le lien entre les outils développés dans le chapitre précédent, et expliciter en quel sens ils apportent une solution à notre problématique. Rappelons que cette dernière consiste en l'estimation de paramètres d'une log-vraisemblance des observations impossible à maximiser. Comme mentionné lors de l'introduction, nous allons présenter l'algorithme EM. Il s'agit d'une méthode itérative, constituée de deux étapes; à savoir une étape "Expectation" et une étape "Maximization". Dans la suite de ce chapitre, nous verrons que cet algorithme nous permet de calculer une suite de paramètres qui auront la particularité de faire croître la log-vraisemblance des observations à chaque itération. \\
+Dans cette partie, nous allons faire le lien entre les outils développés dans le chapitre précédent, et expliciter en quel sens ils apportent une solution à notre problématique. Rappelons que cette dernière consiste en l'estimation de paramètres d'une log-vraisemblance des observations impossibles à maximiser. Comme mentionné lors de l'introduction, nous allons présenter l'algorithme EM. Il s'agit d'une méthode itérative, constituée de deux étapes; à savoir une étape "Expectation" et une étape "Maximization". Dans la suite de ce chapitre, nous verrons que cet algorithme nous permet de calculer une suite de paramètres qui auront la particularité de faire croître la log-vraisemblance des observations à chaque itération. \\
 Nous allons dans un premier temps décrire le fonctionnement de l'algorithme, l'explication de sa raison d'être n'en sera que plus limpide.
 
 Dans ce qui suit, nous noterons par $X_1,\cdots X_n$ l'échantillon observé, et par $\theta := (\alpha_j, \mu_j, \sigma_j)_{j\in\llbracket 1,J \rrbracket}$ le vecteur des paramètres.
@@ -629,7 +627,7 @@ La phase E consiste à calculer de manière effective non pas la log-vraisemblan
 \begin{center}
 $\prob_{\thetat}(Z=j|X=X_i)$
 \end{center}
-puisque seule son expression est nécessaire pour obtenir les maximums établi à la proposition 7. Son calcul sera rendu possible grâce à la formule établie dans la proposition 2 et grâce à l'utilisation des paramètres $\alpha_j, \mu_j, \sigma_j$ calculés à l'itération précédente lors de l'étape M. À l'itération zéro, il est donc indispensable de renseigner des paramètres initiaux. Leur détermination occupera donc une place centrale dans notre projet et nous en discuterons dans une section ultérieure.
+puisque seule son expression est nécessaire pour obtenir les maximums établis à la proposition 7. Son calcul sera rendu possible grâce à la formule établie dans la proposition 2 et grâce à l'utilisation des paramètres $\alpha_j, \mu_j, \sigma_j$ calculés à l'itération précédente lors de l'étape M. À l'itération zéro, il est donc indispensable de renseigner des paramètres initiaux. Leur détermination occupera donc une place centrale dans notre projet et nous en discuterons dans une section ultérieure.
 
 \subsection{L'étape M (Maximization)}
 La phase M consiste à maximiser la vraisemblance trouvée à l'étape E. Ce maximum sera atteint en $\theta_M = (\widehat{\alpha_j}, \widehat{\mu_j}, \widehat{\sigma_j})$ et ces trois paramètres seront calculés à l'aide des maximas établis à la proposition 7. Une fois qu'ils auront été déterminés, ce sont ces trois paramètres qui seront utilisés dans l'itération suivante pour mettre à jour la log-vraisemblance conditionnelle lors de l'étape M.
@@ -637,7 +635,7 @@ La phase M consiste à maximiser la vraisemblance trouvée à l'étape E. Ce max
 \newpage
 
 \subsection{Pseudo-code de l'algorithme EM}
-Pour l'implémentation de cet algorithme, nous nous sommes appuyés sur le pseudo-code suivant, insipré de la référence [3].
+Pour l'implémentation de cet algorithme, nous nous sommes appuyés sur le pseudo-code suivant, inspiré de la référence [3].
 
 \begin{algorithm}
 	\caption{\textbf{L’algorithme EM (Dempster et al., 1977).}}
@@ -726,9 +724,9 @@ Il n'existe pas de preuvre de convergence de la suite de paramètres établie pa
 % section 2
 \section{Une preuve de croissance}
 
-Dans cette concise section, nous énonçons un théorème essentiel. Ce dernier, et unique, théorème est un résultat fondamental, il apporte une réponse à la raison d'être de l'algorithme, une justification à son élaboration. \\
-Rappelons que notre problématique est de maximiser une log-vraisemblance des observations, qui présente une expression qu'il n'est possible de maximiser analytiquemement. Nous cherchons donc à maximiser la quantité $\mathcal{L}_{obs}(\theta, X_1, \cdots, X_n)$ définie à la proposition 2, en les paramètres $\alpha_1, \cdots, \alpha_J, \mu_1, \cdots, \mu_J, v_1, \cdots, v_J$. \\
-Le théorème suivant nous affirme, qu'à chaques itérations $k$, l'algorithme EM produit une suite de paramètres 
+Dans cette concise section, nous énonçons un théorème essentiel. Ce dernier, et unique théorème est un résultat fondamental, il apporte une réponse à la raison d'être de l'algorithme, une justification à son élaboration. \\
+Rappelons que notre problématique est de maximiser une log-vraisemblance des observations, qui présente une expression qu'il n'est possible de maximiser analytiquement. Nous cherchons donc à maximiser la quantité $\mathcal{L}_{obs}(\theta, X_1, \cdots, X_n)$ définie à la proposition 2, en les paramètres $\alpha_1, \cdots, \alpha_J, \mu_1, \cdots, \mu_J, v_1, \cdots, v_J$. \\
+Le théorème suivant nous affirme, qu'à chaque itération $k$, l'algorithme EM produit une suite de paramètres 
 \begin{center}
 $(\theta_k)_{k\in \llbracket1, K\rrbracket} := (\alpha_{1_k}, \cdots, \alpha_{J_k}, \mu_{1_k}, \cdots, \mu_{J_k}, v_{1_k}, \cdots, v_{J_k})_{k\in \llbracket1, K\rrbracket}$
 \end{center}
@@ -789,10 +787,10 @@ Comme sus-mentionné, ce résultat ne prétend pas que l'algorithme EM maximiser
 
 \chapter{Etude de simulations}
 
-Dans ce troisième chapitre, il s'agira de présenter des algorithmes complémentaires à celui de l'algorithme EM. Ces derniers nous mener à bien notre brève étude sur "l'efficacité" de notre implémentation, et ce pour divers mélanges.
+Dans ce troisième chapitre, il s'agira de présenter des algorithmes complémentaires à celui de l'algorithme EM. Ces derniers nous permettrons de mener à bien notre brève étude sur "l'efficacité" de notre implémentation, et ce pour divers mélanges.
 
 \section{La fonction simulation}
-Afin de pouvoir exécuter l'algorithme EM, nous avons besoin d'un échantillon issue d'un mélange gaussien. Comme nous le verrons dans le chapitre 4, nous disposons dans le cadre de ce projet uniquement de données répertoriant les moyennes et les écarts-types des volumes des nids de treize espèces d'oiseaux différentes. Grâce à ces données et à la commande $rnorm(\mu, \sigma)$ de $R$, nous avons implémenté la fonction \textit{simulation}, qui a pour mission de générer aléatoirement un échantillon d'un mélange Gaussien. Il s'agit d'une des plus importantes fonction de ce projet, nous allons donc la décrire.
+Afin de pouvoir exécuter l'algorithme EM, nous avons besoin d'un échantillon issu d'un mélange gaussien. Comme nous le verrons dans le chapitre 4, nous disposons dans le cadre de ce projet uniquement de données répertoriant les moyennes et les écarts-types des volumes des nids de treize espèces d'oiseaux différentes. Grâce à ces données et à la commande $rnorm(\mu, \sigma)$ de $R$, nous avons implémenté la fonction \textit{simulation}, qui a pour mission de générer aléatoirement un échantillon d'un mélange Gaussien. Il s'agit d'une des plus importantes fonction de ce projet, nous allons donc la décrire.
 \begin{lstlisting}
 	simulation = function(data_th, n=100){
 		X = rep(NA,n) #echantillon
@@ -825,7 +823,7 @@ Afin de pouvoir exécuter l'algorithme EM, nous avons besoin d'un échantillon i
 \newpage
 La fonction prend en argument $data\_th$ (le dataframe contenant les paramètres $\alpha$, $\mu$ et $\sigma$) et $n$, qui indique la taille de l'échantillon à générer aléatoirement. \\
 La fonction retourne le vecteur du mélange gaussien de taille $n$ qui a été généré aléatoirement. \\
-La plus partie la plus importante et subtile de ce script est celle dans laquelle nous distribuons aléatoirement les lois des différents $(X_i)_{i \in \{1, \dots, n\}}$ de l'échantillon, de sorte à avoir un bon mélange gaussien. \\
+La partie la plus importante et subtile de ce script est celle dans laquelle nous distribuons aléatoirement les lois des différents $(X_i)_{i \in \{1, \dots, n\}}$ de l'échantillon, de sorte à avoir un bon mélange gaussien. \\
 Pour simplifier les choses nous allons prendre un exemple dans lequel nous voulons générer un mélange de trois gaussiennes, ayant pour paramètres respectifs $\theta_1 = (\alpha_1, \mu_1, \sigma_1)$, $\theta_2 = (\alpha_2, \mu_2, \sigma_2)$ et $\theta_3 = (\alpha_3, \mu_3, \sigma_3)$. Nous rappelons une fois de plus que  $\displaystyle\sum_{j=1}^{3} \alpha_j = 1$. Nous procédons de la manière suivante: \\
 Nous génèrons une variable aléatoire $Z$ de loi uniforme à l'aide de la commande $runif$ de $R$; puis :
 \begin{itemize}
@@ -967,20 +965,20 @@ Les boites à moustaches (boxplot) ci-dessous, modélisent l'erreur absolue entr
 	\caption{Boxplot des erreurs absolues de $(\alpha_j)_{j \in  \{1\dots3\}}$ et $(\mu_j)_{j \in \{1\dots3\}}$}
 \end{figure}
 
-Concernant les boxplots des erreurs absolues des paramètres $(\mu_{i})_{i \in 1 \dots 3}$ et $(\sigma_i)_{i \in 1 \dots 3}$ de la figure 3.6, les conclusions sont les mêmes que dans le cas d'un mélange gaussien avec "fortes séparations". En effet, leurs erreurs absolues diminuent lorsque la taille $n$ de l'échantillon croît. Nous observons cependant quelque chose d'inhabituel chez les paramètres $\alpha_2$ et $\alpha_3$. Leurs erreurs absolues augmentent quand n croît alors que leurs variances diminuent. Cela illustre bien que les paramètres estimés par l'algorithme EM ne convergent pas toujours vers les paramètres théoriques.
+Concernant les boxplots des erreurs absolues des paramètres $(\mu_{i})_{i \in 1 \dots 3}$ et $(\sigma_i)_{i \in 1 \dots 3}$ de la figure 3.6, les conclusions sont les mêmes que dans le cas d'un mélange gaussien avec "fortes séparations". En effet, leurs erreurs absolues diminuent lorsque la taille $n$ de l'échantillon croît. Nous observons cependant quelque chose d'inhabituelle chez les paramètres $\alpha_2$ et $\alpha_3$. Leurs erreurs absolues augmentent quand n croît alors que leurs variances diminuent. Cela illustre bien que les paramètres estimés par l'algorithme EM ne convergent pas toujours vers les paramètres théoriques.
 
 \section{Automatisation du choix des paramètres initaux}
 
-Dans le cas eventuel où l'utilisateur ne souhaite pas ou ne pas peut pas effectuer de décisions quant au choix des paramètres initaux de l'algorithme EM, on se propose de présenter trois fonctions automatisant ce choix. \\
+Dans le cas eventuel où l'utilisateur ne souhaite pas ou ne pas peut pas effectuer de décisions quant aux choix des paramètres initaux de l'algorithme EM, nous proposons de présenter trois fonctions automatisant ce choix. \\
 
-Nous présenterons dans un premier temps les deux fonctions $param\_quantile1$ et $param\_quantile2$. Elles reposent sur une approche plus simplicite et rendent compte, pour le choix des paramètres $(\alpha_j)_{j \in \{1,...,J\}}$ (proportions des J espèces observées) et $v_{j \in \{1,...,J\}}$ (variances des volumes des J espèces observées), des idées suivantes : 
+Nous présenterons dans un premier temps les deux fonctions $param\_quantile1$ et $param\_quantile2$. Elles reposent sur une approche plus simpliste et rendent compte, pour le choix des paramètres $(\alpha_j)_{j \in \{1,...,J\}}$ (proportions des J espèces observées) et $v_{j \in \{1,...,J\}}$ (variances des volumes des J espèces observées), des idées suivantes : 
 
-Si l'échantillon est obtenu aléatoirement, sur une zone d'étude tirée aléatoirement, on pourrait supposer que la proportion de chaque espèces sur cette zone est approximativement la même. 
+Si l'échantillon est obtenu aléatoirement, sur une zone d'étude tirée aléatoirement, on peut supposer que la proportion de chacunes des espèces sur cette zone est approximativement la même. 
 Nous choisirons ainsi des proportions égales pour le choix d'initialisation des paramètres  $(\alpha_j)_{j \in \{1,...,J\}}$.
 
-De même, il est vraisemblable de ce dire que, pour des espèces semblables, chaque espèce fait des nids approximativement de même volume. Ainsi on pourra choisir comme écarts-types, des écarts-types égaux.\\
+De même, il est vraisemblable de ce dire que, pour des espèces semblables, chacune fait des nids de volumes approximativement égaux. Ainsi, nous pourrons choisir comme écarts-types initiaux, des écarts-types égaux.\\
 
-La distinction de ces deux fonctions vient quant aux choix des moyennes des epèces observées.
+La distinction de ces deux fonctions vient quant aux choix des moyennes des espèces observées.
 Pour ce faire, nous allons décrire les codes de ces deux fonctions.
 
 
@@ -1006,27 +1004,27 @@ Pour ce faire, nous allons décrire les codes de ces deux fonctions.
 \end{lstlisting}
 
 
-La fonction $param\_quantile1$ prend en argument : 
+La fonction $param\_quantile1$ prend en arguments : 
 \begin{itemize}
 	\item $X$, l'échantillon observé
-	\item $J$, le nombre d'espèces observé
+	\item $J$, le nombre d'espèces observées
 \end{itemize}
 
 
-Comme décrit en debut de section, nous choisirons des proportions égales entre espèce. Nous avons alors 
+Comme décrit en début de section, nous choisirons des proportions égales entre espèces. Nous avons alors 
 \begin{center}
-$\alpha_j = \frac{1}{J},~\forall j \in \{1,..J\}$.
+$\alpha_j = \displaystyle\frac{1}{J},~\forall j \in \{1,..J\}$.
 \end{center}
 Puisque que les espèces font (dans l'idée de cette fonction) des nids semblables, nous allons trier notre échantillon. 
 
 Pour le choix des moyennes le principe est le suivant : 
 \begin{itemize}
 \item Nous découpons l'intervalle des observations uniformément en $J+1$ intervalles
-\item Nous prendrons comme moyennes les $J$premières valeurs associées à ces coupures; cela correspondra approximativement à prendre les J premiers quantiles.
+\item Nous prendrons comme moyennes les $J$ premières valeurs associées à ces coupures; cela correspondra approximativement à prendre les J premiers quantiles.
 \end{itemize}
-Le fait de supposer des proportions égales entre les epèces, permet de voir chaque intervalle comme les valeurs associées aux volumes de chaque espèces, aura ainsi pour le j-ème intervalle formé les valeurs des volumes des nids de l'espèces j.
+Le fait de supposer des proportions égales entre les espèces permet de voir chacun des intervalles comme les valeurs associées aux volumes de chaque espèces, nous aurons ainsi pour le j-ème intervalle formé les valeurs des volumes des nids de l'espèces $j$.
 
-Quant aux choix des écart-types de chaque espèce, on choisira l'écart-type de la première espèce. \\
+Quant aux choix des écart-types de chaque espèce, nou choisiraons l'écart-type de la première espèce. \\
 
 Décrivons maintenant la seconde fonction.
 
@@ -1056,25 +1054,27 @@ Décrivons maintenant la seconde fonction.
 	}
 \end{lstlisting}
 
-De la même façon que la fonction $param\_quantile1$, la fonction $param\_quantile2$ prend en argument : 
+De la même façon que la fonction $param\_quantile1$, la fonction $param\_quantile2$ prend comme arguments : 
 \begin{itemize}
 	\item $X$, l'échantillon observé
-	\item $J$, le nombre d'espèce observée
+	\item $J$, le nombre d'espèces observées
 \end{itemize}
 
-Et on choisi comme paramètres initiaux $\alpha_j$, les valeurs $\alpha_j = \frac{1}{J}, ~\forall j \in [1,..J]$.\\
+Et nous choisirons comme proportions initiales : 
+\begin{center}
+$\alpha_j = \displaystyle\frac{1}{J}, ~\forall j \in \{1,..J\}$.
+\end{center}
+La distinction qui se fait entre cette fonction et la précédente est le choix des moyennes pour chaque espèces. 
+Le choix ici est le suivant : nous effectuons comme précédement un partionnement (uniforme suivant la parité) de l'échantillon. Puisque les intervalles formés correspondent approximativement aux valeurs du volume des nids de chaque espèces (suivant l'idée d'avoir des proportions égales d'espèces) la fonction choisie de prendre comme moyenne d'une espèce $j$, la moyenne du j-ème intervalle.
 
-La distinction qui se fait entre cette fonction et la précédente est le choix des moyennes pour chaque espèce. 
-Le choix ici est le suivant : On effectue comme précédement un partionnement (uniforme suivant la parité) de l'échantillon. Puisque les intervalles formés correspondent approximativement aux valeurs du volume des nids de chaque espèce (suivant l'idée d'avoir des proportions égales d'espèce) la fonction choisi de prendre comme moyenne d'une espèce j, la moyenne du j-ème intervalle.
-
-Pour les écrat-types, on choisir les écart-types de chaque intervalle.\\
+Pour les écarts-types, nous choisirons les écarts-types de chaque intervalles.\\
 
 \begin{rem}
 Même sous réserve d'avoir des proportions d'espèces proches, il n'est pas assuré que l'une des deux fonctions donne une meilleure initialisation de l'algorithme EM.
-Nous pouvons envisager dans ce cas là, de considérer les deux fonctions et de tester leurs résultats en appliquant l'algorithme EM. Il s'agira donc d'évaluer et de comparer la log-vraisemblance de la variable $X$ en les valeurs de sortie de l'algorithme EM, avec pour choix de paramètres initaux, ceux des fonctions présentées. On retiendra comme initalisation, celle dont la log-vraisemblance de $X$ sera la plus grande. \\
+Nous pouvons envisager dans ce cas là, de considérer les deux fonctions et de tester leurs résultats en appliquant l'algorithme EM. Il s'agira donc d'évaluer et de comparer la log-vraisemblance de la variable $X$ en les valeurs de sortie de l'algorithme EM, avec pour choix de paramètres initaux, ceux des fonctions présentées. On retiendra comme initalisation, celles dont la log-vraisemblance de $X$ sera la plus grande. \\
 \end{rem}
 
-Afin de se donner le plus de chance quant à la détermination des estimateurs de maximum de vraisemblance de $X$, nous envisageons de considérer la fonction d'initialisation $param\_kmeans$, en espérant en plus qu'elle soit plus efficace que les deux précédentes.
+Afin de se donner le plus de chance quant à la détermination des estimateurs du maximum de vraisemblance de $X$, nous envisageons de considérer la fonction d'initialisation $param\_kmeans$, en espérant qu'elle soit plus efficace que les deux précédentes.
 Par soucis de présentation, celle-ci sera donnée en Annexe.
 
 Décrivons toutefois son code et son principe :
@@ -1084,29 +1084,27 @@ Décrivons toutefois son code et son principe :
 Cette fonction choisi en argument : 
 \begin{itemize}
 	\item $X$, l'échantillon observé
-	\item $J$, le nombre d'espèce observée\\
+	\item $J$, le nombre d'espèce observées\\
 \end{itemize}
 
-Il s'agit dans cette fonction de choisir une initialisation des paramètres initiaux dans un cadre plus général que celui des deux fonctions précédente (en supposant égalité des coefficients $\alpha_j$ ou encore des $v_j$). \\
+Il s'agit dans cette fonction de choisir une initialisation des paramètres initiaux dans un cadre plus général que celui des deux fonctions précédentes (en supposant égalité des coefficients $\alpha_j$ ou encore des $v_j$). \\
 
 La démarche est la suivante : \newline
 Etant donné une variable aléatoire $Y$ suivant une loi normale de paramètres $\mu, \sigma$ quelconques, la moyenne de variable $Y$ correspondra au maximum de ses valeurs. \\
-Dans ce cas, et si nous disposons d'un échantillon "plus ou moins bien hétérogène" (quant aux paramètres des lois normales du mélange), il est possible de choisir comme initialisation des moyennes, les moyennes exactes des espèces. 
-Dans le cas d'un mélange plus "homogène", il est possible de relever sur la densité de $X$ moins de maximums que de nombres de normales. Il peut y avoir plusieurs raison à cela, des moyennes très similaires, des proportions très faibles d'espèces, des écarts-types très élevés; tout ceci faisant confondre possiblement les normales entre elles. \\
+Dans ce cas, et si nous disposons d'un échantillon "plus ou moins bien hétérogène" (quant aux paramètres des lois normales du mélange), il est possible de choisir comme initialisation des moyennes, les moyennes des espèces. 
+Dans le cas d'un mélange plus "homogène", il est possible de relever sur la densité de $X$ moins de maximums que de nombre de lois normales. Il peut y avoir plusieurs raison à cela, des moyennes très similaires, des proportions très faibles d'espèces, des écarts-types très élevés; tout ceci faisant confondre possiblement les lois normales entre elles. \\
 
-Pour remédier à ce problème, et quant à la suite du choix des paramètres, même dans des cas d'hétérogénéité, nous allons introduire un partitionnement de l'échantillon par méthode des k-means.\\
+Pour remédier à ce problème, et pour la suite du choix des paramètres, même dans des cas d'hétérogénéité, nous allons introduire un partitionnement de l'échantillon par méthode des k-means.\\
 
 La fonction $param\_kmeans$ va effectuer un partionnement par méthode des k-means sur le choix obtenu des moyennes (en les maximums de la densité de $X$). 
-Cette méthode permettra de rassembler les valeurs les plus proches de ces centres ensembles, il sera ensuite aisé de déterminer une approximation de la proportion de chaque espèce ainsi que l'écart-type associé.
+Cette méthode permettra de rassembler les valeurs les plus proches de ces centres ensembles, il sera ensuite aisé de déterminer une approximation de la proportion de chaque espèces ainsi que l'écart-type associé.
 
-Cependant, comme sus-mentionné, il est possible que l'on ait un melange homogène entre les espèces. Ceci peut amener au fait d'obtenir moins de maximums qu'il y a d'espèces présentent; et peut biaiser une bonne initialisation des moyennes. En voici une représentation du problème.
-
-image.
+Cependant, comme sus-mentionné, il est possible que l'on ait un mélange homogène entre les espèces. Ceci peut amener au fait d'obtenir moins de maximums qu'il y a d'espèces présentent; et peut biaiser une bonne initialisation des moyennes.
 
 Pour tenter de résoudre ceci, la fonction utilise un k-means sur ces centres obtenus par maximum de la densité de $X$. Puis elle retient le cluster ayant le plus grand nombre de valeurs et effectue un nouveau k-means sur ce sous-échantillon, avec deux centres initiaux. Ces centres seront choisis automatiquement par la fonction $kmeans()$ de $R$ parmi un choix de 25 initialisations. 
 
-De cette manière on actualise le choix des moyennes, la fonction effectuera autant de répétions que nécéssaire, jusqu'à avoir un nombre de moyennes égale au nombre d'espèces. 
-Enfin, elle effectue un nouveau kmeans sur ces moyennes et relève les proportions associées aux clusters formés ainsi que leur écart-type.\\
+De cette manière nous actualisons le choix des moyennes, la fonction effectuera autant de répétions que nécéssaire, jusqu'à avoir un nombre de moyennes égale au nombre d'espèces. 
+Enfin, elle effectue un nouveau k-means sur ces moyennes et relève les proportions associées aux clusters formés ainsi que leusr écarts-types.\\
 
 Nous allons maintenant décrire quelques parties du code de la fonction $param\_kmeans$ : 
 
@@ -1130,13 +1128,12 @@ Nous allons maintenant décrire quelques parties du code de la fonction $param\_
   	}
 \end{lstlisting}
 
-La densité de la variable $X$ (des volumes des nids) peut faire apparaître par la cause d'un mélange "plus ou moins" homogène ou par l'approximation de la densité de $X$, des maximums non significatifs, ce qui peut engendrer des problèmes dans notre démarche. Il s'agira alors d'éssayer de les supprimer.
+La densité de la variable $X$ (des volumes des nids) peut faire apparaître, à cause d'un mélange "plus ou moins" homogène ou par l'approximation de la densité de $X$, des maximums non significatifs, ce qui peut engendrer des problèmes dans notre démarche. Il s'agira alors d'essayer de les supprimer.
 
-Pour ce faire on relève tous les maximums en dehors de l'échantillon, et nous supprimons une part de ceux les plus éloignés des bornes de l'échantillon. Si cela ne suffit pas, nous supprimons les moyennes les moins significatives (les plus faibles) jusqu'à avoir un nombres de maximums égale au nombre d'espèces.
-Il s'agira également dans le choix d'initialisation des moyennes de remplacer les maximums par les centres des clusters formés, afin d'éviter le risque d'une moyenne non significatif.\\
+Pour ce faire nous relèvons tous les maximums en dehors de l'échantillon, et nous supprimons une part de ceux qui sont les plus éloignés des bornes de l'échantillon. Si cela ne suffit pas, nous supprimons les moyennes les moins significatives (les plus faibles) jusqu'à avoir un nombre de maximums égal au nombre d'espèces.
+Il s'agira également dans le choix d'initialisation des moyennes de remplacer les maximums par les centres des clusters formés, afin d'éviter le risque d'une moyenne non significative.\\
 
-Pour finir cette section, il conviendra d'étudier ces trois fonctions comme dans la précédente remarque. 
-Le code ayant peu d'intérêt à présenter, on laissera au lecteur le choix de le voir en Annexe.
+Pour finir cette section, il conviendra d'étudier ces trois fonctions comme dans la précédente remarque. Ceci sera effectué en annexe, l'essentiel des scripts y seront décrit.
 
 
 
@@ -1175,7 +1172,7 @@ $
 \underline{où} $h$ est la taille de la fenêtre et $n$ la taille de l'échantillon. Il s'agit, en quelque sorte, d'une moyenne "locale" en $x$ avec les points de l'échantillon $X_i$ qui appartiennent à la fenêtre $[x-h, x+h]$. $K$ est une fonction de noyau. Souvent, elle est choisie comme une densité gaussienne centrée réduite.
 
 Nous pourrons dès lors récupérer des informations bien utiles; si des pics bien distincts se présentent, cela nous permettra de régler judicieusement les moyennes et variances initiales. Nous détaillerons ceci ultérieurement. \newline
-\item Une seconde solution est d'utiliser est d'utiliser les quantiles pour l'estimation des moyennes, et l'écart-type empirique pour les variances initiales. Nous détaillerons également cela lors de l'étude.
+\item Une seconde solution est d'utiliser les quantiles pour l'estimation des moyennes, et l'écart-type empirique pour les variances initiales. Nous détaillerons également cela lors de l'étude.
 \end{itemize}
 
 Une fois cela fait, nous pourrons exécuter notre algorithme et obtenir son estimation des paramètres. Nous pourrons dès lors émettre les conclusions appropriées.\newline
@@ -1254,14 +1251,14 @@ algo_EM(param_init_1, data, 10)
 \end{verbatim}
 Nous obtenons ainsi nos paramètres estimés. Nous pouvons dès lors transmettre les résultats aux ornithologues qui émettront les conclusions appropriées. 
 \newpage
-\item Nous avons en notre possession les valeurs théoriques, comparons les avec les valeurs estimés. Ces dernières sont contenues dans le dataframe \textit{df}. Affichons le :
+\item Nous avons en notre possession les valeurs théoriques, comparons les avec les valeurs estimées. Ces dernières sont contenues dans le dataframe \textit{df}. Affichons le :
 \begin{verbatim}
          bird_names2 proportion_alpha mean_volume sd_volume
 1 European Goldfinch         0.2878713       38.0       9.1
 12         Ring Ouzel        0.7121287      298.6     125.1
 \end{verbatim}
 
-Les proportions sont toutes deux très bien estimées, les erreurs sont de l'ordre de $1\%$.Il en est de même pour les moyennes, les erreurs d'estimations sont de l'ordre de $1\%$, ce qui est plus que satisfaisant. Les variances sont de mêmes très bien estimées.
+Les proportions sont toutes deux très bien estimées, les erreurs sont de l'ordre de $1\%$.Il en est de même pour les moyennes, les erreurs d'estimations sont de l'ordre de $1\%$, ce qui est plus que satisfaisant. Les variances sont de même très bien estimées.
 
 
 \subsection{Seconde réalisation de l'étude}
@@ -1385,7 +1382,6 @@ L’algorithme EM est un point d’accroche aux solutions dont nous disposons po
 [6] Fraley C., Raftery A.E., Scrucca L., Murphy T.B, Fop M. (2020). Package 'mclust', \textit{Documentation du package mclust}\newline
  \url{https://cran.r-project.org/web/packages/mclust/mclust.pdf} 
 
-
 %\url{http://www.cmap.polytechnique.fr/~bansaye/CoursTD6.pdf}
 %\url{https://www.lpsm.paris/pageperso/rebafka/BookGraphes/algorithme-em.html} \newline
 
@@ -1399,7 +1395,7 @@ L’algorithme EM est un point d’accroche aux solutions dont nous disposons po
 \chapter{Le package \textit{mclust}}
 Nous avons, dans un élan d'audace, commencé par programmer à la main l'algorithme EM, en nous appuyant sur le pseudo-code explicité en première partie du chapitre II. \newline
 
-Cependant, il existe une librairie \textit{R} - la librairie \textit{mclust} - contenant une implémentation de l'algorithme EM. Notre algorithme étant fonctionnel, nous ne détaillerons pas ici le fonctionnement de ce Package. Il est néanmoins pertinent de l'expérimenter, voire de comparer ces résultats avec ceux notre algorithme. Nous reprendrons ici les mêmes espèces étudiées lors du dernier chapitre; les divers paramètres seront donc conservés, de même que l'échantillon généré. Nous nous somme appuyer sur [6] afin d'obtenir les éléments nécessaire à l'utilisation de ce package.
+Cependant, il existe une librairie \textit{R} - la librairie \textit{mclust} - contenant une implémentation de l'algorithme EM. Notre algorithme étant fonctionnel, nous ne détaillerons pas ici le fonctionnement de ce Package. Il est néanmoins pertinent de l'expérimenter, voire de comparer ces résultats avec ceux notre algorithme. Nous reprendrons ici les mêmes espèces étudiées lors du dernier chapitre; les divers paramètres seront donc conservés, de même que l'échantillon généré. Nous nous sommes appuyés sur [6] afin d'obtenir les éléments nécessaires à l'utilisation de ce package.
 
 Pour commencer, installons et chargeons le Package \textit{mclust}.
 \begin{lstlisting}
@@ -1450,12 +1446,12 @@ Cette dernière prend en argument des fonctionnalités pertinentes, comme le nom
 
 %%%
 \section{Un exemple sur un mélange à deux lois}
-Commençons par un executer la fonction \textit{densityMclust} sur notre exemple de mélange à deux lois, contenu dans le dataframe $X2$:
+Commençons par exécuter la fonction \textit{densityMclust} sur notre exemple de mélange à deux lois, contenu dans le dataframe $X2$:
 \begin{lstlisting}
 est_2 <- densityMclust(X2)
 \end{lstlisting}
 %
-Il est en premier lieu retourné le graphe de la densité du mélange de lois.
+La première sortie affichée est celle du graphe de la densité du mélange de lois.
 \begin{figure}[H]
 \centering
 \includegraphics[scale=0.75]{fig1.pdf}
@@ -1544,7 +1540,7 @@ print("Ecart-types estimés:")
 [1] "Ecart-types estimés:"
 [1] 18.54033
 \end{verbatim}
-Le premier élément notable est que l'algorithme échoue à établir le nombre correct de lois. L'unique moyenne et écart-type estimés ne sont quant à eux pas absurde. \newline
+Le premier élément notable est que l'algorithme échoue à établir le nombre correct de lois. L'unique moyenne et écart-type estimés ne sont quant à eux pas absurdes. \newline
 %
 Nous allons relancer la fonction sur le même jeu de données, en précisant cette fois-ci le nombre de lois.
 \begin{lstlisting}
@@ -1569,6 +1565,116 @@ print("Ecart-types estimés:")
 Les proportions sont plutôt bien estimées, quoique légèrement surestimées pour deux d'entres elles, mais les erreurs restent faibles. Il en est étonnament de même pour les moyennes, qui sont très bien estimées. Les erreurs sont au plus de l'ordre de $5\%$. Ceci est surprenant au vue de l'allure de la densité. Cependant, il n'est estimé qu'un unique écart-type, ce qui n'est guère étonnant. Notons que celui-ci est à peu près égale à la moyenne des écart-types des différentes lois. \newline
 
 Ce cas ambigüe met en exergue les limites de l'algorithme implémenté dans ce package.
+
+
+\chapter{Etudes des fonctions}
+
+Revenons aux choix des paramètres initiaux. Nous disposons désormais de trois fonctions permettant chacune de déterminer un choix quant à l'initialisation de l'algorithme EM.
+
+Il convient alors d'étudier les résultats de chacune d'elles, en appliquant l'algorithme EM sur les initialisations qu'elles proposent et en comparant la valeur de la log-vraisemblance de l'échantillon $(X_1,\dots,X_n)$.
+
+Nous présentons alors les deux fonctions suivantes :\newline
+
+Celle-ci permettent de déterminer la valeur de la log-vraisemblance de l'échantillon.
+
+\begin{lstlisting}
+
+log_Vrais_X <- function(data_param,X){
+
+J <- length(data_param[,1])
+
+logVrai_X <- 0
+
+for(i in 1:length(X)){
+
+sum_j <- 0
+
+for(j in 1:J){
+
+sum_j <- sum_j + data_param[j,2]*dnorm(X[i],mean = data_param[j,3],
+
+sd = data_param[j,4])
+
+}
+
+logVrai_X <- logVrai_X + log(sum_j)
+
+}
+
+return(logVrai_X)
+
+}
+
+\end{lstlisting}
+
+Elle prend comme arguments :
+
+\begin{itemize}
+
+\item data\_param, le tableau des résultats obtenus, le nom des espèces étant ajouté en première colonne
+
+\item $X$, l'échantillon observé
+
+\end{itemize}
+
+Elle retourne la valeur de la log-vraisemblande de $(X_1, \dots, X_n)$ pour les paramètres issus de $data\_param$.\\
+
+
+Nous avons également la fonction $param\_init$, effectuant le choix des paramètres en comparant les valeurs des log-vraisemblance obtenues :
+
+\begin{lstlisting}
+
+param_init <- function(data,X){
+
+J <- length(data[,1])
+
+col <- length(data[1,])-1
+
+res <- -Inf
+
+data_res <- data.frame()
+
+for(i in seq(1,col,by = 3)){
+
+data_i <- data.frame(espèces = data[,1], alpha = data[,i+1],
+
+moyennes = data[,i+2], sd = data[,i+3])
+
+log_Vrai <- log_Vrais_data_i,X)
+
+if (res <= log_Vrai){
+
+res <- log_Vrai
+
+data_res <- data_i
+
+}
+
+}
+
+return(data_res)
+
+}
+
+\end{lstlisting}
+
+
+
+Elle prend comme arguments :
+
+\begin{itemize}
+
+\item data, le tableau de tous les résultats obtenus à partir des fonctions d'initialisation, le nom des espèces étant ajouté en première colonne
+
+\item X, l'échantillon
+
+\end{itemize}
+
+Elle retourne le tableau d'initialisation ayant permis d'obtenir le meilleur résultat.
+
+
+
+
 
 
 \end{appendices}

@@ -122,17 +122,21 @@
 		\begin{block}{Hypothèse 1}
 			$X$ conditionnellement à $(Z = j)$ suit une loi normale $\mathcal{N}(\mu_j, v_j)$
 		\end{block}
-		\begin{block}{Hypothèse 2}
-			\[
-			\exists \theta = (\alpha_j, \mu_j, v_j) \in \{  \}
-			\]
-à voir
+	\end{frame}
+
+
+	\begin{frame}
+		\begin{block}{Hypothèse 2 (Existence)}
+			Soit \[
+			\Theta := \{ \theta = (\alpha_j,\mu_j, v_j)_{1 \leq j \leq J} \text{ } \big| \text{ } \alpha_j > 0 \text{ } \forall j\in \llbracket 1,J\rrbracket \text{ et } \displaystyle\sum_{j=1}^J\alpha_j=1\}
+				 \]
+Soit $X_1, \cdots, X_n$ un échantillon de même loi que $X$. \newline
+On supposera qu'il existe un $\theta \in \Theta$ tel que les données récoltées soient la réalisation du précédent échantillon.
 		\end{block}
 	\end{frame}
 
 	\begin{frame}{Une histoire de densités}
 		\begin{block}{}
-			\scriptsize
 			\begin{itemize}
 				\item Densité de la loi $X$ conditionnellement à $(Z=j)$ :
 				\[
@@ -154,7 +158,6 @@
 
 	\begin{frame}{Une approche idéaliste}
 		\begin{block}{}
-			\scriptsize
 			\begin{itemize}
 				\item Nous observons et le volume et l'espèce d'oiseau
 				\item Log-vraisemblance du modèle :
@@ -186,37 +189,52 @@
 	\end{frame}
 
 
-	\begin{frame}
-		\begin{block}{Une approche réaliste}
+	\begin{frame}{Une approche réaliste}
+		\begin{block}{}
 			\begin{itemize}
-				\item Nous observons seulement le volume du nids
+				\item Nous observons seulement le volume des nids
 				\item Log-vraisemblance du modèle :
 				\begin{align*}
 					& \mathcal{L}_{obs}(\theta, X_1, \cdots, X_n) \\
 					&= ln\left( \displaystyle\prod_{i=1}^n f_\theta(X_i) \right)\\
 					&= \displaystyle\sum_{i=1}^nln\left( \sum_{j=1}^J \alpha_j \gamma_{\mu_j, v_j}(X_i) \right)
 				\end{align*}
-				\item L'existence d'une expression analytique des EMV n'est pas assurée
 			\end{itemize}
 		\end{block}
 	\end{frame}
 
 
-
 	\begin{frame}{Log-vraisemblance conditionnelle}
 		\begin{block}{}
-			\scriptsize
 			\begin{itemize}
-				\item texte
+				\item L'existence d'une expression analytique des EMV n'est pas assurée
+				\item Nécessité de construire une méthode permettant d'approcher les valeurs des estimateurs
+
 				\item Nous définissons ainsi la log-vraisemblance conditionnelle comme :
 					\[
-					\mathcal{L}_{c}(\theta, \tilde{\theta}, X_1, \cdots, X_n) = \mathbbm{E}_{\tilde{\theta}}[\mathcal{L}_\theta(X_1, \cdots, X_n, Z_1, \cdots, Z_n) | X_1, \cdots, X_n]
+					\mathcal{L}_{c}(\theta, \tilde{\theta}, X_1, \cdots, X_n)
+					\]
+					\[ = \mathbbm{E}_{\tilde{\theta}}[\mathcal{L}_\theta(X_1, \cdots, X_n, Z_1, \cdots, Z_n) | X_1, \cdots, X_n]
 					\]
 
 			\end{itemize}
 		\end{block}
 	\end{frame}
-	
+
+	\begin{frame}
+		\begin{block}{Estimateurs du maximums de vraisemblance}
+			\[
+			\widehat{\alpha_j} = \displaystyle\frac{1}{n}\sum_{i=1}^n \mathbbm{P}_{\tilde{\theta}}(Z=j|X=X_i)
+			\]
+			\[
+			\widehat{\mu_j}= \displaystyle\frac{\displaystyle\sum_{i=1}^n X_i\times\mathbbm{P}_{\tilde{\theta}}(Z=j|X=X_i)}{\displaystyle\sum_{i=1}^n \mathbbm{P}_{\tilde{\theta}}(Z=j|X=X_i)}
+			\]
+			\[
+			\widehat{v_j} = \displaystyle\frac{\displaystyle\sum_{i=1}^n (X_i -\widehat{\mu_j})^2 \times\mathbbm{P}_{\tilde{\theta}}(Z=j|X=X_i)}{\displaystyle\sum_{i=1}^n\mathbbm{P}_{\tilde{\theta}}(Z=j|X=X_i)}
+			\]			
+		\end{block}
+	\end{frame}
+
 	\section{L'algorithme EM}
 
 	\begin{frame}{L'algorithme EM}
@@ -244,33 +262,7 @@
 			\end{align*}
 		\end{block}
 	\end{frame}
-	\section{Études de simulations}
-	\begin{frame}{Cas des variables à "fortes séparations" }
-		\begin{figure}[htp] 
-			\centering
-			\subfloat[Boxplot des erreurs pour $\alpha_1$, $\alpha_2$ et $\alpha_3$]{%
-				\includegraphics[scale=0.18]{images/good_alpha.png}%
-			}%
-			\hfill%
-			\subfloat[Boxplot des erreurs pour $\mu_1$, $\mu_2$ et $\mu_3$]{%
-				\includegraphics[scale=0.18]{images/good_mu.png}%
-			}%
-		\end{figure}
-	\end{frame}
 
-	\begin{frame}{Cas des variables à "faibles séparations" }
-		\begin{figure}[htp] 
-			\centering
-			\subfloat[Boxplot des erreurs pour $\alpha_1$, $\alpha_2$ et $\alpha_3$]{%
-				\includegraphics[scale=0.18]{images/bad_alpha.png}%
-			}%
-			\hfill%
-			\subfloat[Boxplot des erreurs pour $\mu_1$, $\mu_2$ et $\mu_3$]{%
-				\includegraphics[scale=0.18]{images/bad_mu.png}%
-			}%
-		\end{figure}
-	\end{frame}
-	
 	\begin{frame}{Un théorème de croissance}
 		\begin{block}{Théorème}
 			Soit $(\theta_k)_{k\in \llbracket1, K\rrbracket}$ la suite de paramètres construite à l'aide de l'algorithme EM. \newline
@@ -347,6 +339,34 @@ est maximisée en $\theta$, de maximum $\theta_{k+1}$
 		\end{block}
 	\end{frame}
 
+
+	\section{Études de simulations}
+	\begin{frame}{Cas des variables à "fortes séparations" }
+		\begin{figure}[htp] 
+			\centering
+			\subfloat[Boxplot des erreurs pour $\alpha_1$, $\alpha_2$ et $\alpha_3$]{%
+				\includegraphics[scale=0.18]{images/good_alpha.png}%
+			}%
+			\hfill%
+			\subfloat[Boxplot des erreurs pour $\mu_1$, $\mu_2$ et $\mu_3$]{%
+				\includegraphics[scale=0.18]{images/good_mu.png}%
+			}%
+		\end{figure}
+	\end{frame}
+
+	\begin{frame}{Cas des variables à "faibles séparations" }
+		\begin{figure}[htp] 
+			\centering
+			\subfloat[Boxplot des erreurs pour $\alpha_1$, $\alpha_2$ et $\alpha_3$]{%
+				\includegraphics[scale=0.18]{images/bad_alpha.png}%
+			}%
+			\hfill%
+			\subfloat[Boxplot des erreurs pour $\mu_1$, $\mu_2$ et $\mu_3$]{%
+				\includegraphics[scale=0.18]{images/bad_mu.png}%
+			}%
+		\end{figure}
+	\end{frame}
+	
 	\section{Modélisation des nids d'oiseaux}
 
 	\begin{frame}{Préambule}

@@ -261,9 +261,73 @@ On supposera qu'il existe un $\theta \in \Theta$ tel que les données récoltée
 			\]			
 		\end{block}
 	\end{frame}
-
+	
+	\section{La fonction \textit{Simulation}}
+	
+	\begin{frame}{La fonction \textit{Simulation}}
+		\begin{block}{Son objectif}
+			\small
+			Générer aléatoirement un échantillon issu 
+			d'un mélange gaussien
+		\end{block}
+		\begin{block}{Ses arguments}
+			\begin{itemize}
+				\small
+				\item \textbf{\textit{Data\_th}:} le dataframe contenant les paramètres $\alpha_i$, $\mu_i$ et $\sigma_i$ où $i \in \{1, \dots ,J\}$ avec $J$ le nombre de mélanges gaussiens\\
+				\item \textbf{\textit{n}:} Le nombre de valeurs que l'on souhaite générer aléatoirement
+			\end{itemize}
+		\end{block}
+		\begin{block}{Ce qu'elle retourne}
+			\begin{itemize}
+				\small
+				\item Un vecteur de taille $n$ généré aléatoirement
+				\begin{itemize}
+					\item Il s'agit de l'échantillon du mélange gaussien
+				\end{itemize}
+			\end{itemize}
+		\end{block}
+	\end{frame}
+	\begin{frame}{Son principe de fonctionnement}
+		\textbf{Exemple dans le cas d'un mélange à 3 gaussiennes}
+		\begin{block}{Étapes répétées à chaques itérations}
+			\begin{itemize}
+				\item Génération d'une variable aléatoire $Z \sim \mathbb{U}(0,1)$
+				\begin{itemize}
+					\item Si $Z < \alpha_1$ alors $X \sim \mathcal{N}(\mu_1, \sigma_1)$ \\
+					\item Sinon si $\alpha_1 \leq Z \leq \alpha_1 + \alpha_2$, alors $Z \sim \mathcal{N}(\mu_2, \sigma_2)$ \\
+					\item Sinon si  $\alpha_1 + \alpha_2 \leq Z \leq \alpha_1 + \alpha_2 + \alpha_3$, alors $Z \sim \mathcal{N}(\mu_3, \sigma_3)$
+				\end{itemize}
+			\end{itemize}
+		\end{block}
+	\end{frame}
+	
 	\section{L'algorithme EM}
-
+	\begin{frame}{L'algorithme EM}
+		\begin{block}{\scriptsize But de l'implémentation de la fonction $algo\_EM$}
+			\begin{itemize}
+				\scriptsize
+				\item Estimer les paramètres $\alpha_J$, $\mu_J$ et $\sigma_J$ du mélange gaussien
+				\begin{itemize}
+					\scriptsize
+					\item $J$ est le nombre de gaussiennes présentent dans le mélange
+				\end{itemize}
+			\end{itemize}
+		\end{block}
+		\begin{block}{ \scriptsize Ses arguments}
+			\begin{itemize}
+				\scriptsize
+				\item \textbf{\textit{data\_init}:} dataframe contenant les paramètres ($\alpha_{init}$, $\mu_{init}$, $\sigma_{init}$) initiaux choisis \\
+				\item \textbf{\textit{X}:} Vecteur jouant le rôle de l'échantillon du mélange gaussien  \\
+				\item \textbf{\textit{K}:} le nombre d'itérations de l'algorithme EM
+			\end{itemize}
+		\end{block}
+		\begin{block}{\scriptsize Ce qu'elle retourne}
+			\scriptsize
+			\begin{itemize}
+				\item Retourne un dataframe contenant les valeurs des paramètres $\widehat{\alpha_J}$, $\widehat{\mu_J}$ et $\widehat{\sigma_J}$ estimés par l'algorithme
+			\end{itemize}
+		\end{block}
+	\end{frame}
 	\begin{frame}{L'algorithme EM}
 		\textbf{Pseudo code de l'algorithme EM, d'après [2]}
 		\begin{figure}[H]

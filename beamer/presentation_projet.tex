@@ -11,6 +11,8 @@
 \usepackage{verbatim}
 \usepackage{bbm}
 \usepackage{stmaryrd}
+\usepackage[numbered,framed]{matlab-prettifier}
+\usepackage{listings}
 
 \renewcommand{\algorithmicrequire}{\textbf{Entrée(s) :}}
 \renewcommand{\algorithmicreturn}{\textbf{retourner}}
@@ -58,6 +60,11 @@
 \setbeamertemplate{itemize item}[ball]
 \setbeamertemplate{itemize subitem}[triangle]
 \setbeamertemplate{itemize subsubitem}[circle]
+
+
+
+\AtBeginSection[]{\begin{frame} \tableofcontents[currentsection] \end{frame}}
+
 
 \begin{document}
 	\author{CARVAILLO, CÔME, PRALON}
@@ -136,7 +143,7 @@ On supposera qu'il existe un $\theta \in \Theta$ tel que les données récoltée
 	\end{frame}
 
 	\begin{frame}{Une histoire de densités}
-		\begin{block}{}
+		\begin{block}{Diverses densités}
 			\begin{itemize}
 				\item Densité de la loi $X$ conditionnellement à $(Z=j)$ :
 				\[
@@ -221,6 +228,26 @@ On supposera qu'il existe un $\theta \in \Theta$ tel que les données récoltée
 		\end{block}
 	\end{frame}
 
+
+	\begin{frame}{Réécritures}
+		\begin{block}{}
+			\scriptsize
+			\begin{itemize}
+				\item Première forme :
+				\[
+				\mathcal{L}_{c}(\theta, \tilde{\theta}, X_1, \cdots, X_n) = \displaystyle\sum_{i=1}^n\sum_{j=1}^J ln(h_\theta(X_i ,j))  \mathbbm{P}_{\tilde{\theta}}(Z = j|X = X_i)
+				\]
+				\item Seconde forme :
+				\begin{align*}
+				 & \mathcal{L}_{c}(\theta, \tilde{\theta}, X_1, \cdots, X_n) \\
+				 &= -\frac{n}{2}ln(2\pi)+\sum_{j=1}^J \left(\sum_{i = 1}^n \mathbbm{P}_{\tilde{\theta}}(Z= j|X=X_i)\right) \times ln(\alpha_j) \\				
+				&-\frac{1}{2}\sum_{j=1}^J\left(\sum_{i=1}^n  \mathbbm{P}_{\tilde{\theta}}(Z=j|X=X_i)\times\left(log(v_j)+\frac{(X_i-\mu_j)^2}{v_j}\right)\right)
+				\end{align*}
+
+			\end{itemize}
+		\end{block}
+	\end{frame}
+
 	\begin{frame}{Log-vraisemblance conditionnelle}
 		\begin{block}{Estimateurs du maximums de vraisemblance}
 			\[
@@ -238,7 +265,7 @@ On supposera qu'il existe un $\theta \in \Theta$ tel que les données récoltée
 	\section{L'algorithme EM}
 
 	\begin{frame}{L'algorithme EM}
-		\textbf{Pseudo code de l'algorithme EM}
+		\textbf{Pseudo code de l'algorithme EM, d'après [2]}
 		\begin{figure}[H]
 			\centering
 			\includegraphics[scale=0.6]{images/pseudo_code.png}
@@ -274,15 +301,16 @@ La log-vraisemblance $\mathcal{L}_{obs}$ des observations vérifie
 	\end{frame}
 
 	\begin{frame}{Ersatz de preuve}
-		\begin{block}{}
+		\begin{block}{Démonstration: d'après [2] et [4]}
 			\begin{itemize}
-				\item Nous cherchons donc à montrer que
+				\item Nous cherchons à montrer que
 				\[
 				\mathcal{L}_{obs}(\theta_{k+1}, X_1, \cdots, X_n) - \mathcal{L}_{obs}(\theta_k, X_1, \cdots, X_n) \geq 0
 				\]
 				\item Réécriture :
 				\[
-				\mathcal{L}_c(\theta_{k+1}, \theta_k, X_1, \cdots, X_n) = \mathcal{L}_{obs}(\theta_{k+1}, X_1, \cdots, X_n) + \kappa_{\theta_{k+1},\theta_k}
+				 \mathcal{L}_{obs}(\theta_{k+1}, X_1, \cdots, X_n) = 
+				\mathcal{L}_c(\theta_{k+1}, \theta_k, X_1, \cdots, X_n) - \kappa_{\theta_{k+1},\theta_k}
 				\]
 				\item Avec
 					\[
@@ -370,11 +398,13 @@ est maximisée en $\theta$, de maximum $\theta_{k+1}$
 	\section{Modélisation des nids d'oiseaux}
 
 	\begin{frame}{Préambule}
-		\begin{figure}[H]
-			\centering
-			\includegraphics[scale=0.3]{tab_oiseaux.png}
-			\caption{Caractéristiques des nids}
-		\end{figure}
+		\begin{block}{Recueil des données}
+			\begin{figure}[H]
+				\centering
+				\includegraphics[scale=0.29]{tab_oiseaux.png}
+				\caption{Caractéristiques des nids; d'après [5]}
+			\end{figure}
+		\end{block}
 	\end{frame}	
 
 	\begin{frame}{Hypothèses, outils et démarche}
@@ -382,7 +412,7 @@ est maximisée en $\theta$, de maximum $\theta_{k+1}$
 			\begin{itemize}
 				\scriptsize 
 				\item la distribution du volume des nids est gaussienne
-				\item le nombre d'espèce $J$ est connu
+				\item le nombre d'espèces $J$ est connu
 			\end{itemize}
 		\end{block}
 
@@ -468,4 +498,28 @@ est maximisée en $\theta$, de maximum $\theta_{k+1}$
 			J'encule vos grosses marraines bien profond !!!
 		\end{block}
 	\end{frame}
+
+
+	\section{Bibliographie}
+
+	\begin{frame}
+		\scriptsize
+		\begin{enumerate}
+		\item Dempster A.P., Laird N. M., Rubin D. B. (1977). Maximum Likelihood from Incomplete Data via the EM Algorithm, \textit{Journal of the Royal Statistical Society, Series B, Vol. 39, 1, 1-38}
+
+		\item Chafai D., Malrieu F. (2018). Recueil de modèles aléatoires, 105-11, \textit{Prépublication}\newline
+\url{https://hal.archives-ouvertes.fr/hal-01897577v3}
+
+		\item Frédéric Santos (2015). L’algorithme EM : une courte présentation, \textit{Document de cours}
+\newline\url{https://members.loria.fr/moberger/Enseignement/AVR/Exposes/algo-em.pdf} 
+
+		\item Michael Collins (1997). The EM algorithm, \textit{Document de cours}\newline
+\url{http://faculty.washington.edu/fxia/courses/LING572/EM_collins97.pdf} 
+
+		\item Biddle L.E., Broughton R.E., Goodman A.M., Deeming D.C (2018). Composition of Bird Nests is a Species-Specific Characteristic, \textit{Avian Biology Research, Vol. 11, 2, 132-153}\newline
+\url{https://core.ac.uk/download/pdf/155777956.pdf}
+		\end{enumerate}
+	\end{frame}
+
+
 \end{document}

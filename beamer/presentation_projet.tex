@@ -271,6 +271,82 @@
 		\end{figure}
 	\end{frame}
 	
+	\begin{frame}{Un théorème de croissance}
+		\begin{block}{Théorème}
+			Soit $(\theta_k)_{k\in \llbracket1, K\rrbracket}$ la suite de paramètres construite à l'aide de l'algorithme EM. \newline
+La log-vraisemblance $\mathcal{L}_{obs}$ des observations vérifie 
+		\[
+		\mathcal{L}_{obs}(\theta_{k+1}, X_1, \cdots, X_n) \geq \mathcal{L}_{obs}(\theta_k, X_1, \cdots, X_n)
+		\]
+		\end{block}
+	\end{frame}
+
+	\begin{frame}{Ersatz de preuve}
+		\begin{block}{}
+			\begin{itemize}
+				\item Nous cherchons donc à montrer que
+				\[
+				\mathcal{L}_{obs}(\theta_{k+1}, X_1, \cdots, X_n) - \mathcal{L}_{obs}(\theta_k, X_1, \cdots, X_n) \geq 0
+				\]
+				\item Réécriture :
+				\[
+				\mathcal{L}_c(\theta_{k+1}, \theta_k, X_1, \cdots, X_n) = \mathcal{L}_{obs}(\theta_{k+1}, X_1, \cdots, X_n) + \kappa_{\theta_{k+1},\theta_k}
+				\]
+				\item Avec
+					\[
+					 \kappa_{\theta_{k+1},\theta_k} = \sum_{i=1}^n\sum_{j=1}^J ln(\mathbbm{P}_{\theta_{k+1}}(Z = j|X=X_i))\times\mathbbm{P}_{\theta_k}(Z = j|X = X_i)
+					\]
+			\end{itemize}	
+		\end{block}
+	\end{frame}
+
+	\begin{frame}{Ersatz de preuve}
+		\begin{block}{}
+				Ainsi,
+				\[
+				\mathcal{L}_{obs}(\theta_{k+1}, X_1, \cdots, X_n) - \mathcal{L}_{obs}(\theta_k, X_1, \cdots, X_n)
+				\]
+				\[
+				= \mathcal{L}_c(\theta_{k+1}, \theta_k, X_1, \cdots, X_n) - \kappa_{\theta_{k+1}, \theta_k} - \mathcal{L}_c(\theta_k, \theta_k, X_1, \cdots, X_n) + \kappa_{\theta_{k}, \theta_k}
+				\]
+		\end{block}
+	\end{frame}
+
+
+	\begin{frame}{Ersatz de preuve}
+		\begin{block}{}
+			\begin{itemize}
+				\item A l'étape M de l'algorithme, la quantité 
+					\[
+					\mathcal{L}_c(\theta, \theta_k, X_1, \cdots, X_n)
+					\]
+est maximisée en $\theta$, de maximum $\theta_{k+1}$
+				\item Donc,
+					\[
+					\mathcal{L}_c(\theta_{k+1}, \theta_k, X_1, \cdots, X_n) - \mathcal{L}_c(\theta_k, \theta_k, X_1, \cdots, X_n) \geq 0
+					\]
+			\end{itemize}
+		\end{block}
+	\end{frame}
+
+	\begin{frame}{Ersatz de preuve}
+		\begin{block}{}
+			\begin{itemize}
+				\item Il reste donc à prouver que
+					\[
+					\kappa_{\theta_{k}, \theta_k}, - \kappa_{\theta_{k+1}, \theta_k} \geq 0
+					\]
+				\item On montre que, après quelques fastidieux calculs,
+				\begin{align*}
+					& \kappa_{\theta_{k}, \theta_k}, - \kappa_{\theta_{k+1}, \theta_k} \\
+					& \geq - n\times ln\left( \sum_{i=1}^n\sum_{j=1}^J\mathbbm{P}_{\theta_{k+1}}(Z = j|X=X_i)\times\frac{1}{n}\right) \\
+					&=  -n\times ln(1)\\
+					&= 0
+				\end{align*}
+			\end{itemize}
+		\end{block}
+	\end{frame}
+
 	\section{Modélisation des nids d'oiseaux}
 
 	\begin{frame}{Préambule}

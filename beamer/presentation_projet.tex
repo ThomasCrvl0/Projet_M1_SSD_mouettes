@@ -236,7 +236,7 @@ On supposera qu'il existe un $\theta \in \Theta$ tel que les données récoltée
 
 
 	\begin{frame}{Réécritures}
-		\begin{block}Log-vraisemblance conditionnelle{}
+		\begin{block}{Log-vraisemblance conditionnelle}
 			\scriptsize
 			\begin{itemize}
 				\item Première forme :
@@ -391,12 +391,12 @@ est maximisée en $\theta$, de maximum $\theta_{k+1}$
 			\begin{itemize}
 				\item Il reste donc à prouver que
 					\[
-					\kappa_{\theta_{k}, \theta_k}, - \kappa_{\theta_{k+1}, \theta_k} \geq 0
+					 K = \kappa_{\theta_{k}, \theta_k}, - \kappa_{\theta_{k+1}, \theta_k} \geq 0
 					\]
 				\item On montre que, après quelques fastidieux calculs,
 				\begin{align*}
-					& \kappa_{\theta_{k}, \theta_k}, - \kappa_{\theta_{k+1}, \theta_k} \text{  }  (3) \\
-					& \geq - n\times ln\left( \sum_{i=1}^n\sum_{j=1}^J\mathbbm{P}_{\theta_{k+1}}(Z = j|X=X_i)\times\frac{1}{n}\right) \\
+					& \kappa_{\theta_{k}, \theta_k}, - \kappa_{\theta_{k+1}, \theta_k} \\
+					& \geq - n\times ln\left( \sum_{i=1}^n\sum_{j=1}^J\mathbbm{P}_{\theta_{k+1}}(Z = j|X=X_i)\times\frac{1}{n}\right)  \text{  }  (3) \\
 					&=  -n\times ln(1)\\
 					&= 0
 				\end{align*}
@@ -404,10 +404,19 @@ est maximisée en $\theta$, de maximum $\theta_{k+1}$
 		\end{block}
 	\end{frame}
 
+	\begin{frame}
+		\begin{block}{}
+			\begin{itemize}
+				\item Aucune preuve quant à la convergence de la suite $(\theta_k)_{k \in \llbracket 1, K \rrbracket}$ vers les EMV
+				\begin{itemize}
+					\item Stagnation dans des extremas locaux
+				\end{itemize}
+				\item Choix des paramètres initiaux crucial
+			\end{itemize}
+		\end{block}	
+	\end{frame}
 
-	\section{Études de simulations}
-
-	\section{La fonction \textit{Simulation}}
+\section{La fonction \textit{Simulation}}
 	
 	\begin{frame}{La fonction \textit{Simulation}}
 		\begin{block}{Son objectif}
@@ -446,6 +455,9 @@ est maximisée en $\theta$, de maximum $\theta_{k+1}$
 		\end{block}
 	\end{frame}
 	
+
+	\section{Études de simulations}
+
 
 	\begin{frame}{Cas des variables à "fortes séparations" }
 		\begin{figure}[htp] 

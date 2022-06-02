@@ -521,7 +521,19 @@ est maximisée en $\theta$, de maximum $\theta_{k+1}$
 		\end{block}
 	\end{frame}
 
-
+	\begin{frame}{Exemple de la fonction param\_kmeans}
+	\scriptsize
+		\begin{figure}[H]
+			\centering
+			\includegraphics[scale=0.45]{images/param_kmeans_image.png}
+			\caption{Détermination des valeurs initiales par la fonction paramkmeans}
+		\end{figure}
+		\begin{figure}[H]
+			\centering
+			\includegraphics[scale=0.7]{images/valeurs_max.png}
+			\caption{valeurs des maximums de la densité de X}
+		\end{figure}
+	\end{frame}
 
 	\begin{frame}{Log-vraisemblance de X et choix de la fonction d'initialisation}
 	\scriptsize
@@ -623,10 +635,26 @@ est maximisée en $\theta$, de maximum $\theta_{k+1}$
 		\end{figure}
 	\end{frame}
 
+	
+	\begin{frame}{Détermination automatique}
+	\scriptsize
+		\begin{block}{}
+			Reprenons l'exemple précédent, auquel on compare les deux fonctions param$\_$quantile1 et param$\_$quantile2
+		\end{block}
+		\begin{figure}[H]
+			\centering
+			\includegraphics[scale=0.5]{images/param_kmeans_image.png}
+			\caption{Détermination des valeurs initiales par la fonction param\_kmeans}
+		\end{figure}
+	\end{frame}
 
-
-	\section{Conclusion}
-
+	\begin{frame}
+		\begin{figure}[H]
+			\centering
+			\includegraphics[scale=0.7]{images/param_init_image.png}
+			\caption{Choix des paramètres initaux avec param\_init}
+		\end{figure}
+	\end{frame}
 
 	\section{Bibliographie}
 

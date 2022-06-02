@@ -99,7 +99,7 @@
 	
 	\begin{frame}{Définition et hypothèses}
 		\begin{block}{Loi de mélange}
-			Si l'on se donne $J$  densités $f_1(x), \cdots, f_J(x)$, alors toute variable aléatoire $X$ dont la densité $f$ s'exprime, pour tout $x\in\mathbbm{R}$, sous la forme
+			Si l'on se donne $J$  densités $f_1, \cdots, f_J$, alors toute variable aléatoire $X$ dont la densité $f$ s'exprime, pour tout $x\in\mathbbm{R}$, sous la forme
 			\[
 			f(x) := \displaystyle\sum_{j=1}^J \alpha_j f_j(x)
 			\]
@@ -265,6 +265,50 @@ On supposera qu'il existe un $\theta \in \Theta$ tel que les données récoltée
 	\end{frame}
 	
 
+
+
+
+\section{La fonction \textit{Simulation}}
+	
+	\begin{frame}{La fonction \textit{Simulation}}
+		\begin{block}{Son objectif}
+			\small
+			Générer aléatoirement un échantillon issu 
+			d'un mélange gaussien
+		\end{block}
+		\begin{block}{Ses arguments}
+			\begin{itemize}
+				\small
+				\item \textbf{\textit{Data\_th}:} le dataframe contenant les paramètres $\alpha_i$, $\mu_i$ et $\sigma_i$ où $i \in \{1, \dots ,J\}$ avec $J$ le nombre de mélanges gaussiens\\
+				\item \textbf{\textit{n}:} Le nombre de valeurs que l'on souhaite générer aléatoirement
+			\end{itemize}
+		\end{block}
+		\begin{block}{Ce qu'elle retourne}
+			\begin{itemize}
+				\small
+				\item Un vecteur de taille $n$ généré aléatoirement
+				\begin{itemize}
+					\item Il s'agit de l'échantillon du mélange gaussien
+				\end{itemize}
+			\end{itemize}
+		\end{block}
+	\end{frame}
+	\begin{frame}{Son principe de fonctionnement}
+		\textbf{Exemple dans le cas d'un mélange à 3 gaussiennes}
+		\begin{block}{Étapes répétées à chaques itérations}
+			\begin{itemize}
+				\item Génération d'une variable aléatoire $Z \sim \mathbb{U}(0,1)$
+				\begin{itemize}
+					\item Si $Z < \alpha_1$ alors $X \sim \mathcal{N}(\mu_1, \sigma_1)$ \\
+					\item Sinon si $\alpha_1 \leq Z \leq \alpha_1 + \alpha_2$, alors $X \sim \mathcal{N}(\mu_2, \sigma_2)$ \\
+					\item Sinon si  $\alpha_1 + \alpha_2 \leq Z \leq \alpha_1 + \alpha_2 + \alpha_3$, alors $X \sim \mathcal{N}(\mu_3, \sigma_3)$
+				\end{itemize}
+			\end{itemize}
+		\end{block}
+	\end{frame}
+	
+
+
 	\section{L'algorithme EM}
 	\begin{frame}{L'algorithme EM}
 		\begin{block}{\scriptsize But de l'implémentation de la fonction $algo\_EM$}
@@ -303,7 +347,7 @@ On supposera qu'il existe un $\theta \in \Theta$ tel que les données récoltée
 	\end{frame}
 	\begin{frame}{Les étapes de l'algorithme EM}
 		\begin{block}{L'étape M (Maximization)}
-			Consiste à déterminer les EMV ($\widehat{\alpha_j}, \widehat{\mu_j}$, $\widehat{\sigma_j}$) de la log-vraisemblance conditionnelle via les formules suivantes:
+			Consiste à estimer le maximum de la log-vraisemblance conditionnelle en les paramètres ($\alpha_j, \mu_j, \sigma_j$)  via les formules suivantes:
 			\begin{align*}
 				\widehat{\alpha_j} &= \frac{1}{n}\sum_{i=1}^n \mathbb{P}_{\tilde{\theta}}(Z = j| X = X_i) \\
 				\widehat{\mu_j} &= \frac{\sum_{i=1}^n X_i\mathbb{P}_{\tilde{\theta}}(Z = j| X = X_i)}{\sum_{i=1}^n \mathbb{P}_{\tilde{\theta}}(Z = j| X = X_i)} \\
@@ -384,7 +428,7 @@ est maximisée en $\theta$, de maximum $\theta_{k+1}$
 			\begin{itemize}
 				\item Il reste donc à prouver que
 					\[
-					 K = \kappa_{\theta_{k}, \theta_k}, - \kappa_{\theta_{k+1}, \theta_k} \geq 0
+					 K = \kappa_{\theta_{k}, \theta_k} - \kappa_{\theta_{k+1}, \theta_k} \geq 0
 					\]
 				\item Nous montrons que, après quelques fastidieux calculs,
 				\begin{align*}
@@ -409,41 +453,93 @@ est maximisée en $\theta$, de maximum $\theta_{k+1}$
 		\end{block}	
 	\end{frame}
 
-\section{La fonction \textit{Simulation}}
-	
-	\begin{frame}{La fonction \textit{Simulation}}
-		\begin{block}{Son objectif}
-			\small
-			Générer aléatoirement un échantillon issu 
-			d'un mélange gaussien
+
+	\begin{frame}{Initialisation des paramètres}
+		\scriptsize
+		\begin{block}{Fonctions d'initialisation}
+			Puisqu'il n'est pas assuré d'une convergence des estimateurs, on développe les fonctions suivantes :
 		\end{block}
-		\begin{block}{Ses arguments}
+
+		\begin{block}{Fonction param\_quantile1}
 			\begin{itemize}
-				\small
-				\item \textbf{\textit{Data\_th}:} le dataframe contenant les paramètres $\alpha_i$, $\mu_i$ et $\sigma_i$ où $i \in \{1, \dots ,J\}$ avec $J$ le nombre de mélanges gaussiens\\
-				\item \textbf{\textit{n}:} Le nombre de valeurs que l'on souhaite générer aléatoirement
-			\end{itemize}
-		\end{block}
-		\begin{block}{Ce qu'elle retourne}
-			\begin{itemize}
-				\small
-				\item Un vecteur de taille $n$ généré aléatoirement
-				\begin{itemize}
-					\item Il s'agit de l'échantillon du mélange gaussien
-				\end{itemize}
+				\item (X,J) correspond à l'échantillon au nombre d'espèces observées
+				\item \[
+					\alpha_j = \frac{1}{J}
+					\]
+				\item On trie l'échantillon X et on définit les moyennes :
+					\[
+					\mu_j =  X [floor(j*N/J +1)]
+					\]
+				\item \[
+					v_j = \sqrt{\mathbb{V}( X [1: \mu_1])}
+					\]
 			\end{itemize}
 		\end{block}
 	\end{frame}
-	\begin{frame}{Son principe de fonctionnement}
-		\textbf{Exemple dans le cas d'un mélange à 3 gaussiennes}
-		\begin{block}{Étapes répétées à chaques itérations}
+
+	\begin{frame}{Initialisation des paramètres}
+	\scriptsize
+		\begin{block}{Fonction param\_quantile2}
 			\begin{itemize}
-				\item Génération d'une variable aléatoire $Z \sim \mathbb{U}(0,1)$
-				\begin{itemize}
-					\item Si $Z < \alpha_1$ alors $X \sim \mathcal{N}(\mu_1, \sigma_1)$ \\
-					\item Sinon si $\alpha_1 \leq Z \leq \alpha_1 + \alpha_2$, alors $X \sim \mathcal{N}(\mu_2, \sigma_2)$ \\
-					\item Sinon si  $\alpha_1 + \alpha_2 \leq Z \leq \alpha_1 + \alpha_2 + \alpha_3$, alors $X \sim \mathcal{N}(\mu_3, \sigma_3)$
-				\end{itemize}
+				\item (X,J) correspond à l'échantillon et au nombre d'espèces observées
+				\item \[
+					\alpha_j = \frac{1}{J}
+					\]
+				\item On trie l'échantillon X et on définit les moyennes :
+					\[
+					\mu_j =  \mathbb{E}( X [Q1: Q2])
+					\] avec Qj = floor(j*N/J +1)
+				\item \[
+					v_j = \sqrt{\mathbb{V}( X [Q1: Q2])}
+					\]
+			\end{itemize}
+		\end{block}
+	\end{frame}
+
+
+
+
+	\begin{frame}
+	\scriptsize
+		\begin{block}{Fonction param\_kmeans}
+			\begin{itemize}
+				\item (X,J) correspondant à l'échantillon au nombre d'espèces observées
+				\item kmeans sur l'échantillon
+				\item Condition : s'il y a autant de maximum que d'espèces observés
+				\item on choisi $\alpha_j$ comme la proportion d'espèce du cluster j
+				\item on choisi $\mu_j$  comme la moyenne du cluster j
+				\item on choisi $v_j$ comme la variance du cluster j 
+			\end{itemize}
+		\end{block}
+
+			\begin{block}{}
+			\begin{itemize}
+				\item Condition : s'il y a moins de maximum que d'espèces observés
+				\item nouveau kmeans sur le plus grand max, on actualise les centres et on ré-itère jusqu'à arriver dans la situation précédente
+				\item on choisi $\alpha_j$ comme la proportion d'espèce du cluster j
+				\item on choisi $\mu_j$  comme la moyenne du cluster j
+				\item on choisi $v_j$ comme la variance du cluster j 
+			\end{itemize}
+		\end{block}
+	\end{frame}
+
+
+
+	\begin{frame}{Log-vraisemblance de X et choix de la fonction d'initialisation}
+	\scriptsize
+		\begin{block}{Fonction log\_Vrais\_X}
+			\begin{itemize}
+				\item Arguments : (data$\_$param,X) correspondant au tableau des paramètres initaux et à l'échantillon X
+				\item Calcul la log-vraisemblance de X pour les paramètres issus de data$\_$param
+			\end{itemize}
+		\end{block}
+
+		\begin{block}{Fonction param\_init}
+			\begin{itemize}
+				\item Arguments : (data,X) correspondant aux tableaux des paramètres initaux choisis et X l'échantillon
+				\item Calcul la log vraisemblance de X pour chaque choix des paramètres initiaux
+				\item Retiens les paramètres dont la log-vraisemblance de X est la plus grande. 
+				\item On est tout de même pas assuré du maximum de vraisemblance
 			\end{itemize}
 		\end{block}
 	\end{frame}
@@ -529,49 +625,6 @@ est maximisée en $\theta$, de maximum $\theta_{k+1}$
 		\end{figure}
 	\end{frame}
 
-	\begin{frame}{Heuristique graphique}
-		\begin{figure}[H]
-			\centering
-			\includegraphics[scale=0.4]{dens1bis.pdf}
-			\caption{Détermination des valeurs initiales}
-		\end{figure}
-	\end{frame}
-
-
-	\begin{frame}[fragile]\frametitle{Heuristique graphique}
-		\begin{block}{\scriptsize Paramètres initiaux}
-			\begin{itemize}
-				\scriptsize
-				\centering
-				\item $\mu_{1_{init}} =  40$ et $\mu_{2_{init}} = 320$
-				\item $\sigma_{1_{init}} =  80$ et $\sigma_{2_{init}} = 140$
-				\item $\alpha_{1_{init}} = 0.5$ et $\alpha_{2_{init}} = 0.5$
-			\end{itemize}
-		\end{block}
-		\begin{block}{\scriptsize Résultats}
-			\scriptsize
-			\begin{verbatim}
-          bird_names     alpha        mu      sigma
-1 European Goldfinch 0.2910832  37.76285   9.512478
-2         Ring Ouzel 0.7089168 302.51936 125.951894
-			\end{verbatim}
-		\end{block}
-		\begin{block}{\scriptsize Valeurs théoriques}
-			\scriptsize
-			\begin{verbatim}
-         bird_names2 proportion_alpha mean_volume sd_volume
-1 European Goldfinch         0.2878713       38.0       9.1
-12         Ring Ouzel        0.7121287      298.6     125.1
-			\end{verbatim}
-		\end{block}
-	\end{frame}
-
-
-	\begin{frame}{Détermination automatique}
-		\begin{block}{}
-			Comme dans le rapport ou fonction de Nicolas ??
-		\end{block}
-	\end{frame}
 
 
 	\section{Conclusion}

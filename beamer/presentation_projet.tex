@@ -92,6 +92,7 @@
 		%	\end{frame}
 	
 	%%%%%%%%%%%%%%%%%%%%%%%
+	
 	\section{Liminaires théoriques et modélisation du problème}
 	
 	\begin{frame}{Définition et hypothèses}
@@ -248,7 +249,7 @@ On supposera qu'il existe un $\theta \in \Theta$ tel que les données récoltée
 	\end{frame}
 
 	\begin{frame}{Log-vraisemblance conditionnelle}
-		\begin{block}{Estimateurs du maximums de vraisemblance}
+		\begin{block}{Estimateurs du maximum de vraisemblance}
 			\[
 			\widehat{\alpha_j} = \frac{1}{n}\sum_{i=1}^n \mathbbm{P}_{\tilde{\theta}}(Z=j|X=X_i)
 			\]
@@ -292,7 +293,7 @@ On supposera qu'il existe un $\theta \in \Theta$ tel que les données récoltée
 	\end{frame}
 	\begin{frame}{Son principe de fonctionnement}
 		\textbf{Exemple dans le cas d'un mélange à 3 gaussiennes}
-		\begin{block}{Étapes répétées à chaques itérations}
+		\begin{block}{Étapes répétées à chaque itération}
 			\begin{itemize}
 				\item Génération d'une variable aléatoire $Z \sim \mathbb{U}(0,1)$
 				\begin{itemize}
@@ -314,7 +315,7 @@ On supposera qu'il existe un $\theta \in \Theta$ tel que les données récoltée
 				\item Estimer les paramètres $\alpha_J$, $\mu_J$ et $\sigma_J$ du mélange gaussien
 				\begin{itemize}
 					\scriptsize
-					\item $J$ est le nombre de gaussiennes présentent dans le mélange
+					\item $J$ est le nombre de gaussiennes présentes dans le mélange
 				\end{itemize}
 			\end{itemize}
 		\end{block}
@@ -502,20 +503,20 @@ est maximisée en $\theta$, de maximum $\theta_{k+1}$
 			\begin{itemize}
 				\item (X,J) correspondant à l'échantillon au nombre d'espèces observées
 				\item kmeans sur l'échantillon
-				\item Condition : s'il y a autant de maximum que d'espèces observés
-				\item on choisi $\alpha_j$ comme la proportion d'espèce du cluster j
-				\item on choisi $\mu_j$  comme la moyenne du cluster j
-				\item on choisi $v_j$ comme la variance du cluster j 
+				\item Condition : s'il y a autant de maximum que d'espèces observées
+				\item on choisit $\alpha_j$ comme la proportion d'espèce du cluster j
+				\item on choisit $\mu_j$  comme la moyenne du cluster j
+				\item on choisit $v_j$ comme la variance du cluster j 
 			\end{itemize}
 		\end{block}
 
 			\begin{block}{}
 			\begin{itemize}
-				\item Condition : s'il y a moins de maximum que d'espèces observés
+				\item Condition : s'il y a moins de maximum que d'espèces observées
 				\item nouveau kmeans sur le plus grand max, on actualise les centres et on ré-itère jusqu'à arriver dans la situation précédente
-				\item on choisi $\alpha_j$ comme la proportion d'espèce du cluster j
-				\item on choisi $\mu_j$  comme la moyenne du cluster j
-				\item on choisi $v_j$ comme la variance du cluster j 
+				\item on choisit $\alpha_j$ comme la proportion d'espèce du cluster j
+				\item on choisit $\mu_j$  comme la moyenne du cluster j
+				\item on choisit $v_j$ comme la variance du cluster j 
 			\end{itemize}
 		\end{block}
 	\end{frame}
@@ -527,7 +528,7 @@ est maximisée en $\theta$, de maximum $\theta_{k+1}$
 		\begin{block}{Fonction log\_Vrais\_X}
 			\begin{itemize}
 				\item Arguments : (data$\_$param,X) correspondant au tableau des paramètres initaux et à l'échantillon X
-				\item Calcul la log-vraisemblance de X pour les paramètres issus de data$\_$param
+				\item Calcule la log-vraisemblance de X pour les paramètres issus de data$\_$param
 			\end{itemize}
 		\end{block}
 
@@ -535,7 +536,7 @@ est maximisée en $\theta$, de maximum $\theta_{k+1}$
 			\begin{itemize}
 				\item Arguments : (data,X) correspondant aux tableaux des paramètres initaux choisis et X l'échantillon
 				\item Calcul la log vraisemblance de X pour chaque choix des paramètres initiaux
-				\item Retiens les paramètres dont la log-vraisemblance de X est la plus grande. 
+				\item Retient les paramètres dont la log-vraisemblance de X est la plus grande. 
 				\item On est tout de même pas assuré du maximum de vraisemblance
 			\end{itemize}
 		\end{block}

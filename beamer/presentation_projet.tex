@@ -122,7 +122,7 @@
 		\begin{block}{Une histoire de variables}
 			Nous introduisons les deux variables aléatoires (V.A.) suivantes :
 			\begin{itemize}
-				\item la V.A. $X$, modélisant le volume des nids, de densité $f$
+				\item la V.A. à densité $X$, modélisant le volume des nids
 				\item la V.A. discrète $Z \in \llbracket 1,J\rrbracket$, représentant l'espèce d'oiseau
 			\end{itemize}
 		\end{block}
@@ -146,8 +146,9 @@ On supposera qu'il existe un $\theta \in \Theta$ tel que les données récoltée
 
 	\begin{frame}{Une histoire de densités}
 		\begin{block}{Diverses densités}
+			\scriptsize
 			\begin{itemize}
-				\item Densité de la loi $X$ conditionnellement à $(Z=j)$ :
+				\item Densité de la loi fr $X$ conditionnellement à $(Z=j)$ :
 				\[
 				f(x| Z = j)  = \gamma_{\mu_j, v_j}(x)
 				\]
@@ -252,13 +253,13 @@ On supposera qu'il existe un $\theta \in \Theta$ tel que les données récoltée
 	\begin{frame}{Log-vraisemblance conditionnelle}
 		\begin{block}{Estimateurs du maximums de vraisemblance}
 			\[
-			\widehat{\alpha_j} = \displaystyle\frac{1}{n}\sum_{i=1}^n \mathbbm{P}_{\tilde{\theta}}(Z=j|X=X_i)
+			\widehat{\alpha_j} = \frac{1}{n}\sum_{i=1}^n \mathbbm{P}_{\tilde{\theta}}(Z=j|X=X_i)
 			\]
 			\[
-			\widehat{\mu_j}= \displaystyle\frac{\displaystyle\sum_{i=1}^n X_i\times\mathbbm{P}_{\tilde{\theta}}(Z=j|X=X_i)}{\displaystyle\sum_{i=1}^n \mathbbm{P}_{\tilde{\theta}}(Z=j|X=X_i)}
+			\widehat{\mu_j}= \frac{\sum_{i=1}^n X_i\times\mathbbm{P}_{\tilde{\theta}}(Z=j|X=X_i)}{\sum_{i=1}^n \mathbbm{P}_{\tilde{\theta}}(Z=j|X=X_i)}
 			\]
 			\[
-			\widehat{v_j} = \displaystyle\frac{\displaystyle\sum_{i=1}^n (X_i -\widehat{\mu_j})^2 \times\mathbbm{P}_{\tilde{\theta}}(Z=j|X=X_i)}{\displaystyle\sum_{i=1}^n\mathbbm{P}_{\tilde{\theta}}(Z=j|X=X_i)}
+			\widehat{v_j} = \frac{\sum_{i=1}^n (X_i -\widehat{\mu_j})^2 \times\mathbbm{P}_{\tilde{\theta}}(Z=j|X=X_i)}{\sum_{i=1}^n\mathbbm{P}_{\tilde{\theta}}(Z=j|X=X_i)}
 			\]			
 		\end{block}
 	\end{frame}
@@ -329,6 +330,7 @@ La log-vraisemblance $\mathcal{L}_{obs}$ des observations vérifie
 
 	\begin{frame}{Ersatz de preuve}
 		\begin{block}{Démonstration: d'après [2] et [4]}
+			\scriptsize
 			\begin{itemize}
 				\item Nous cherchons à montrer que
 				\[
@@ -352,10 +354,11 @@ La log-vraisemblance $\mathcal{L}_{obs}$ des observations vérifie
 		\begin{block}{Démonstration: d'après [2] et [4]}
 				Ainsi,
 				\[
-				\mathcal{L}_{obs}(\theta_{k+1}, X_1, \cdots, X_n) - \mathcal{L}_{obs}(\theta_k, X_1, \cdots, X_n)
+				\mathcal{L}_{obs}(\theta_{k+1}, X_1, \cdots, X_n) - \mathcal{L}_{obs}(\theta_k, X_1, \cdots, X_n) \geq 0
 				\]
+				\underline{ssi}
 				\[
-				= \underbrace{\mathcal{L}_c(\theta_{k+1}, \theta_k, X_1, \cdots, X_n) - \mathcal{L}_c(\theta_k, \theta_k, X_1, \cdots, X_n)}_{L} + \underbrace{\kappa_{\theta_{k}, \theta_k}  - \kappa_{\theta_{k+1}, \theta_k}}_{K}
+				\underbrace{\mathcal{L}_c(\theta_{k+1}, \theta_k, X_1, \cdots, X_n) - \mathcal{L}_c(\theta_k, \theta_k, X_1, \cdots, X_n)}_{L} + \underbrace{\kappa_{\theta_{k}, \theta_k}  - \kappa_{\theta_{k+1}, \theta_k}}_{K} \geq 0
 				\]
 Il s'agit de montrer 
 				\[
@@ -383,12 +386,13 @@ est maximisée en $\theta$, de maximum $\theta_{k+1}$
 
 	\begin{frame}{Ersatz de preuve}
 		\begin{block}{Démonstration: d'après [2] et [4]}
+			\scriptsize
 			\begin{itemize}
 				\item Il reste donc à prouver que
 					\[
 					 K = \kappa_{\theta_{k}, \theta_k}, - \kappa_{\theta_{k+1}, \theta_k} \geq 0
 					\]
-				\item On montre que, après quelques fastidieux calculs,
+				\item Nous montrons que, après quelques fastidieux calculs,
 				\begin{align*}
 					& \kappa_{\theta_{k}, \theta_k}, - \kappa_{\theta_{k+1}, \theta_k} \\
 					& \geq - n\times ln\left( \sum_{i=1}^n\sum_{j=1}^J\mathbbm{P}_{\theta_{k+1}}(Z = j|X=X_i)\times\frac{1}{n}\right)  \text{  }  (3) \\
